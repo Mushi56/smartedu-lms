@@ -35,7 +35,7 @@ export default function Schedule({ classes, onSelectCourse }) {
       </div>
 
       {/* Main Grid: Calendar Grid Card + Selected Day Details */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
+      <div className="schedule-grid-layout">
         {/* The Grid Calendar */}
         <div className="smart-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -69,7 +69,7 @@ export default function Schedule({ classes, onSelectCourse }) {
                   }}
                 >
                   <span className="calendar-day-num">{cell.dayNum}</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%', overflow: 'hidden' }}>
+                  <div className="calendar-events-container">
                     {cellClasses.map(c => (
                       <span 
                         key={c.id} 
