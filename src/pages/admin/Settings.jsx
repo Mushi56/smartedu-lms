@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sliders, Key, Shield, CheckCircle2, Lock } from 'lucide-react';
 
 export default function Settings({ apiKey, setApiKey }) {
-  const [siteName, setSiteName] = useState('SmartEdu LMS');
+  const [siteName, setSiteName] = useState('SURIA TECH');
   const [currency, setCurrency] = useState('USD ($)');
   const [tempKey, setTempKey] = useState(apiKey || '');
   const [isSaved, setIsSaved] = useState(false);

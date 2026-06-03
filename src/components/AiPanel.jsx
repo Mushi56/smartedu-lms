@@ -4,7 +4,7 @@ import { getAIResponse } from '../data/mockData';
 
 export default function AiPanel({ streak, overallProgress, apiKey, onTriggerQuiz }) {
   const [messages, setMessages] = useState([
-    { id: 1, text: "Hi Arjun! 👋 How can I help you today?", sender: 'bot' }
+    { id: 1, text: "Hi Omar! 👋 How can I help you today?", sender: 'bot' }
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -52,7 +52,7 @@ export default function AiPanel({ streak, overallProgress, apiKey, onTriggerQuiz
 
   const handleResetChat = () => {
     setMessages([
-      { id: 1, text: "Hi Arjun! 👋 How can I help you today?", sender: 'bot' }
+      { id: 1, text: "Hi Omar! 👋 How can I help you today?", sender: 'bot' }
     ]);
   };
 

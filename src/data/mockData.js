@@ -3,121 +3,101 @@
 const defaultCourses = [
   {
     id: "course-1",
-    title: "Python for Beginners",
-    teacher: "Dr. Vivek Sharma",
-    progress: 65,
-    enrolledDate: "May 10, 2024",
-    price: 49.00,
-    chaptersCount: 12,
-    studentsCount: 842,
-    category: "Development",
+    title: "SAT Math Mastery",
+    teacher: "Dr. Ahmed Al-Hassan",
+    progress: 78,
+    enrolledDate: "May 10, 2026",
+    price: 59.00,
+    chaptersCount: 20,
+    studentsCount: 4250,
+    category: "Test Prep",
     modules: [
       {
         id: "m1",
-        title: "Introduction to Python",
+        title: "Algebra Fundamentals",
         lessons: [
-          { id: "l1", title: "Getting Started & Installation", duration: "10:15", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" },
-          { id: "l2", title: "Python Interpreter & Syntax", duration: "15:30", videoUrl: "https://www.w3schools.com/html/movie.mp4" },
-          { id: "l3", title: "Variables & Simple Data Types", duration: "18:45", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" }
-        ]
-      },
-      {
-        id: "m2",
-        title: "Control Flow & Loops",
-        lessons: [
-          { id: "l4", title: "Conditional Statements (if/elif/else)", duration: "22:10", videoUrl: "https://www.w3schools.com/html/movie.mp4" },
-          { id: "l5", title: "While Loops and For Loops", duration: "25:40", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" }
+          { id: "l1", title: "Linear Equations & Inequalities", duration: "12:15", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" },
+          { id: "l2", title: "Systems of Linear Equations", duration: "14:20", videoUrl: "https://www.w3schools.com/html/movie.mp4" }
         ]
       }
     ]
   },
   {
     id: "course-2",
-    title: "Data Structures & Algorithms",
-    teacher: "Dr. Vivek Sharma",
-    progress: 40,
-    enrolledDate: "May 15, 2024",
-    price: 59.00,
-    chaptersCount: 18,
-    studentsCount: 1250,
-    category: "Computer Science",
+    title: "IELTS Speaking Success",
+    teacher: "Ms. Sarah Johnson",
+    progress: 60,
+    enrolledDate: "May 12, 2026",
+    price: 49.00,
+    chaptersCount: 16,
+    studentsCount: 3860,
+    category: "Language",
     modules: [
       {
-        id: "m3",
-        title: "Big O Notation & Complexity",
+        id: "m2",
+        title: "Speaking Part 1 & 2 Essentials",
         lessons: [
-          { id: "l6", title: "Time and Space Complexity Analysis", duration: "20:05", videoUrl: "https://www.w3schools.com/html/movie.mp4" },
-          { id: "l7", title: "Common Complexity Classes", duration: "12:15", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" }
-        ]
-      },
-      {
-        id: "m4",
-        title: "Arrays & Linked Lists",
-        lessons: [
-          { id: "l8", title: "Array Operations and Dynamic Arrays", duration: "24:18", videoUrl: "https://www.w3schools.com/html/movie.mp4" },
-          { id: "l9", title: "Singly and Doubly Linked Lists", duration: "32:50", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" }
+          { id: "l3", title: "Fluency & Coherence Techniques", duration: "10:30", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" }
         ]
       }
     ]
   },
   {
     id: "course-3",
-    title: "Machine Learning Basics",
-    teacher: "Dr. Neha Verma",
-    progress: 20,
-    enrolledDate: "May 20, 2024",
-    price: 69.00,
-    chaptersCount: 10,
-    studentsCount: 610,
-    category: "Data Science",
+    title: "TOEFL iBT Complete Guide",
+    teacher: "Ms. Lisa Park",
+    progress: 40,
+    enrolledDate: "May 14, 2026",
+    price: 54.00,
+    chaptersCount: 22,
+    studentsCount: 3210,
+    category: "Language",
     modules: [
       {
-        id: "m5",
-        title: "Introduction to ML",
+        id: "m3",
+        title: "Reading & Writing Modules",
         lessons: [
-          { id: "l10", title: "Supervised vs Unsupervised Learning", duration: "15:10", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" },
-          { id: "l11", title: "Linear Regression Explained", duration: "28:30", videoUrl: "https://www.w3schools.com/html/movie.mp4" }
+          { id: "l4", title: "Integrated Writing Strategies", duration: "18:45", videoUrl: "https://www.w3schools.com/html/movie.mp4" }
         ]
       }
     ]
   },
   {
     id: "course-4",
-    title: "Web Development Bootcamp",
-    teacher: "Mr. Rohit K.",
-    progress: 0,
-    enrolledDate: "May 25, 2024",
-    price: 49.00,
-    chaptersCount: 22,
-    studentsCount: 2040,
-    category: "Development",
+    title: "GRE Quantitative Reasoning",
+    teacher: "Dr. Michael Chen",
+    progress: 30,
+    enrolledDate: "May 15, 2026",
+    price: 59.00,
+    chaptersCount: 8,
+    studentsCount: 2980,
+    category: "Test Prep",
     modules: [
       {
-        id: "m6",
-        title: "HTML5 & CSS3 Essentials",
+        id: "m4",
+        title: "Arithmetic & Algebra",
         lessons: [
-          { id: "l12", title: "Semantic Tags and Layouts", duration: "18:22", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" },
-          { id: "l13", title: "Flexbox and CSS Grid Systems", duration: "25:40", videoUrl: "https://www.w3schools.com/html/movie.mp4" }
+          { id: "l5", title: "Quadratic Equations - Problem Solving", duration: "15:20", videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4" }
         ]
       }
     ]
   },
   {
     id: "course-5",
-    title: "Deep Learning Advanced",
-    teacher: "Dr. Arjun Sharma",
+    title: "Essay Writing Excellence",
+    teacher: "Ms. Sarah Johnson",
     progress: 0,
-    enrolledDate: "May 24, 2024",
-    price: 79.00,
-    chaptersCount: 15,
-    studentsCount: 450,
-    category: "Data Science",
+    enrolledDate: "May 18, 2026",
+    price: 49.00,
+    chaptersCount: 12,
+    studentsCount: 2450,
+    category: "Writing",
     modules: [
       {
-        id: "m7",
-        title: "Neural Networks Fundamentals",
+        id: "m5",
+        title: "Academic Writing Style",
         lessons: [
-          { id: "l14", title: "Activation Functions & Backpropagation", duration: "32:15", videoUrl: "https://www.w3schools.com/html/movie.mp4" }
+          { id: "l6", title: "Thesis Statements & Structures", duration: "11:15", videoUrl: "https://www.w3schools.com/html/movie.mp4" }
         ]
       }
     ]
@@ -127,67 +107,56 @@ const defaultCourses = [
 const defaultClasses = [
   {
     id: "class-1",
-    title: "Data Structures - Linked Lists",
-    teacher: "Dr. Vivek Sharma",
-    courseId: "course-2",
-    time: "10:00",
-    ampm: "am",
-    date: "2026-05-26", // Today
+    title: "SAT Math Mastery",
+    teacher: "Dr. Ahmed Al-Hassan",
+    courseId: "course-1",
+    time: "06:00",
+    ampm: "pm",
+    date: "2026-06-03", // Today
     dateLabel: "Today",
     isLive: true
   },
   {
     id: "class-2",
-    title: "Machine Learning - Linear Regression",
-    teacher: "Dr. Neha Verma",
-    courseId: "course-3",
-    time: "01:00",
+    title: "IELTS Speaking Success",
+    teacher: "Ms. Sarah Johnson",
+    courseId: "course-2",
+    time: "04:30",
     ampm: "pm",
-    date: "2026-05-26", // Today
-    dateLabel: "Today",
+    date: "2026-06-04", // Tomorrow
+    dateLabel: "Tomorrow",
     isLive: true
   },
   {
     id: "class-3",
-    title: "Web Development - CSS Grid",
-    teacher: "Mr. Rohit K.",
+    title: "GRE Quantitative Reasoning",
+    teacher: "Dr. Michael Chen",
     courseId: "course-4",
-    time: "04:00",
+    time: "07:00",
     ampm: "pm",
-    date: "2026-05-26", // Today
-    dateLabel: "Today",
+    date: "2025-05-17",
+    dateLabel: "May 17, 2025",
     isLive: false
   },
   {
     id: "class-4",
-    title: "Deep Learning - Backpropagation",
-    teacher: "Dr. Arjun Sharma",
-    courseId: "course-5",
-    time: "06:00",
-    ampm: "pm",
-    date: "2026-05-26", // Today
-    dateLabel: "Today",
-    isLive: false
-  },
-  {
-    id: "class-5",
-    title: "Python - Functions & Modules",
-    teacher: "Dr. Vivek Sharma",
-    courseId: "course-1",
+    title: "TOEFL iBT Complete Guide",
+    teacher: "Ms. Lisa Park",
+    courseId: "course-3",
     time: "05:00",
     ampm: "pm",
-    date: "2026-05-27", // Tomorrow
-    dateLabel: "27 May",
+    date: "2025-05-18",
+    dateLabel: "May 18, 2025",
     isLive: false
   }
 ];
 
 const defaultStudents = [
-  { id: "s-1", name: "Rahul Kumar", email: "rahul.k@email.com", course: "Python for Beginners", enrolledOn: "May 26, 2024", amount: "$49.00", status: "Completed", avatar: "👨" },
-  { id: "s-2", name: "Priya Singh", email: "priya.s@email.com", course: "Data Structures & Algorithms", enrolledOn: "May 26, 2024", amount: "$59.00", status: "Completed", avatar: "👩" },
-  { id: "s-3", name: "Aman Verma", email: "aman.v@email.com", course: "Machine Learning Basics", enrolledOn: "May 25, 2024", amount: "$69.00", status: "Completed", avatar: "👨" },
-  { id: "s-4", name: "Neha Patel", email: "neha.p@email.com", course: "Web Development Bootcamp", enrolledOn: "May 25, 2024", amount: "$49.00", status: "Pending", avatar: "👩" },
-  { id: "s-5", name: "Karan Malhotra", email: "karan.m@email.com", course: "Deep Learning Advanced", enrolledOn: "May 24, 2024", amount: "$79.00", status: "Completed", avatar: "👨" }
+  { id: "s-1", name: "Sara Ahmed", email: "sara.ahmed@example.com", course: "SAT Math Mastery", enrolledOn: "May 26, 2026", amount: "$59.00", status: "Completed", avatar: "👩" },
+  { id: "s-2", name: "Mohammed Ali", email: "mohammed.ali@example.com", course: "IELTS Speaking Success", enrolledOn: "May 26, 2026", amount: "$49.00", status: "Completed", avatar: "👨" },
+  { id: "s-3", name: "Fatima Zahra", email: "fatima.zahra@example.com", course: "TOEFL iBT Complete Guide", enrolledOn: "May 25, 2026", amount: "$54.00", status: "Completed", avatar: "👩" },
+  { id: "s-4", name: "Omar Hassan", email: "omar.hassan@example.com", course: "GRE Quantitative Reasoning", enrolledOn: "May 25, 2026", amount: "$59.00", status: "Completed", avatar: "👨" },
+  { id: "s-5", name: "James Wilson", email: "james.wilson@example.com", course: "Essay Writing Excellence", enrolledOn: "May 24, 2026", amount: "$49.00", status: "Completed", avatar: "👨" }
 ];
 
 const defaultNotifications = [
@@ -288,8 +257,8 @@ export const getDB = () => {
     notifications: getStorageItem("smartedu_notifications", defaultNotifications),
     quizzes: getStorageItem("smartedu_quizzes", defaultQuizzes),
     assignments: getStorageItem("smartedu_assignments", defaultAssignments),
-    streak: getStorageItem("smartedu_streak", 7),
-    overallProgress: getStorageItem("smartedu_progress", 86)
+    streak: getStorageItem("smartedu_streak", 14),
+    overallProgress: getStorageItem("smartedu_progress", 72)
   };
 };
 
@@ -314,7 +283,7 @@ export const getAIResponse = async (userPrompt, apiKey = "") => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: `You are SmartEdu's built-in AI Tutor. Answer the user's question clearly, concisely, and like a supportive and highly knowledgeable educator. Question: ${userPrompt}` }] }]
+          contents: [{ parts: [{ text: `You are SURIA TECH's built-in AI Tutor. Answer the user's question clearly, concisely, and like a supportive and highly knowledgeable educator. Question: ${userPrompt}` }] }]
         })
       });
       const data = await response.json();
@@ -367,24 +336,24 @@ I've generated a 3-question MCQ quiz on **Arrays** for you in the Quizzes sectio
 3. Modifying an element
 4. Finding the array length
 
-*Go to the **Quizzes** tab in the sidebar to start your official AI quiz!*`;
+*Go to the **Quizzes** tab in the sidebar to start your official AI quiz!`;
   }
 
   if (prompt.includes("not understand") || prompt.includes("weak")) {
-    return `No worries, Arjun! Let's break down whatever you're struggling with. 
+    return `No worries, Omar! Let's break down whatever you're struggling with. 
 
-Could you specify if it is **Time Complexity**, **Pointer manipulation in Linked Lists**, or **Python Function Parameters**? 
+    Could you specify if it is **Time Complexity**, **Pointer manipulation in Linked Lists**, or **Python Function Parameters**? 
 
-I can explain it with drawings, code, or a simpler everyday analogy! Let me know.`;
+    I can explain it with drawings, code, or a simpler everyday analogy! Let me know.`;
   }
 
-  return `Hello Arjun! I'm your SmartEdu AI Learning Assistant. 
+  return `Hello Omar! I'm your SURIA TECH AI Learning Assistant. 
 
-I can help you:
-1. Explain complex topics (e.g. "Explain recursion")
-2. Summarize lectures (e.g. "Summarize today's Linked List class")
-3. Create custom quizzes (e.g. "Create a Python quiz")
-4. Solve code doubts!
+  I can help you:
+  1. Explain complex topics (e.g. "Explain recursion")
+  2. Summarize lectures (e.g. "Summarize today's Linked List class")
+  3. Create custom quizzes (e.g. "Create a Python quiz")
+  4. Solve code doubts!
 
-What would you like to learn today?`;
+  What would you like to learn today?`;
 };

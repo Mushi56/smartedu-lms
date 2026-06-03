@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Bell, MessageSquare, ArrowRightLeft, Check, Sun, Moon, Menu } from 'lucide-react';
+import { Search, Bell, MessageSquare, Sun, Moon, Menu } from 'lucide-react';
 
 export default function Navbar({ 
   currentPortal, 
@@ -14,11 +14,12 @@ export default function Navbar({
   setMobileSidebarOpen
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const unreadCount = currentPortal === 'student' ? 3 : 7; // Matching mockup badge values
 
   const handlePortalSwitch = (portal) => {
     setCurrentPortal(portal);
-    setActiveTab('dashboard'); // Always reset active sidebar tab to dashboard when switching portals
+    setActiveTab('dashboard'); // Reset active tab when switching portals
   };
 
   const toggleTheme = () => {
@@ -27,153 +28,381 @@ export default function Navbar({
     document.documentElement.setAttribute('data-theme', nextTheme);
   };
 
+  if (currentPortal === 'student') {
+    return (
+      <header style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '24px 24px 12px 24px',
+        backgroundColor: 'transparent',
+        borderBottom: 'none',
+        height: 'auto',
+        position: 'sticky',
+        top: 0,
+        zIndex: 99,
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)'
+      }}>
+        {/* Left Side: Welcoming Title */}
+        <div style={{ textAlign: 'left' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Welcome back, Omar! 👋</h2>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>Let's continue your learning journey.</p>
+        </div>
+
+        {/* Right Side: Simple circular search & notification controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Mobile hamburger menu toggle */}
+          <button 
+            onClick={() => setMobileSidebarOpen(true)} 
+            className="mobile-menu-toggle click-press"
+            title="Open Menu"
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: '#ffffff',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              display: 'none', // Shown in CSS media queries for mobile
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)'
+            }}
+          >
+            <Menu size={18} />
+          </button>
+
+          {/* Switch Portal Button (Hidden in mock, kept for easy testing) */}
+          <button 
+            onClick={() => handlePortalSwitch('admin')}
+            style={{
+              fontSize: '11px',
+              fontWeight: 700,
+              padding: '8px 12px',
+              borderRadius: '20px',
+              backgroundColor: 'rgba(58, 32, 72, 0.05)',
+              color: '#3A2048',
+              border: '1px solid rgba(58, 32, 72, 0.1)',
+              marginRight: '8px'
+            }}
+            className="click-press"
+          >
+            Go Admin
+          </button>
+
+          {/* Theme Toggle */}
+          <button 
+            onClick={toggleTheme} 
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: '#ffffff',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)'
+            }}
+            className="click-press"
+            title="Theme Toggle"
+          >
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+
+          {/* Search trigger */}
+          <button 
+            style={{
+              width: '42px',
+              height: '42px',
+              borderRadius: '50%',
+              backgroundColor: '#ffffff',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)'
+            }}
+            className="click-press"
+            title="Search"
+          >
+            <Search size={18} />
+          </button>
+
+          {/* Notification bell */}
+          <div style={{ position: 'relative' }}>
+            <button 
+              onClick={() => setShowNotifications(!showNotifications)}
+              style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                backgroundColor: '#ffffff',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-color)'
+              }}
+              className="click-press"
+              title="Notifications"
+            >
+              <Bell size={18} />
+              {unreadCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-2px',
+                  right: '-2px',
+                  width: '18px',
+                  height: '18px',
+                  borderRadius: '50%',
+                  backgroundColor: '#ef4444',
+                  color: 'white',
+                  fontSize: '9px',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px solid #ffffff'
+                }}>{unreadCount}</span>
+              )}
+            </button>
+
+            {showNotifications && (
+              <div className="smart-card glass-effect animate-fade-in" style={{
+                position: 'absolute',
+                right: 0,
+                top: '52px',
+                width: '320px',
+                zIndex: 1000,
+                padding: '16px',
+                maxHeight: '400px',
+                overflowY: 'auto'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px', marginBottom: '10px' }}>
+                  <span style={{ fontWeight: 600, fontSize: '13px' }}>Notifications</span>
+                  <button 
+                    onClick={() => { markAllNotificationsRead(); setShowNotifications(false); }}
+                    style={{ fontSize: '11px', color: 'var(--primary-color)', fontWeight: 600 }}
+                  >
+                    Clear all
+                  </button>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {notifications.map((notif) => (
+                    <div key={notif.id} style={{ padding: '8px', borderRadius: '6px', backgroundColor: 'var(--bg-app)', border: '1px solid var(--border-color)', textAlign: 'left' }}>
+                      <p style={{ fontSize: '11px', margin: 0, color: 'var(--text-primary)' }}>{notif.text}</p>
+                      <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{notif.time}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+  // Admin Portal Header
   return (
-    <header className="navbar">
-      {/* Search Input Box */}
-      <div className="nav-left">
+    <header className="navbar" style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0 24px',
+      backgroundColor: '#ffffff',
+      borderBottom: '1px solid var(--border-color)',
+      height: '70px',
+      position: 'sticky',
+      top: 0,
+      zIndex: 99
+    }}>
+      {/* Left side: Hamburger toggle & page identifier */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <button 
           onClick={() => setMobileSidebarOpen(true)} 
           className="mobile-menu-toggle click-press"
           title="Open Menu"
+          style={{ color: 'var(--text-primary)', display: 'none' }} // Controlled in css media query
         >
           <Menu size={20} />
         </button>
-
-        <div className="search-bar-wrapper">
-          <Search size={16} className="search-icon" />
-          <input 
-            type="text" 
-            placeholder={currentPortal === 'student' ? "Search for courses, topics or anything..." : "Search for students, courses, classes..."} 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <span className="search-kbd">Ctrl + K</span>
-        </div>
+        <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>Admin Dashboard</span>
       </div>
 
-      {/* Action Buttons, Dark Mode Toggle, Portal Switcher & User Profile */}
-      <div className="nav-right">
-        {/* Quick Portal Switcher Selector */}
-        <div className="portal-switcher">
-          <button 
-            onClick={() => handlePortalSwitch('student')}
-            className={`portal-switch-btn click-press ${currentPortal === 'student' ? 'active' : ''}`}
-          >
-            Student View
-          </button>
-          <button 
-            onClick={() => handlePortalSwitch('admin')}
-            className={`portal-switch-btn click-press ${currentPortal === 'admin' ? 'active' : ''}`}
-          >
-            Admin Panel
-          </button>
-        </div>
+      {/* Middle/Right: Search bar */}
+      <div style={{ flex: 1, maxWidth: '400px', margin: '0 24px', position: 'relative' }}>
+        <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <input 
+          type="text" 
+          placeholder="Search anything..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ 
+            width: '100%', 
+            padding: '10px 14px 10px 40px', 
+            borderRadius: '24px', 
+            border: '1px solid var(--border-color)', 
+            backgroundColor: '#f8fafc',
+            fontSize: '13px'
+          }}
+        />
+      </div>
+
+      {/* Right side: Bell icon and Admin Profile */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        {/* Switch Portal Button (Hidden in mock, kept for easy testing) */}
+        <button 
+          onClick={() => handlePortalSwitch('student')}
+          style={{
+            fontSize: '11px',
+            fontWeight: 700,
+            padding: '8px 12px',
+            borderRadius: '20px',
+            backgroundColor: 'rgba(202, 186, 97, 0.1)',
+            color: '#3A2048',
+            border: '1px solid rgba(202, 186, 97, 0.2)'
+          }}
+          className="click-press"
+        >
+          Go Student
+        </button>
 
         {/* Theme Toggle */}
         <button 
           onClick={toggleTheme} 
-          className="nav-action-btn click-press"
-          title="Toggle Light/Dark Theme"
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            backgroundColor: '#f8fafc',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border-color)'
+          }}
+          className="click-press"
+          title="Theme Toggle"
         >
-          {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
         </button>
 
-        {/* Messages Shortcut */}
-        <button 
-          onClick={() => setActiveTab('messages')} 
-          className="nav-action-btn click-press"
-          title="Messages"
-        >
-          <MessageSquare size={18} />
-          {currentPortal === 'admin' && <span className="btn-badge">12</span>}
-        </button>
-
-        {/* Notifications Icon with Dropdown Menu */}
+        {/* Notification bell */}
         <div style={{ position: 'relative' }}>
           <button 
-            onClick={() => setShowNotifications(!showNotifications)} 
-            className="nav-action-btn click-press"
+            onClick={() => setShowNotifications(!showNotifications)}
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
+              backgroundColor: '#f8fafc',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border-color)'
+            }}
+            className="click-press"
             title="Notifications"
           >
-            <Bell size={18} />
-            {unreadCount > 0 && <span className="btn-badge">{unreadCount}</span>}
+            <Bell size={16} />
+            {unreadCount > 0 && (
+              <span style={{
+                position: 'absolute',
+                top: '-2px',
+                right: '-2px',
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                backgroundColor: '#ef4444',
+                color: 'white',
+                fontSize: '8px',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid #ffffff'
+              }}>{unreadCount}</span>
+            )}
           </button>
 
           {showNotifications && (
             <div className="smart-card glass-effect animate-fade-in" style={{
               position: 'absolute',
               right: 0,
-              top: '50px',
-              width: '320px',
+              top: '46px',
+              width: '300px',
               zIndex: 1000,
               padding: '16px',
-              maxHeight: '400px',
-              overflowY: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px'
+              maxHeight: '350px',
+              overflowY: 'auto'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px', marginBottom: '10px' }}>
                 <span style={{ fontWeight: 600, fontSize: '13px' }}>Notifications</span>
-                {unreadCount > 0 && (
-                  <button 
-                    onClick={() => {
-                      markAllNotificationsRead();
-                      setShowNotifications(false);
-                    }}
-                    style={{ fontSize: '11px', color: 'var(--primary-color)', fontWeight: 600 }}
-                  >
-                    Mark all as read
-                  </button>
-                )}
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {notifications.length === 0 ? (
-                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)', textAlign: 'center', padding: '16px 0' }}>No new notifications</p>
-                ) : (
-                  notifications.map((notif) => (
-                    <div 
-                      key={notif.id} 
-                      style={{ 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        gap: '2px', 
-                        padding: '8px', 
-                        borderRadius: '6px', 
-                        backgroundColor: notif.read ? 'transparent' : 'var(--primary-glow)',
-                        border: '1px solid var(--border-color)'
-                      }}
-                    >
-                      <p style={{ fontSize: '12px', color: 'var(--text-primary)', fontWeight: notif.read ? 400 : 500 }}>
-                        {notif.text}
-                      </p>
-                      <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{notif.time}</span>
-                    </div>
-                  ))
-                )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {notifications.map((notif) => (
+                  <div key={notif.id} style={{ padding: '8px', borderRadius: '6px', backgroundColor: 'var(--bg-app)', border: '1px solid var(--border-color)', textAlign: 'left' }}>
+                    <p style={{ fontSize: '11px', margin: 0, color: 'var(--text-primary)' }}>{notif.text}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}
         </div>
 
-        {/* User profile dropdown block */}
-        <div className="user-profile-menu click-press" onClick={() => setActiveTab('settings')}>
+        {/* Profile Details layout */}
+        <div 
+          onClick={() => setShowProfileMenu(!showProfileMenu)}
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', padding: '4px 8px', borderRadius: '8px' }}
+          className="hover-bg-app click-press"
+        >
           <img 
-            src={currentPortal === 'student' 
-              ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" 
-              : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200"} 
+            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100" 
             className="user-avatar" 
-            alt="User profile" 
+            alt="Admin Profile" 
+            style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--border-color)' }}
           />
-          <div className="user-meta">
-            <span className="user-name">
-              {currentPortal === 'student' ? 'Arjun' : 'Dr. Arjun Sharma'}
-            </span>
-            <span className="user-role">
-              {currentPortal === 'student' ? 'Student' : 'Super Admin'}
-            </span>
+          <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>Admin User</span>
+            <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}>Super Admin</span>
           </div>
         </div>
+
+        {showProfileMenu && (
+          <div className="smart-card glass-effect animate-fade-in" style={{
+            position: 'absolute',
+            right: '24px',
+            top: '72px',
+            width: '200px',
+            zIndex: 1000,
+            padding: '8px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '4px'
+          }}>
+            <button 
+              onClick={() => handlePortalSwitch('student')}
+              style={{ textAlign: 'left', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', color: 'var(--text-primary)', width: '100%' }}
+              className="hover-bg-app"
+            >
+              Switch to Student Portal
+            </button>
+            <button 
+              onClick={() => { setActiveTab('settings'); setShowProfileMenu(false); }}
+              style={{ textAlign: 'left', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', color: 'var(--text-primary)', width: '100%' }}
+              className="hover-bg-app"
+            >
+              Settings
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );

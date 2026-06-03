@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Sparkles, Shield, User, Key, Sliders, CheckCircle2 } from 'lucide-react';
 
 export default function Profile({ apiKey, setApiKey }) {
-  const [name, setName] = useState('Arjun Kumar');
-  const [email, setEmail] = useState('arjun.k@student.com');
+  const [name, setName] = useState('Omar Hassan');
+  const [email, setEmail] = useState('omar.hassan@example.com');
   const [tempApiKey, setTempApiKey] = useState(apiKey || '');
   const [selectedModel, setSelectedModel] = useState('gemini-1.5-flash');
   const [temperature, setTemperature] = useState(0.7);
@@ -64,7 +64,7 @@ export default function Profile({ apiKey, setApiKey }) {
             <span>AI Tutor & Grader Settings</span>
           </h3>
           <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '24px' }}>
-            SmartEdu LMS comes with a realistic local AI simulator. Insert your **Google Gemini API Key** below to unlock a real, state-of-the-art interactive LLM doubt solver!
+            SURIA TECH LMS comes with a realistic local AI simulator. Insert your **Google Gemini API Key** below to unlock a real, state-of-the-art interactive LLM doubt solver!
           </p>
 
           <form onSubmit={handleSaveAISettings} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

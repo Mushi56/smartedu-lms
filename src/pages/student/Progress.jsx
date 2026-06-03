@@ -129,7 +129,7 @@ export default function Progress({ courses, streak, overallProgress }) {
                   </div>
                   <div>
                     <h4 style={{ fontSize: '14px', fontWeight: 700 }}>Certificate of Completion: {c.title}</h4>
-                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Accredited by SmartEdu Learning Academics • Issued May 2026</p>
+                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Accredited by SURIA TECH Learning Academics • Issued May 2026</p>
                   </div>
                 </div>
 
@@ -195,7 +195,7 @@ export default function Progress({ courses, streak, overallProgress }) {
               This is proudly presented to
             </p>
             <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '36px', fontWeight: 700, borderBottom: '2px solid var(--primary-color)', display: 'inline-block', paddingBottom: '8px', marginBottom: '32px' }}>
-              Arjun Kumar
+              Omar Hassan
             </h1>
             <p style={{ fontSize: '15px', color: '#64748b', lineHeight: 1.6, maxWidth: '500px', margin: '0 auto 40px' }}>
               for successfully mastering all modules, completing interactive programming assignments, and passing the AI-generated assessment syllabus in
@@ -211,7 +211,7 @@ export default function Progress({ courses, streak, overallProgress }) {
                 <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>Course Instructor</span>
               </div>
               <div>
-                <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--primary-color)', textTransform: 'uppercase', letterSpacing: '2px', border: '1px solid var(--primary-color)', padding: '6px 12px', borderRadius: '4px' }}>SmartEdu Verified</span>
+                <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--primary-color)', textTransform: 'uppercase', letterSpacing: '2px', border: '1px solid var(--primary-color)', padding: '6px 12px', borderRadius: '4px' }}>SURIA TECH Verified</span>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <span style={{ fontFamily: '"Brush Script MT", cursive', fontSize: '22px', display: 'block', color: 'var(--primary-color)' }}>Dr. Arjun Sharma</span>

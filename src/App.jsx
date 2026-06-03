@@ -23,11 +23,15 @@ import AdminQuizManager from './pages/admin/QuizManager';
 import AdminAnalytics from './pages/admin/Analytics';
 import AdminSettings from './pages/admin/Settings';
 
+// Public Page Imports
+import PublicLayout from './layouts/PublicLayout';
+import Homepage from './pages/public/Homepage';
+
 import './App.css';
 
 export default function App() {
   // 1. Role and Navigation State
-  const [currentPortal, setCurrentPortal] = useState('student'); // 'student' or 'admin'
+  const [currentPortal, setCurrentPortal] = useState('public'); // 'public', 'student', or 'admin'
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [theme, setTheme] = useState('light');
@@ -285,6 +289,16 @@ export default function App() {
             <CourseManager 
               courses={db.courses} 
               setCourses={setCourses} 
+              initialView="list"
+            />
+          );
+
+        case 'add-course':
+          return (
+            <CourseManager 
+              courses={db.courses} 
+              setCourses={setCourses} 
+              initialView="create"
             />
           );
 
@@ -400,6 +414,14 @@ export default function App() {
     }
   };
 
+  if (currentPortal === 'public') {
+    return (
+      <PublicLayout onGetStarted={() => setCurrentPortal('student')}>
+        <Homepage onGetStarted={() => setCurrentPortal('student')} />
+      </PublicLayout>
+    );
+  }
+
   return (
     <div className="app-container">
       {/* 1. Left Navigation Sidebar Adaptable to portals roles */}
@@ -428,23 +450,8 @@ export default function App() {
 
         {/* Scrollable workspace */}
         <main className="content-scrollable">
-          <div className="dashboard-grid student-layout">
-            
-            {/* The primary content view based on tabs */}
-            <div className="dashboard-main-content">
-              {renderContent()}
-            </div>
-
-            {/* Right sidebar ONLY mounted on Student Dashboard panel view */}
-            {currentPortal === 'student' && activeTab === 'dashboard' && (
-              <AiPanel 
-                streak={db.streak} 
-                overallProgress={db.overallProgress}
-                apiKey={apiKey}
-                onTriggerQuiz={() => setActiveTab('quizzes')}
-              />
-            )}
-
+          <div className="dashboard-main-content" style={{ width: '100%' }}>
+            {renderContent()}
           </div>
         </main>
       </div>

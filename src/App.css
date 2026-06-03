@@ -221,13 +221,20 @@
 
 .search-bar-wrapper {
   position: relative;
-  width: 380px;
+  width: auto;
   max-width: 100%;
+}
+
+.hover-bg-app {
+  transition: all var(--transition-fast);
+}
+.hover-bg-app:hover {
+  background-color: var(--bg-app) !important;
 }
 
 .search-bar-wrapper input {
   width: 100%;
-  padding: 10px 40px 10px 40px;
+  padding: 10px 14px;
   border-radius: var(--border-radius-sm);
   border: 1px solid var(--border-color);
   background-color: var(--bg-app);
