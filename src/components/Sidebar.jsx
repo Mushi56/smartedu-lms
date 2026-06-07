@@ -70,12 +70,10 @@ export default function Sidebar({ currentPortal, activeTab, setActiveTab, mobile
         />
       )}
 
-      <aside className="sidebar dark-bg" style={{ 
+      <aside className={`sidebar dark-bg${mobileSidebarOpen ? ' sidebar-open' : ''}`} style={{ 
         display: 'flex', 
         flexDirection: 'column', 
-        height: '100vh', 
-        position: 'sticky', 
-        top: 0,
+        height: '100vh',
         background: '#3A2048',
         width: '260px',
         flexShrink: 0
@@ -96,19 +94,20 @@ export default function Sidebar({ currentPortal, activeTab, setActiveTab, mobile
           }}>
             <img src="/logo.png" alt="SURIA TECH Logo" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
           </div>
-          <div className="logo-text-wrapper" style={{ textAlign: 'left' }}>
-            <span style={{ fontWeight: 800, letterSpacing: '-0.5px', color: '#ffffff', fontSize: '15px', display: 'block' }}>SURIA TECH</span>
-            <span className="logo-subtitle" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '10px', display: 'block' }}>
+          <div className="logo-text-wrapper" style={{ textAlign: 'left', overflow: 'hidden', minWidth: 0 }}>
+            <span style={{ fontWeight: 800, letterSpacing: '-0.5px', color: '#ffffff', fontSize: '15px', display: 'block', whiteSpace: 'nowrap' }}>SURIA TECH</span>
+            <span className="logo-subtitle" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '9.5px', display: 'block', whiteSpace: 'nowrap', letterSpacing: '0.2px' }}>
               {isStudent ? 'Learn. Grow. Succeed.' : 'Admin Panel'}
             </span>
           </div>
 
-          {/* Close button inside sidebar on mobile */}
+
+          {/* Close button inside sidebar — visible on mobile via CSS */}
           <button 
             onClick={() => setMobileSidebarOpen(false)} 
             className="sidebar-close-btn click-press"
             title="Close Menu"
-            style={{ color: '#ffffff', marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', display: 'none' }}
+            style={{ color: '#ffffff', marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer' }}
           >
             <X size={18} />
           </button>

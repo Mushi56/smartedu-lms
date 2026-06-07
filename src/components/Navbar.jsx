@@ -63,7 +63,6 @@ export default function Navbar({
               borderRadius: '50%',
               backgroundColor: '#ffffff',
               boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              display: 'none', // Shown in CSS media queries for mobile
               alignItems: 'center',
               justifyContent: 'center',
               color: 'var(--text-primary)',
@@ -228,7 +227,7 @@ export default function Navbar({
           onClick={() => setMobileSidebarOpen(true)} 
           className="mobile-menu-toggle click-press"
           title="Open Menu"
-          style={{ color: 'var(--text-primary)', display: 'none' }} // Controlled in css media query
+          style={{ color: 'var(--text-primary)' }}
         >
           <Menu size={20} />
         </button>
