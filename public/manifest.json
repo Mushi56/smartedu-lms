@@ -1,0 +1,20 @@
+{
+  "short_name": "SURIA TECH",
+  "name": "SURIA TECH - Premium Learning Marketplace",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#3A2048",
+  "background_color": "#ffffff"
+}
