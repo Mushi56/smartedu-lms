@@ -44,10 +44,10 @@ const FEATURES = [
 ];
 
 const JOURNEY_STEPS = [
-  { num: '01', icon: Target, title: 'Choose Your Goal', desc: 'Select the exam or certification you want to master.' },
-  { num: '02', icon: Users, title: 'Find the Right Teacher', desc: 'Browse teachers specializing in your goals.' },
-  { num: '03', icon: Laptop, title: 'Join Classes and Learn', desc: 'Attend live classes, practice consistently.' },
-  { num: '04', icon: Trophy, title: 'Achieve Your Success', desc: 'Pass your exams and achieve your academic dreams.' },
+  { num: '01', icon: Target, title: 'Choose Your Goal', desc: 'Select the exam or skill you want to master.', color: '#4a148c', bg: '#f3e8ff' },
+  { num: '02', icon: Users, title: 'Find the Right Teacher', desc: 'Connect with expert teachers who specialize in your goals.', color: '#d97706', bg: '#fef3c7' },
+  { num: '03', icon: Laptop, title: 'Join Classes and Learn', desc: 'Attend live classes, watch lessons, and practice consistently.', color: '#0f766e', bg: '#ccfbf1' },
+  { num: '04', icon: Trophy, title: 'Achieve Your Success', desc: 'Pass your exam and achieve your academic dreams.', color: '#15803d', bg: '#dcfce7' },
 ];
 
 const SUCCESS_STORIES = [
@@ -64,93 +64,6 @@ const RESOURCES = [
   { icon: FileText, title: 'Educational Articles', count: '36 Articles', color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
 ];
 
-/* ═══════════════════════════════════════════════════════════════
-   TEACHER ILLUSTRATION SVG
-══════════════════════════════════════════════════════════════════ */
-function TeacherIllustration() {
-  return (
-    <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '480px', height: 'auto', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))' }}>
-      {/* Background circle */}
-      <circle cx="240" cy="200" r="190" fill="rgba(255,255,255,0.07)" />
-      <circle cx="240" cy="200" r="150" fill="rgba(255,255,255,0.05)" />
-
-      {/* Desk */}
-      <rect x="80" y="280" width="320" height="16" rx="8" fill="#CABA61" opacity="0.9"/>
-      <rect x="100" y="294" width="280" height="8" rx="4" fill="rgba(202,186,97,0.4)"/>
-
-      {/* Laptop body */}
-      <rect x="130" y="200" width="220" height="82" rx="10" fill="#1e1b4b"/>
-      <rect x="136" y="206" width="208" height="70" rx="7" fill="#0f0c24"/>
-      {/* Laptop screen content */}
-      <rect x="148" y="215" width="90" height="8" rx="3" fill="rgba(255,255,255,0.15)"/>
-      <rect x="148" y="228" width="60" height="6" rx="3" fill="rgba(202,186,97,0.5)"/>
-      <rect x="148" y="239" width="80" height="6" rx="3" fill="rgba(255,255,255,0.1)"/>
-      <rect x="250" y="215" width="82" height="54" rx="5" fill="rgba(124,58,237,0.3)"/>
-      <circle cx="291" cy="239" r="14" fill="rgba(202,186,97,0.5)"/>
-      <polygon points="286,233 298,239 286,246" fill="#CABA61"/>
-      {/* Laptop hinge & base */}
-      <rect x="120" y="280" width="240" height="10" rx="5" fill="#2d2a5a"/>
-      <rect x="100" y="288" width="280" height="6" rx="3" fill="#1e1b4b"/>
-
-      {/* Teacher figure */}
-      {/* Body */}
-      <rect x="195" y="155" width="90" height="110" rx="20" fill="#3A2048"/>
-      {/* Shirt/tie detail */}
-      <rect x="225" y="165" width="30" height="70" rx="6" fill="rgba(255,255,255,0.15)"/>
-      <rect x="234" y="165" width="12" height="45" rx="4" fill="#CABA61" opacity="0.8"/>
-
-      {/* Arms */}
-      <rect x="155" y="165" width="45" height="22" rx="11" fill="#3A2048" transform="rotate(15 155 165)"/>
-      <rect x="282" y="160" width="45" height="22" rx="11" fill="#3A2048" transform="rotate(-15 282 165)"/>
-
-      {/* Head */}
-      <circle cx="240" cy="130" r="44" fill="#FBBF24" opacity="0.9"/>
-      <circle cx="240" cy="130" r="44" fill="#f9c66b"/>
-
-      {/* Face features */}
-      {/* Eyes */}
-      <circle cx="226" cy="124" r="6" fill="#1e1b4b"/>
-      <circle cx="254" cy="124" r="6" fill="#1e1b4b"/>
-      <circle cx="228" cy="122" r="2" fill="white"/>
-      <circle cx="256" cy="122" r="2" fill="white"/>
-      {/* Smile */}
-      <path d="M 226 138 Q 240 150 254 138" stroke="#1e1b4b" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
-      {/* Hair */}
-      <ellipse cx="240" cy="88" rx="40" ry="18" fill="#1e1b4b"/>
-      <rect x="200" y="85" width="80" height="20" rx="10" fill="#1e1b4b"/>
-
-      {/* Glasses */}
-      <rect x="217" y="118" width="20" height="14" rx="6" fill="none" stroke="#1e1b4b" strokeWidth="2"/>
-      <rect x="243" y="118" width="20" height="14" rx="6" fill="none" stroke="#1e1b4b" strokeWidth="2"/>
-      <line x1="237" y1="125" x2="243" y2="125" stroke="#1e1b4b" strokeWidth="2"/>
-
-      {/* Floating badges */}
-      <rect x="30" y="120" width="100" height="44" rx="12" fill="white" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}/>
-      <circle cx="50" cy="142" r="12" fill="rgba(124,58,237,0.1)"/>
-      <text x="46" y="147" fontSize="12" fill="#7c3aed">★</text>
-      <rect x="66" y="132" width="52" height="6" rx="3" fill="#1e1b4b"/>
-      <rect x="66" y="143" width="38" height="5" rx="2.5" fill="#94a3b8"/>
-
-      <rect x="348" y="90" width="108" height="44" rx="12" fill="white" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}/>
-      <circle cx="368" cy="112" r="12" fill="rgba(16,185,129,0.1)"/>
-      <text x="361" y="117" fontSize="11" fill="#10b981">✓</text>
-      <rect x="384" y="102" width="56" height="6" rx="3" fill="#1e1b4b"/>
-      <rect x="384" y="113" width="42" height="5" rx="2.5" fill="#94a3b8"/>
-
-      <rect x="360" y="220" width="96" height="44" rx="12" fill="white" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}/>
-      <circle cx="378" cy="242" r="12" fill="rgba(202,186,97,0.15)"/>
-      <text x="372" y="247" fontSize="11" fill="#CABA61">📚</text>
-      <rect x="394" y="233" width="46" height="6" rx="3" fill="#1e1b4b"/>
-      <rect x="394" y="244" width="34" height="5" rx="2.5" fill="#94a3b8"/>
-
-      {/* Stars floating */}
-      <circle cx="60" cy="200" r="6" fill="#CABA61" opacity="0.6"/>
-      <circle cx="42" cy="230" r="4" fill="#7c3aed" opacity="0.5"/>
-      <circle cx="430" cy="170" r="5" fill="#CABA61" opacity="0.5"/>
-      <circle cx="415" cy="310" r="4" fill="#10b981" opacity="0.6"/>
-    </svg>
-  );
-}
 
 /* ═══════════════════════════════════════════════════════════════
    HELPER COMPONENTS
@@ -165,14 +78,9 @@ function StarRating({ rating, size = 12 }) {
   );
 }
 
-function SectionHeader({ tag, title, highlight, subtitle, center = true }) {
+function SectionHeader({ title, highlight, subtitle, center = true }) {
   return (
     <div style={{ textAlign: center ? 'center' : 'left', maxWidth: center ? '640px' : 'none', margin: center ? '0 auto 40px' : '0 0 36px' }}>
-      {tag && (
-        <span style={{ display: 'inline-block', padding: '5px 14px', background: 'rgba(58,32,72,0.07)', color: '#3A2048', borderRadius: '30px', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
-          {tag}
-        </span>
-      )}
       <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#1e1b4b', lineHeight: 1.25, marginBottom: '10px' }}>
         {title} {highlight && <span style={{ color: '#CABA61' }}>{highlight}</span>}
       </h2>
@@ -210,10 +118,6 @@ export default function Homepage({ onGetStarted }) {
         <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', width: '100%' }}>
           {/* Left */}
           <div style={{ textAlign: 'left', zIndex: 1 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(202,186,97,0.12)', border: '1px solid rgba(202,186,97,0.25)', borderRadius: '30px', padding: '6px 14px', marginBottom: '20px' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#CABA61', display: 'inline-block' }} />
-              <span style={{ fontSize: '12px', color: '#CABA61', fontWeight: 700, letterSpacing: '0.5px' }}>Trusted by 25,000+ Students</span>
-            </div>
 
             <h1 style={{ fontSize: 'clamp(32px, 4.5vw, 58px)', fontWeight: 900, color: '#ffffff', lineHeight: 1.1, marginBottom: '20px', letterSpacing: '-1px' }}>
               Pass the Exam<br />
@@ -279,18 +183,7 @@ export default function Homepage({ onGetStarted }) {
               subtitle="Learn from the best minds in exam preparation."
               center={false}
             />
-            <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-              <button onClick={() => setTeacherPage(p => Math.max(0, p - 1))} className="click-press"
-                style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1.5px solid #e2e8f0', background: '#ffffff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', transition: 'all 0.2s' }}
-                disabled={teacherPage === 0}>
-                <ChevronLeft size={16} />
-              </button>
-              <button onClick={() => setTeacherPage(p => Math.min(maxPage, p + 1))} className="click-press"
-                style={{ width: '36px', height: '36px', borderRadius: '50%', border: 'none', background: '#3A2048', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', transition: 'all 0.2s' }}
-                disabled={teacherPage === maxPage}>
-                <ChevronRight size={16} />
-              </button>
-            </div>
+
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
@@ -451,35 +344,46 @@ export default function Homepage({ onGetStarted }) {
           YOUR LEARNING JOURNEY
       ═══════════════════════════════════════════════════ */}
       <section style={{ padding: '72px 5%', background: '#f8f7ff' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '60px', alignItems: 'center' }}>
-          <div>
-            <span style={{ display: 'inline-block', padding: '5px 14px', background: 'rgba(58,32,72,0.07)', color: '#3A2048', borderRadius: '30px', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '14px' }}>Process</span>
-            <h2 style={{ fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 800, color: '#1e1b4b', lineHeight: 1.25, marginBottom: '14px' }}>
-              Your Learning<br /><span style={{ color: '#CABA61' }}>Journey</span>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 3.5fr', gap: '48px', alignItems: 'center' }}>
+          
+          <div style={{ textAlign: 'left' }}>
+            <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 800, color: '#1e1b4b', lineHeight: 1.25, marginBottom: '14px' }}>
+              Your Learning<br />Journey
             </h2>
-            <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.65, marginBottom: '24px' }}>A simple path to achieve your academic dreams.</p>
-            <button onClick={onGetStarted} className="click-press" style={{ padding: '12px 24px', background: '#3A2048', color: '#fff', borderRadius: '30px', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}
+            <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.65, marginBottom: '24px' }}>A simple path to achieve<br/>your exam success</p>
+            <button onClick={onGetStarted} className="click-press" style={{ padding: '12px 24px', background: '#3A2048', color: '#fff', borderRadius: '8px', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}
               onMouseEnter={e => e.currentTarget.style.background = '#CABA61'}
               onMouseLeave={e => e.currentTarget.style.background = '#3A2048'}>
               <span>Start Your Journey</span><ArrowRight size={14} />
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', paddingTop: '20px' }}>
             {JOURNEY_STEPS.map((step, i) => {
               const Icon = step.icon;
               return (
-                <div key={i} style={{ background: '#ffffff', borderRadius: '16px', padding: '22px 18px', border: '1px solid #f1f5f9', boxShadow: '0 2px 10px rgba(0,0,0,0.04)', transition: 'all 0.3s', position: 'relative' }}
-                  onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 10px 28px rgba(58,32,72,0.1)'; e.currentTarget.style.borderColor = '#CABA61'; }}
-                  onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = '#f1f5f9'; }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: '#CABA61', background: 'rgba(202,186,97,0.1)', padding: '3px 9px', borderRadius: '10px' }}>{step.num}</span>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(58,32,72,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3A2048' }}>
-                      <Icon size={18} />
-                    </div>
+                <div key={i} style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                  {/* Horizontal dotted line to next step */}
+                  {i < 3 && <div style={{ position: 'absolute', top: '28px', left: '105px', right: '5px', borderTop: '2px dotted #e2e8f0', zIndex: 0 }} />}
+                  
+                  {/* Top row: Number and Icon */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', zIndex: 1 }}>
+                     <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', position: 'relative', flexShrink: 0 }}>
+                        {step.num}
+                        {/* Vertical line going down */}
+                        <div style={{ position: 'absolute', top: '32px', left: '15px', width: '2px', height: '50px', background: 'linear-gradient(to bottom, #e2e8f0 50%, transparent 100%)', backgroundSize: '1px 6px', zIndex: -1 }} />
+                     </div>
+                     
+                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: step.bg, color: step.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <Icon size={30} />
+                     </div>
                   </div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e1b4b', marginBottom: '5px' }}>{step.title}</div>
-                  <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.5 }}>{step.desc}</div>
+
+                  {/* Text Area */}
+                  <div style={{ paddingLeft: '44px', marginTop: '20px', paddingRight: '12px' }}>
+                     <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#1e1b4b', marginBottom: '8px', lineHeight: 1.3 }}>{step.title}</h4>
+                     <p style={{ fontSize: '12px', color: '#64748b', lineHeight: 1.5, margin: 0 }}>{step.desc}</p>
+                  </div>
                 </div>
               );
             })}
@@ -529,43 +433,47 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           BECOME AN INSTRUCTOR
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: 'linear-gradient(135deg, #3A2048 0%, #20102b 100%)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'center', position: 'relative', zIndex: 1 }}>
-          <div style={{ color: '#ffffff' }}>
-            <span style={{ display: 'inline-block', padding: '5px 14px', background: 'rgba(202,186,97,0.15)', color: '#CABA61', borderRadius: '30px', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '16px' }}>
-              Become an Instructor
-            </span>
-            <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 800, color: '#ffffff', lineHeight: 1.2, marginBottom: '14px' }}>
-              Share Your Knowledge<br />With <span style={{ color: '#CABA61' }}>Students Worldwide</span>
-            </h2>
-            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.65, marginBottom: '24px' }}>
-              Join our platform and help students achieve their academic and professional goals, while building your teaching career.
-            </p>
-            <button onClick={onGetStarted} className="click-press" style={{ padding: '13px 28px', background: '#CABA61', color: '#1e1b4b', borderRadius: '30px', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(202,186,97,0.3)', transition: 'all 0.2s' }}>
-              <span>Become an Instructor</span><ArrowRight size={15} />
-            </button>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-            {[
-              { icon: BookOpen, title: 'Create Courses', desc: 'Build and publish your own courses' },
-              { icon: Users, title: 'Host Live Classes', desc: 'Teach students in real-time sessions' },
-              { icon: TrendingUp, title: 'Build Your Audience', desc: 'Grow your student community' },
-              { icon: Zap, title: 'Generate Income', desc: 'Earn from your expertise' },
-            ].map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div key={i} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '18px', transition: 'all 0.2s' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(202,186,97,0.1)'; e.currentTarget.style.borderColor = 'rgba(202,186,97,0.25)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(202,186,97,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px', color: '#CABA61' }}>
-                    <Icon size={18} />
+      <section style={{ padding: '72px 5%', background: '#ffffff', position: 'relative' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', background: 'linear-gradient(135deg, #2E1643 0%, #1e1131 100%)', borderRadius: '24px', padding: '0 40px', position: 'relative', overflow: 'hidden' }}>
+          {/* World Map Texture Background */}
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpattern id=\'dots\' x=\'0\' y=\'0\' width=\'12\' height=\'12\' patternUnits=\'userSpaceOnUse\'%3E%3Ccircle cx=\'2\' cy=\'2\' r=\'1\' fill=\'rgba(255,255,255,0.06)\'/%3E%3C/pattern%3E%3Crect x=\'0\' y=\'0\' width=\'100%25\' height=\'100%25\' fill=\'url(%23dots)\'/%3E%3C/svg%3E")', backgroundSize: 'cover', opacity: 0.8, pointerEvents: 'none' }} />
+          
+          <div className="home-instructor-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '40px', alignItems: 'center', position: 'relative', zIndex: 1, height: '100%' }}>
+            <div style={{ color: '#ffffff', padding: '60px 0' }}>
+              <div style={{ color: '#CABA61', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
+                Become an Instructor
+              </div>
+              <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 800, color: '#ffffff', lineHeight: 1.2, marginBottom: '16px' }}>
+                Share Your Knowledge<br />With Students Worldwide
+              </h2>
+              <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', lineHeight: 1.65, marginBottom: '24px', maxWidth: '90%' }}>
+                Join our platform and help students achieve their academic and professional goals, while building your teaching career.
+              </p>
+              <button onClick={onGetStarted} className="click-press" style={{ padding: '13px 28px', background: 'linear-gradient(to right, #F5D365, #E3B446)', color: '#1e1b4b', borderRadius: '30px', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(202,186,97,0.25)', transition: 'all 0.2s' }}>
+                <span>Become an Instructor</span><ArrowRight size={15} />
+              </button>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px', padding: '60px 0' }}>
+              {[
+                { icon: BookOpen, title: 'Create Courses', desc: 'Design and publish your courses' },
+                { icon: Users, title: 'Host Live Classes', desc: 'Connect with students in real-time' },
+                { icon: TrendingUp, title: 'Build Your Audience', desc: 'Grow your student community' },
+                { icon: Zap, title: 'Generate Income', desc: 'Earn competitive revenue' },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: '#CABA61' }}>
+                      <Icon size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: '#ffffff', marginBottom: '4px' }}>{item.title}</div>
+                      <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}>{item.desc}</div>
+                    </div>
                   </div>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#ffffff', marginBottom: '4px' }}>{item.title}</div>
-                  <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)' }}>{item.desc}</div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
@@ -606,28 +514,91 @@ export default function Homepage({ onGetStarted }) {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          FINAL CTA BANNER
-      ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#ffffff' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center', padding: '56px 40px', background: 'linear-gradient(135deg, #3A2048 0%, #20102b 100%)', borderRadius: '24px', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: '-40px', left: '-40px', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
-          <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 800, color: '#ffffff', marginBottom: '12px', position: 'relative', zIndex: 1 }}>
-            Start Your Learning Journey <span style={{ color: '#CABA61' }}>Today</span>
-          </h2>
-          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', marginBottom: '32px', lineHeight: 1.6, position: 'relative', zIndex: 1 }}>
-            Join thousands of students who have achieved their dreams with SURIA TECH.
-          </p>
-          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', position: 'relative', zIndex: 1 }}>
-            <button onClick={onGetStarted} className="click-press" style={{ padding: '13px 28px', background: '#CABA61', color: '#1e1b4b', borderRadius: '30px', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(202,186,97,0.3)', transition: 'all 0.2s' }}>
-              <span>Browse Courses</span><ArrowRight size={15} />
-            </button>
-            <button onClick={onGetStarted} className="click-press" style={{ padding: '13px 28px', background: 'transparent', color: '#ffffff', borderRadius: '30px', fontWeight: 600, fontSize: '14px', border: '1.5px solid rgba(255,255,255,0.25)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
-              <span>Find a Teacher</span><ArrowRight size={15} />
-            </button>
-          </div>
-        </div>
-      </section>
     </div>
+  );
+}
+
+function TeacherIllustration() {
+  return (
+    <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '480px', height: 'auto', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.15))' }}>
+      {/* Background circle */}
+      <circle cx="240" cy="200" r="190" fill="rgba(255,255,255,0.07)" />
+      <circle cx="240" cy="200" r="150" fill="rgba(255,255,255,0.05)" />
+
+      {/* Desk */}
+      <rect x="80" y="280" width="320" height="16" rx="8" fill="#CABA61" opacity="0.9"/>
+      <rect x="100" y="294" width="280" height="8" rx="4" fill="rgba(202,186,97,0.4)"/>
+
+      {/* Laptop body */}
+      <rect x="130" y="200" width="220" height="82" rx="10" fill="#1e1b4b"/>
+      <rect x="136" y="206" width="208" height="70" rx="7" fill="#0f0c24"/>
+      {/* Laptop screen content */}
+      <rect x="148" y="215" width="90" height="8" rx="3" fill="rgba(255,255,255,0.15)"/>
+      <rect x="148" y="228" width="60" height="6" rx="3" fill="rgba(202,186,97,0.5)"/>
+      <rect x="148" y="239" width="80" height="6" rx="3" fill="rgba(255,255,255,0.1)"/>
+      <rect x="250" y="215" width="82" height="54" rx="5" fill="rgba(124,58,237,0.3)"/>
+      <circle cx="291" cy="239" r="14" fill="rgba(202,186,97,0.5)"/>
+      <polygon points="286,233 298,239 286,246" fill="#CABA61"/>
+      {/* Laptop hinge & base */}
+      <rect x="120" y="280" width="240" height="10" rx="5" fill="#2d2a5a"/>
+      <rect x="100" y="288" width="280" height="6" rx="3" fill="#1e1b4b"/>
+
+      {/* Teacher figure */}
+      {/* Body */}
+      <rect x="195" y="155" width="90" height="110" rx="20" fill="#3A2048"/>
+      {/* Shirt/tie detail */}
+      <rect x="225" y="165" width="30" height="70" rx="6" fill="rgba(255,255,255,0.15)"/>
+      <rect x="234" y="165" width="12" height="45" rx="4" fill="#CABA61" opacity="0.8"/>
+
+      {/* Arms */}
+      <rect x="155" y="165" width="45" height="22" rx="11" fill="#3A2048" transform="rotate(15 155 165)"/>
+      <rect x="282" y="160" width="45" height="22" rx="11" fill="#3A2048" transform="rotate(-15 282 165)"/>
+
+      {/* Head */}
+      <circle cx="240" cy="130" r="44" fill="#FBBF24" opacity="0.9"/>
+      <circle cx="240" cy="130" r="44" fill="#f9c66b"/>
+
+      {/* Face features */}
+      {/* Eyes */}
+      <circle cx="226" cy="124" r="6" fill="#1e1b4b"/>
+      <circle cx="254" cy="124" r="6" fill="#1e1b4b"/>
+      <circle cx="228" cy="122" r="2" fill="white"/>
+      <circle cx="256" cy="122" r="2" fill="white"/>
+      {/* Smile */}
+      <path d="M 226 138 Q 240 150 254 138" stroke="#1e1b4b" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+      {/* Hair */}
+      <ellipse cx="240" cy="88" rx="40" ry="18" fill="#1e1b4b"/>
+      <rect x="200" y="85" width="80" height="20" rx="10" fill="#1e1b4b"/>
+
+      {/* Glasses */}
+      <rect x="217" y="118" width="20" height="14" rx="6" fill="none" stroke="#1e1b4b" strokeWidth="2"/>
+      <rect x="243" y="118" width="20" height="14" rx="6" fill="none" stroke="#1e1b4b" strokeWidth="2"/>
+      <line x1="237" y1="125" x2="243" y2="125" stroke="#1e1b4b" strokeWidth="2"/>
+
+      {/* Floating badges */}
+      <rect x="30" y="120" width="100" height="44" rx="12" fill="white" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}/>
+      <circle cx="50" cy="142" r="12" fill="rgba(124,58,237,0.1)"/>
+      <text x="44" y="146" fontSize="12" fill="#7c3aed">★</text>
+      <rect x="66" y="132" width="52" height="6" rx="3" fill="#1e1b4b"/>
+      <rect x="66" y="143" width="38" height="5" rx="2.5" fill="#94a3b8"/>
+
+      <rect x="348" y="90" width="108" height="44" rx="12" fill="white" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}/>
+      <circle cx="368" cy="112" r="12" fill="rgba(16,185,129,0.1)"/>
+      <text x="363" y="116" fontSize="11" fill="#10b981">✓</text>
+      <rect x="384" y="102" width="56" height="6" rx="3" fill="#1e1b4b"/>
+      <rect x="384" y="113" width="42" height="5" rx="2.5" fill="#94a3b8"/>
+
+      <rect x="360" y="220" width="96" height="44" rx="12" fill="white" style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}/>
+      <circle cx="378" cy="242" r="12" fill="rgba(202,186,97,0.15)"/>
+      <text x="373" y="246" fontSize="11" fill="#CABA61">📈</text>
+      <rect x="394" y="233" width="46" height="6" rx="3" fill="#1e1b4b"/>
+      <rect x="394" y="244" width="34" height="5" rx="2.5" fill="#94a3b8"/>
+
+      {/* Stars floating */}
+      <circle cx="60" cy="200" r="6" fill="#CABA61" opacity="0.6"/>
+      <circle cx="42" cy="230" r="4" fill="#7c3aed" opacity="0.5"/>
+      <circle cx="430" cy="170" r="5" fill="#CABA61" opacity="0.5"/>
+      <circle cx="415" cy="310" r="4" fill="#10b981" opacity="0.6"/>
+    </svg>
   );
 }

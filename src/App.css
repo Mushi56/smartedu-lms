@@ -2263,6 +2263,8 @@
 
 @media (max-width: 1024px) {
   /* Tablet: 3-col for 5-col and 6-col homepage grids */
+  .home-instructor-grid { grid-template-columns: 1fr 1fr !important; }
+  .home-instructor-img  { display: none !important; }
   .home-teachers-grid   { grid-template-columns: repeat(3, 1fr) !important; }
   .home-categories-grid { grid-template-columns: repeat(3, 1fr) !important; }
   .home-courses-grid    { grid-template-columns: repeat(3, 1fr) !important; }
@@ -2286,6 +2288,7 @@
   .home-stories-grid    { grid-template-columns: 1fr !important; }
   .home-journey-grid    { grid-template-columns: 1fr !important; }
   .home-hero-grid       { grid-template-columns: 1fr !important; }
+  .home-instructor-grid { grid-template-columns: 1fr !important; }
 
   /* Hide hero illustration on mobile */
   .hero-illustration    { display: none; }

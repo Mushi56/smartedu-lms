@@ -25,12 +25,12 @@ export default function PublicLayout({ children, onGetStarted }) {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const navBg = isScrolled ? '#ffffff' : 'transparent';
-  const navShadow = isScrolled ? '0 4px 24px rgba(58,32,72,0.08)' : 'none';
-  const navBorder = isScrolled ? '1px solid rgba(58,32,72,0.08)' : '1px solid transparent';
-  const logoColor = isScrolled ? '#3A2048' : '#ffffff';
-  const linkColor = isScrolled ? '#4b5563' : 'rgba(255,255,255,0.85)';
-  const linkHoverColor = isScrolled ? '#3A2048' : '#ffffff';
+  const navBg = '#3A2048';
+  const navShadow = isScrolled ? '0 4px 24px rgba(0,0,0,0.15)' : 'none';
+  const navBorder = isScrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent';
+  const logoColor = '#ffffff';
+  const linkColor = 'rgba(255,255,255,0.85)';
+  const linkHoverColor = '#ffffff';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#ffffff' }}>
@@ -75,27 +75,8 @@ export default function PublicLayout({ children, onGetStarted }) {
           </div>
         </div>
 
-        {/* Desktop Nav Links */}
-        <div className="pub-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
-          {NAV_LINKS.map((link, i) => (
-            <a
-              key={link}
-              href="#"
-              className="pub-nav-link"
-              style={{
-                fontSize: '14px', fontWeight: i === 0 ? 700 : 600,
-                color: i === 0 ? (isScrolled ? '#CABA61' : '#CABA61') : linkColor,
-                textDecoration: 'none',
-                transition: 'color 0.2s',
-                borderBottom: i === 0 ? '2px solid #CABA61' : '2px solid transparent',
-                paddingBottom: '2px'
-              }}
-              onMouseEnter={e => { if (i !== 0) e.currentTarget.style.color = linkHoverColor; }}
-              onMouseLeave={e => { if (i !== 0) e.currentTarget.style.color = linkColor; }}
-            >
-              {link}
-            </a>
-          ))}
+        {/* Desktop Nav Links (Removed) */}
+        <div className="pub-nav-links" style={{ display: 'none' }}>
         </div>
 
         {/* Right: Get Started + Hamburger */}
@@ -117,16 +98,16 @@ export default function PublicLayout({ children, onGetStarted }) {
             <ArrowRight size={14} />
           </button>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger (Now used for all screen sizes) */}
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="pub-hamburger click-press"
             style={{
               display: 'none', width: '40px', height: '40px', borderRadius: '10px',
-              backgroundColor: isScrolled ? 'rgba(58,32,72,0.06)' : 'rgba(255,255,255,0.15)',
-              border: isScrolled ? '1px solid rgba(58,32,72,0.1)' : '1px solid rgba(255,255,255,0.2)',
+              backgroundColor: isScrolled ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.15)',
+              border: '1px solid rgba(255,255,255,0.2)',
               alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-              color: isScrolled ? '#3A2048' : '#ffffff',
+              color: '#ffffff',
               transition: 'all 0.2s'
             }}
             aria-label="Open menu"
@@ -230,15 +211,43 @@ export default function PublicLayout({ children, onGetStarted }) {
       </main>
 
       {/* ── FOOTER ───────────────────────────────────────── */}
-      <footer style={{ backgroundColor: '#150B1C', color: 'white', padding: '60px 5% 32px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-          <div className="footer-grid" style={{
-            display: 'grid',
-            gridTemplateColumns: '1.4fr repeat(6, 1fr)',
-            gap: '28px',
-            marginBottom: '48px',
-            textAlign: 'left'
-          }}>
+      <footer style={{ padding: '0 5% 40px', backgroundColor: 'transparent' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', backgroundColor: '#150B1C', borderRadius: '24px', overflow: 'hidden', color: 'white', display: 'flex', flexDirection: 'column' }}>
+          
+          {/* CTA Banner Section */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '32px 40px', background: 'linear-gradient(135deg, #3A2048 0%, #20102b 100%)', gap: '24px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flex: '1 1 min-content' }}>
+              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e1b4b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </div>
+              <div style={{ textAlign: 'left' }}>
+                <h2 style={{ fontSize: 'clamp(20px, 2vw, 24px)', fontWeight: 800, color: '#ffffff', marginBottom: '4px', marginTop: 0 }}>
+                  Start Your Learning Journey Today
+                </h2>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)', margin: 0, lineHeight: 1.5 }}>
+                  Join thousands of successful students who achieved their dreams with SURIA TECH
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '14px', flexShrink: 0 }}>
+              <button onClick={onGetStarted} className="click-press" style={{ padding: '12px 24px', background: 'linear-gradient(to right, #F5D365, #E3B446)', color: '#1e1b4b', borderRadius: '30px', fontWeight: 700, fontSize: '13px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(202,186,97,0.3)', transition: 'all 0.2s' }}>
+                <span>Browse Courses</span><ArrowRight size={14} />
+              </button>
+              <button onClick={onGetStarted} className="click-press" style={{ padding: '12px 24px', background: 'transparent', color: '#ffffff', borderRadius: '30px', fontWeight: 600, fontSize: '13px', border: '1px solid rgba(255,255,255,0.25)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
+                <span>Find a Teacher</span><ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* Footer Grid */}
+          <div style={{ padding: '48px 40px 32px' }}>
+            <div className="footer-grid" style={{
+              display: 'grid',
+              gridTemplateColumns: '1.4fr repeat(6, 1fr)',
+              gap: '28px',
+              marginBottom: '48px',
+              textAlign: 'left'
+            }}>
             {/* Logo Column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -250,7 +259,7 @@ export default function PublicLayout({ children, onGetStarted }) {
               <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, margin: 0 }}>
                 Your trusted partner in exam preparation and academic success worldwide.
               </p>
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
                 {[
                   <svg key="fb" width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>,
                   <svg key="tw" width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>,
@@ -300,6 +309,7 @@ export default function PublicLayout({ children, onGetStarted }) {
               ))}
             </div>
           </div>
+        </div>
         </div>
       </footer>
 
