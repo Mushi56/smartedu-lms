@@ -215,7 +215,7 @@ export default function PublicLayout({ children, onGetStarted }) {
         <div style={{ maxWidth: '1280px', margin: '0 auto', backgroundColor: '#150B1C', borderRadius: '24px', overflow: 'hidden', color: 'white', display: 'flex', flexDirection: 'column' }}>
           
           {/* CTA Banner Section */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '32px 40px', background: 'linear-gradient(135deg, #3A2048 0%, #20102b 100%)', gap: '24px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--footer-cta-padding, 32px 40px)', background: 'linear-gradient(135deg, #3A2048 0%, #20102b 100%)', gap: '24px', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flex: '1 1 min-content' }}>
               <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1e1b4b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
@@ -240,11 +240,11 @@ export default function PublicLayout({ children, onGetStarted }) {
           </div>
 
           {/* Footer Grid */}
-          <div style={{ padding: '48px 40px 32px' }}>
+          <div style={{ padding: 'var(--footer-padding, 48px 40px 32px)' }}>
             <div className="footer-grid" style={{
               display: 'grid',
               gridTemplateColumns: '1.4fr repeat(6, 1fr)',
-              gap: '28px',
+              gap: 'var(--footer-gap, 28px)',
               marginBottom: '48px',
               textAlign: 'left'
             }}>

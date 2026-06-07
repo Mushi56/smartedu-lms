@@ -2256,21 +2256,113 @@
    PUBLIC SITE — NAVBAR & HOMEPAGE RESPONSIVE GRIDS
    ================================================================ */
 
+:root {
+  --grid-gap-5col: 16px;
+  --grid-gap-6col: 16px;
+  --grid-gap-3col: 20px;
+  --card-padding-5col: 20px 16px;
+  --card-padding-6col: 20px 14px;
+  --card-padding-3col: 24px;
+  --teacher-img-size: 72px;
+  --category-icon-bg-size: 48px;
+  --category-icon-size: 22px;
+  --feature-icon-bg-size: 52px;
+  --feature-icon-size: 24px;
+  --resource-icon-bg-size: 52px;
+  --resource-icon-size: 24px;
+  --course-img-height: 120px;
+  --course-play-btn-size: 36px;
+  --course-play-icon-size: 18px;
+  --journey-gap: 48px;
+  --journey-line-left: 105px;
+  --journey-line-right: 5px;
+  --journey-num-size: 32px;
+  --journey-icon-bg-size: 64px;
+  --journey-icon-size: 30px;
+  --journey-text-padding-left: 44px;
+  --instructor-grid-padding: 0 40px;
+  --instructor-grid-gap: 40px;
+  --section-padding: 72px 5%;
+  --hero-padding: 60px 5% 80px;
+  --hero-gap: 48px;
+  --footer-gap: 28px;
+  --footer-padding: 48px 40px 32px;
+  --footer-cta-padding: 32px 40px;
+
+  /* Fonts */
+  --text-title-5col: 13px;
+  --text-subtitle-5col: 11px;
+  --text-stats-5col: 10px;
+  --text-btn-5col: 11px;
+  --btn-padding-5col: 7px;
+  --text-title-6col: 12px;
+  --text-desc-6col: 10px;
+  --text-title-3col: 13px;
+  --text-desc-3col: 13px;
+}
+
 /* Desktop: hamburger hidden; shown only on mobile via media query */
 .pub-hamburger {
   display: none !important;
 }
 
 @media (max-width: 1024px) {
-  /* Tablet: 3-col for 5-col and 6-col homepage grids */
-  .home-instructor-grid { grid-template-columns: 1fr 1fr !important; }
-  .home-instructor-img  { display: none !important; }
-  .home-teachers-grid   { grid-template-columns: repeat(3, 1fr) !important; }
-  .home-categories-grid { grid-template-columns: repeat(3, 1fr) !important; }
-  .home-courses-grid    { grid-template-columns: repeat(3, 1fr) !important; }
-  .home-features-grid   { grid-template-columns: repeat(3, 1fr) !important; }
-  .home-resources-grid  { grid-template-columns: repeat(3, 1fr) !important; }
-  .footer-grid          { grid-template-columns: 1fr 1fr 1fr 1fr !important; }
+  :root {
+    --grid-gap-5col: 10px;
+    --grid-gap-6col: 8px;
+    --grid-gap-3col: 12px;
+    --card-padding-5col: 12px 8px;
+    --card-padding-6col: 12px 6px;
+    --card-padding-3col: 16px;
+    --teacher-img-size: 54px;
+    --category-icon-bg-size: 36px;
+    --category-icon-size: 18px;
+    --feature-icon-bg-size: 40px;
+    --feature-icon-size: 20px;
+    --resource-icon-bg-size: 40px;
+    --resource-icon-size: 20px;
+    --course-img-height: 90px;
+    --course-play-btn-size: 28px;
+    --course-play-icon-size: 14px;
+    --journey-gap: 24px;
+    --journey-line-left: 80px;
+    --journey-line-right: 2px;
+    --journey-num-size: 24px;
+    --journey-icon-bg-size: 48px;
+    --journey-icon-size: 22px;
+    --journey-text-padding-left: 30px;
+    --instructor-grid-padding: 0 24px;
+    --instructor-grid-gap: 20px;
+    --section-padding: 48px 4%;
+    --hero-padding: 40px 4% 50px;
+    --hero-gap: 24px;
+    --footer-gap: 16px;
+    --footer-padding: 32px 20px 24px;
+    --footer-cta-padding: 24px 20px;
+
+    /* Fonts */
+    --text-title-5col: 11.5px;
+    --text-subtitle-5col: 10px;
+    --text-stats-5col: 9px;
+    --text-btn-5col: 10px;
+    --btn-padding-5col: 5px;
+    --text-title-6col: 10.5px;
+    --text-desc-6col: 9px;
+    --text-title-3col: 12px;
+    --text-desc-3col: 11.5px;
+  }
+
+  /* Keep exact column layout but support responsive variables */
+  .home-instructor-grid { 
+    grid-template-columns: 1.2fr 1fr !important;
+    gap: var(--instructor-grid-gap) !important;
+  }
+  .home-teachers-grid   { grid-template-columns: repeat(5, 1fr) !important; }
+  .home-categories-grid { grid-template-columns: repeat(6, 1fr) !important; }
+  .home-courses-grid    { grid-template-columns: repeat(5, 1fr) !important; }
+  .home-features-grid   { grid-template-columns: repeat(6, 1fr) !important; }
+  .home-resources-grid  { grid-template-columns: repeat(5, 1fr) !important; }
+  .footer-grid          { grid-template-columns: 1.4fr repeat(6, 1fr) !important; }
 }
 
 @media (max-width: 768px) {
@@ -2303,3 +2395,4 @@
   }
   .footer-grid { grid-template-columns: 1fr !important; }
 }
+

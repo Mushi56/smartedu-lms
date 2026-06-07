@@ -72,7 +72,7 @@ function StarRating({ rating, size = 12 }) {
   return (
     <div style={{ display: 'flex', gap: '1px' }}>
       {[1, 2, 3, 4, 5].map(i => (
-        <Star key={i} size={size} fill={i <= Math.round(rating) ? '#f59e0b' : 'none'} color={i <= Math.round(rating) ? '#f59e0b' : '#d1d5db'} />
+        <Star key={i} style={{ width: size, height: size }} fill={i <= Math.round(rating) ? '#f59e0b' : 'none'} color={i <= Math.round(rating) ? '#f59e0b' : '#d1d5db'} />
       ))}
     </div>
   );
@@ -107,7 +107,7 @@ export default function Homepage({ onGetStarted }) {
         background: 'linear-gradient(135deg, #3A2048 0%, #20102b 60%, #2d1a40 100%)',
         minHeight: 'calc(100vh - 72px)',
         display: 'flex', alignItems: 'center',
-        padding: '60px 5% 80px',
+        padding: 'var(--hero-padding, 60px 5% 80px)',
         position: 'relative',
         overflow: 'hidden'
       }}>
@@ -115,7 +115,7 @@ export default function Homepage({ onGetStarted }) {
         <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.08) 0%, transparent 70%)', top: '-100px', right: '-100px', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)', bottom: '-80px', left: '-80px', pointerEvents: 'none' }} />
 
-        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', width: '100%' }}>
+        <div className="home-hero-grid" style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--hero-gap, 48px)', alignItems: 'center', width: '100%' }}>
           {/* Left */}
           <div style={{ textAlign: 'left', zIndex: 1 }}>
 
@@ -138,7 +138,7 @@ export default function Homepage({ onGetStarted }) {
             </div>
 
             {/* Stats */}
-            <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 'var(--grid-gap-5col, 24px)', flexWrap: 'wrap', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{ display: 'flex' }}>
                   {['https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=40&h=40', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=40&h=40', 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=40&h=40'].map((s, i) => (
@@ -173,7 +173,7 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           TRUSTED TEACHERS
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#f8f7ff' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#f8f7ff' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px', flexWrap: 'wrap', gap: '12px' }}>
             <SectionHeader
@@ -186,23 +186,23 @@ export default function Homepage({ onGetStarted }) {
 
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
+          <div className="home-teachers-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--grid-gap-5col, 16px)' }}>
             {TRUSTED_TEACHERS.map((t, i) => (
-              <div key={i} className="click-press" style={{ background: '#ffffff', borderRadius: '16px', padding: '20px 16px', textAlign: 'center', border: '1px solid #f1f5f9', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'all 0.3s' }}
+              <div key={i} className="click-press" style={{ background: '#ffffff', borderRadius: '16px', padding: 'var(--card-padding-5col, 20px 16px)', textAlign: 'center', border: '1px solid #f1f5f9', boxShadow: '0 2px 12px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'all 0.3s' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(58,32,72,0.12)'; e.currentTarget.style.borderColor = '#CABA61'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = '#f1f5f9'; }}>
-                <div style={{ position: 'relative', width: '72px', height: '72px', margin: '0 auto 12px' }}>
-                  <img src={t.img} alt={t.name} style={{ width: '72px', height: '72px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #f1f5f9' }} />
+                <div style={{ position: 'relative', width: 'var(--teacher-img-size, 72px)', height: 'var(--teacher-img-size, 72px)', margin: '0 auto 12px' }}>
+                  <img src={t.img} alt={t.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '3px solid #f1f5f9' }} />
                   <div style={{ position: 'absolute', bottom: 0, right: 0, width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', border: '2px solid #fff' }} />
                 </div>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e1b4b', marginBottom: '3px' }}>{t.name}</div>
-                <div style={{ fontSize: '11px', color: '#64748b', marginBottom: '8px' }}>{t.subject}</div>
+                <div style={{ fontSize: 'var(--text-title-5col, 13px)', fontWeight: 700, color: '#1e1b4b', marginBottom: '3px' }}>{t.name}</div>
+                <div style={{ fontSize: 'var(--text-subtitle-5col, 11px)', color: '#64748b', marginBottom: '8px' }}>{t.subject}</div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', marginBottom: '4px' }}>
-                  <StarRating rating={t.rating} />
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#1e1b4b' }}>{t.rating}</span>
+                  <StarRating rating={t.rating} size="var(--text-stats-5col, 10px)" />
+                  <span style={{ fontSize: 'var(--text-stats-5col, 11px)', fontWeight: 700, color: '#1e1b4b' }}>{t.rating}</span>
                 </div>
-                <div style={{ fontSize: '10px', color: '#94a3b8', marginBottom: '12px' }}>{t.students} students · {t.exp}</div>
-                <button style={{ width: '100%', padding: '7px', background: 'transparent', border: '1.5px solid #3A2048', borderRadius: '20px', fontSize: '11px', fontWeight: 700, color: '#3A2048', cursor: 'pointer', transition: 'all 0.2s' }}
+                <div style={{ fontSize: 'var(--text-stats-5col, 10px)', color: '#94a3b8', marginBottom: '12px' }}>{t.students} students · {t.exp}</div>
+                <button style={{ width: '100%', padding: 'var(--btn-padding-5col, 7px)', background: 'transparent', border: '1.5px solid #3A2048', borderRadius: '20px', fontSize: 'var(--text-btn-5col, 11px)', fontWeight: 700, color: '#3A2048', cursor: 'pointer', transition: 'all 0.2s' }}
                   onMouseEnter={e => { e.currentTarget.style.background = '#3A2048'; e.currentTarget.style.color = '#fff'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#3A2048'; }}>
                   View Profile
@@ -216,7 +216,7 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           EXPLORE EXAM CATEGORIES
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#ffffff' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#ffffff' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <SectionHeader
             tag="Categories"
@@ -224,18 +224,18 @@ export default function Homepage({ onGetStarted }) {
             highlight="Categories"
             subtitle="Find the right preparation path for your goals."
           />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px' }}>
+          <div className="home-categories-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 'var(--grid-gap-6col, 16px)' }}>
             {EXAM_CATEGORIES.map((cat, i) => {
               const Icon = cat.icon;
               return (
-                <div key={i} className="click-press" style={{ background: '#fff', borderRadius: '14px', padding: '20px 14px', textAlign: 'center', border: `1.5px solid ${cat.color}20`, boxShadow: '0 2px 10px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'all 0.3s' }}
+                <div key={i} className="click-press" style={{ background: '#fff', borderRadius: '14px', padding: 'var(--card-padding-6col, 20px 14px)', textAlign: 'center', border: `1.5px solid ${cat.color}20`, boxShadow: '0 2px 10px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'all 0.3s' }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 28px ${cat.color}22`; e.currentTarget.style.borderColor = cat.color; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = `${cat.color}20`; }}>
-                  <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: cat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: cat.color }}>
-                    <Icon size={22} />
+                  <div style={{ width: 'var(--category-icon-bg-size, 48px)', height: 'var(--category-icon-bg-size, 48px)', borderRadius: '12px', background: cat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: cat.color }}>
+                    <Icon style={{ width: 'var(--category-icon-size, 22px)', height: 'var(--category-icon-size, 22px)' }} />
                   </div>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#1e1b4b', marginBottom: '6px', lineHeight: 1.3 }}>{cat.title}</div>
-                  <div style={{ fontSize: '10px', color: '#64748b', lineHeight: 1.4, marginBottom: '10px' }}>{cat.desc}</div>
+                  <div style={{ fontSize: 'var(--text-title-6col, 12px)', fontWeight: 700, color: '#1e1b4b', marginBottom: '6px', lineHeight: 1.3 }}>{cat.title}</div>
+                  <div style={{ fontSize: 'var(--text-desc-6col, 10px)', color: '#64748b', lineHeight: 1.4, marginBottom: '10px' }}>{cat.desc}</div>
                   <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '9px', background: '#f1f5f9', color: '#64748b', padding: '2px 7px', borderRadius: '10px', fontWeight: 600 }}>{cat.teachers} Teachers</span>
                     <span style={{ fontSize: '9px', background: '#f1f5f9', color: '#64748b', padding: '2px 7px', borderRadius: '10px', fontWeight: 600 }}>{cat.courses} Courses</span>
@@ -250,7 +250,7 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           FEATURED COURSES
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#f8f7ff' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#f8f7ff' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px', flexWrap: 'wrap', gap: '12px' }}>
             <SectionHeader
@@ -265,40 +265,40 @@ export default function Homepage({ onGetStarted }) {
             </a>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
+          <div className="home-courses-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--grid-gap-5col, 16px)' }}>
             {FEATURED_COURSES.map((course, i) => (
               <div key={i} className="click-press" style={{ background: '#fff', borderRadius: '14px', border: '1px solid #f1f5f9', boxShadow: '0 2px 10px rgba(0,0,0,0.04)', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.3s', display: 'flex', flexDirection: 'column' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 14px 32px rgba(58,32,72,0.1)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.04)'; }}>
                 <div style={{ position: 'relative' }}>
-                  <img src={course.img} alt={course.title} style={{ width: '100%', height: '120px', objectFit: 'cover', display: 'block' }} />
+                  <img src={course.img} alt={course.title} style={{ width: '100%', height: 'var(--course-img-height, 120px)', objectFit: 'cover', display: 'block' }} />
                   {course.badge && (
                     <span style={{ position: 'absolute', top: '8px', left: '8px', padding: '3px 8px', background: course.badge === 'Bestseller' ? '#f59e0b' : course.badge === 'New' ? '#10b981' : '#7c3aed', color: '#fff', borderRadius: '6px', fontSize: '9px', fontWeight: 700 }}>
                       {course.badge}
                     </span>
                   )}
-                  <button style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.9)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3A2048', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-                    <PlayCircle size={18} />
+                  <button style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 'var(--course-play-btn-size, 36px)', height: 'var(--course-play-btn-size, 36px)', borderRadius: '50%', background: 'rgba(255,255,255,0.9)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3A2048', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
+                    <PlayCircle style={{ width: 'var(--course-play-icon-size, 18px)', height: 'var(--course-play-icon-size, 18px)' }} />
                   </button>
                 </div>
-                <div style={{ padding: '14px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#1e1b4b', marginBottom: '4px', lineHeight: 1.35 }}>{course.title}</div>
-                  <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '8px' }}>{course.instructor}</div>
+                <div style={{ padding: 'var(--card-padding-5col, 14px)', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ fontSize: 'var(--text-title-5col, 12px)', fontWeight: 700, color: '#1e1b4b', marginBottom: '4px', lineHeight: 1.35 }}>{course.title}</div>
+                  <div style={{ fontSize: 'var(--text-subtitle-5col, 10px)', color: '#64748b', marginBottom: '8px' }}>{course.instructor}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                    <StarRating rating={course.rating} size={10} />
-                    <span style={{ fontSize: '10px', fontWeight: 700, color: '#1e1b4b' }}>{course.rating}</span>
-                    <span style={{ fontSize: '9px', color: '#94a3b8' }}>({(course.reviews / 1000).toFixed(1)}k)</span>
+                    <StarRating rating={course.rating} size="var(--text-stats-5col, 10px)" />
+                    <span style={{ fontSize: 'var(--text-stats-5col, 10px)', fontWeight: 700, color: '#1e1b4b' }}>{course.rating}</span>
+                    <span style={{ fontSize: 'var(--text-stats-5col, 9px)', color: '#94a3b8' }}>({(course.reviews / 1000).toFixed(1)}k)</span>
                   </div>
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
-                    <span style={{ fontSize: '9px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '2px' }}><Clock size={9} />{course.hours}h</span>
-                    <span style={{ fontSize: '9px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '2px' }}><Users size={9} />{(course.students / 1000).toFixed(1)}k</span>
+                    <span style={{ fontSize: 'var(--text-stats-5col, 9px)', color: '#64748b', display: 'flex', alignItems: 'center', gap: '2px' }}><Clock size={9} />{course.hours}h</span>
+                    <span style={{ fontSize: 'var(--text-stats-5col, 9px)', color: '#64748b', display: 'flex', alignItems: 'center', gap: '2px' }}><Users size={9} />{(course.students / 1000).toFixed(1)}k</span>
                   </div>
                   <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div>
-                      <span style={{ fontSize: '15px', fontWeight: 800, color: '#3A2048' }}>${course.price}</span>
-                      <span style={{ fontSize: '11px', color: '#94a3b8', textDecoration: 'line-through', marginLeft: '4px' }}>${course.oldPrice}</span>
+                      <span style={{ fontSize: 'clamp(12px, 1.2vw, 15px)', fontWeight: 800, color: '#3A2048' }}>${course.price}</span>
+                      <span style={{ fontSize: 'var(--text-stats-5col, 11px)', color: '#94a3b8', textDecoration: 'line-through', marginLeft: '4px' }}>${course.oldPrice}</span>
                     </div>
-                    <button onClick={onGetStarted} style={{ padding: '5px 10px', background: '#3A2048', color: '#fff', borderRadius: '8px', fontSize: '9px', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}
+                    <button onClick={onGetStarted} style={{ padding: 'var(--btn-padding-5col, 5px 10px)', background: '#3A2048', color: '#fff', borderRadius: '8px', fontSize: 'var(--text-btn-5col, 9px)', fontWeight: 700, border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}
                       onMouseEnter={e => e.currentTarget.style.background = '#CABA61'}
                       onMouseLeave={e => e.currentTarget.style.background = '#3A2048'}>
                       Enroll Now
@@ -314,25 +314,25 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           WHY STUDENTS CHOOSE SURIA TECH
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#ffffff' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#ffffff' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <SectionHeader
             tag="Why Us"
             title="Why Students Choose"
             highlight="SURIA TECH"
           />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px' }}>
+          <div className="home-features-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 'var(--grid-gap-6col, 16px)' }}>
             {FEATURES.map((f, i) => {
               const Icon = f.icon;
               return (
-                <div key={i} style={{ textAlign: 'center', padding: '24px 14px', borderRadius: '14px', background: '#f8f7ff', border: '1px solid #f1f5f9', transition: 'all 0.3s' }}
+                <div key={i} style={{ textAlign: 'center', padding: 'var(--card-padding-6col, 24px 14px)', borderRadius: '14px', background: '#f8f7ff', border: '1px solid #f1f5f9', transition: 'all 0.3s' }}
                   onMouseEnter={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.boxShadow = `0 8px 24px ${f.color}18`; e.currentTarget.style.borderColor = `${f.color}30`; }}
                   onMouseLeave={e => { e.currentTarget.style.background = '#f8f7ff'; e.currentTarget.style.boxShadow = ''; e.currentTarget.style.borderColor = '#f1f5f9'; }}>
-                  <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: `${f.color}14`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: f.color }}>
-                    <Icon size={24} />
+                  <div style={{ width: 'var(--feature-icon-bg-size, 52px)', height: 'var(--feature-icon-bg-size, 52px)', borderRadius: '14px', background: `${f.color}14`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', color: f.color }}>
+                    <Icon style={{ width: 'var(--feature-icon-size, 24px)', height: 'var(--feature-icon-size, 24px)' }} />
                   </div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e1b4b', marginBottom: '6px' }}>{f.title}</div>
-                  <div style={{ fontSize: '11px', color: '#64748b', lineHeight: 1.5 }}>{f.desc}</div>
+                  <div style={{ fontSize: 'var(--text-title-6col, 13px)', fontWeight: 700, color: '#1e1b4b', marginBottom: '6px' }}>{f.title}</div>
+                  <div style={{ fontSize: 'var(--text-desc-6col, 11px)', color: '#64748b', lineHeight: 1.5 }}>{f.desc}</div>
                 </div>
               );
             })}
@@ -343,8 +343,8 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           YOUR LEARNING JOURNEY
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#f8f7ff' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 3.5fr', gap: '48px', alignItems: 'center' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#f8f7ff' }}>
+        <div className="home-journey-grid" style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 3.5fr', gap: 'var(--journey-gap, 48px)', alignItems: 'center' }}>
           
           <div style={{ textAlign: 'left' }}>
             <h2 style={{ fontSize: 'clamp(24px, 3vw, 32px)', fontWeight: 800, color: '#1e1b4b', lineHeight: 1.25, marginBottom: '14px' }}>
@@ -364,23 +364,23 @@ export default function Homepage({ onGetStarted }) {
               return (
                 <div key={i} style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
                   {/* Horizontal dotted line to next step */}
-                  {i < 3 && <div style={{ position: 'absolute', top: '28px', left: '105px', right: '5px', borderTop: '2px dotted #e2e8f0', zIndex: 0 }} />}
+                  {i < 3 && <div style={{ position: 'absolute', top: '28px', left: 'var(--journey-line-left, 105px)', right: 'var(--journey-line-right, 5px)', borderTop: '2px dotted #e2e8f0', zIndex: 0 }} />}
                   
                   {/* Top row: Number and Icon */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', zIndex: 1 }}>
-                     <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: step.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', position: 'relative', flexShrink: 0 }}>
+                     <div style={{ width: 'var(--journey-num-size, 32px)', height: 'var(--journey-num-size, 32px)', borderRadius: '50%', background: step.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', position: 'relative', flexShrink: 0 }}>
                         {step.num}
                         {/* Vertical line going down */}
-                        <div style={{ position: 'absolute', top: '32px', left: '15px', width: '2px', height: '50px', background: 'linear-gradient(to bottom, #e2e8f0 50%, transparent 100%)', backgroundSize: '1px 6px', zIndex: -1 }} />
+                        <div style={{ position: 'absolute', top: 'var(--journey-num-size, 32px)', left: 'calc(var(--journey-num-size, 32px) / 2 - 1px)', width: '2px', height: '50px', background: 'linear-gradient(to bottom, #e2e8f0 50%, transparent 100%)', backgroundSize: '1px 6px', zIndex: -1 }} />
                      </div>
                      
-                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: step.bg, color: step.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <Icon size={30} />
+                     <div style={{ width: 'var(--journey-icon-bg-size, 64px)', height: 'var(--journey-icon-bg-size, 64px)', borderRadius: '50%', background: step.bg, color: step.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <Icon style={{ width: 'var(--journey-icon-size, 30px)', height: 'var(--journey-icon-size, 30px)' }} />
                      </div>
                   </div>
 
                   {/* Text Area */}
-                  <div style={{ paddingLeft: '44px', marginTop: '20px', paddingRight: '12px' }}>
+                  <div style={{ paddingLeft: 'var(--journey-text-padding-left, 44px)', marginTop: '20px', paddingRight: '12px' }}>
                      <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#1e1b4b', marginBottom: '8px', lineHeight: 1.3 }}>{step.title}</h4>
                      <p style={{ fontSize: '12px', color: '#64748b', lineHeight: 1.5, margin: 0 }}>{step.desc}</p>
                   </div>
@@ -394,7 +394,7 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           SUCCESS STORIES
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#ffffff' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#ffffff' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px', flexWrap: 'wrap', gap: '12px' }}>
             <SectionHeader
@@ -408,20 +408,20 @@ export default function Homepage({ onGetStarted }) {
               View All Stories <ArrowRight size={14} />
             </a>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+          <div className="home-stories-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--grid-gap-3col, 20px)' }}>
             {SUCCESS_STORIES.map((s, i) => (
-              <div key={i} style={{ background: '#f8f7ff', borderRadius: '16px', padding: '24px', border: '1px solid #f1f5f9', transition: 'all 0.3s' }}
+              <div key={i} style={{ background: '#f8f7ff', borderRadius: '16px', padding: 'var(--card-padding-3col, 24px)', border: '1px solid #f1f5f9', transition: 'all 0.3s' }}
                 onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 10px 28px rgba(58,32,72,0.1)'; e.currentTarget.style.background = '#ffffff'; }}
                 onMouseLeave={e => { e.currentTarget.style.boxShadow = ''; e.currentTarget.style.background = '#f8f7ff'; }}>
                 <div style={{ display: 'flex', gap: '4px', marginBottom: '12px' }}>
                   {[1,2,3,4,5].map(n => <Star key={n} size={14} fill="#f59e0b" color="#f59e0b" />)}
                 </div>
-                <p style={{ fontSize: '13px', color: '#374151', lineHeight: 1.65, marginBottom: '18px', fontStyle: 'italic' }}>"{s.text}"</p>
+                <p style={{ fontSize: 'var(--text-title-3col, 13px)', color: '#374151', lineHeight: 1.65, marginBottom: '18px', fontStyle: 'italic' }}>"{s.text}"</p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <img src={s.img} alt={s.name} style={{ width: '42px', height: '42px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #f1f5f9' }} />
                   <div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e1b4b' }}>{s.name}</div>
-                    <div style={{ fontSize: '11px', color: '#64748b' }}>{s.school}</div>
+                    <div style={{ fontSize: 'var(--text-title-3col, 13px)', fontWeight: 700, color: '#1e1b4b' }}>{s.name}</div>
+                    <div style={{ fontSize: 'var(--text-desc-3col, 11px)', color: '#64748b' }}>{s.school}</div>
                   </div>
                 </div>
               </div>
@@ -433,12 +433,12 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           BECOME AN INSTRUCTOR
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#ffffff', position: 'relative' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', background: 'linear-gradient(135deg, #2E1643 0%, #1e1131 100%)', borderRadius: '24px', padding: '0 40px', position: 'relative', overflow: 'hidden' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#ffffff', position: 'relative' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', background: 'linear-gradient(135deg, #2E1643 0%, #1e1131 100%)', borderRadius: '24px', padding: 'var(--instructor-grid-padding, 0 40px)', position: 'relative', overflow: 'hidden' }}>
           {/* World Map Texture Background */}
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100%25\' height=\'100%25\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpattern id=\'dots\' x=\'0\' y=\'0\' width=\'12\' height=\'12\' patternUnits=\'userSpaceOnUse\'%3E%3Ccircle cx=\'2\' cy=\'2\' r=\'1\' fill=\'rgba(255,255,255,0.06)\'/%3E%3C/pattern%3E%3Crect x=\'0\' y=\'0\' width=\'100%25\' height=\'100%25\' fill=\'url(%23dots)\'/%3E%3C/svg%3E")', backgroundSize: 'cover', opacity: 0.8, pointerEvents: 'none' }} />
           
-          <div className="home-instructor-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '40px', alignItems: 'center', position: 'relative', zIndex: 1, height: '100%' }}>
+          <div className="home-instructor-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 'var(--instructor-grid-gap, 40px)', alignItems: 'center', position: 'relative', zIndex: 1, height: '100%' }}>
             <div style={{ color: '#ffffff', padding: '60px 0' }}>
               <div style={{ color: '#CABA61', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>
                 Become an Instructor
@@ -453,7 +453,7 @@ export default function Homepage({ onGetStarted }) {
                 <span>Become an Instructor</span><ArrowRight size={15} />
               </button>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px', padding: '60px 0' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 'var(--grid-gap-5col, 16px)', padding: '60px 0' }}>
               {[
                 { icon: BookOpen, title: 'Create Courses', desc: 'Design and publish your courses' },
                 { icon: Users, title: 'Host Live Classes', desc: 'Connect with students in real-time' },
@@ -481,7 +481,7 @@ export default function Homepage({ onGetStarted }) {
       {/* ══════════════════════════════════════════════════
           LEARNING RESOURCES
       ═══════════════════════════════════════════════════ */}
-      <section style={{ padding: '72px 5%', background: '#f8f7ff' }}>
+      <section style={{ padding: 'var(--section-padding, 72px 5%)', background: '#f8f7ff' }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '32px', flexWrap: 'wrap', gap: '12px' }}>
             <SectionHeader
@@ -495,18 +495,18 @@ export default function Homepage({ onGetStarted }) {
               View All Resources <ArrowRight size={14} />
             </a>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
+          <div className="home-resources-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--grid-gap-5col, 16px)' }}>
             {RESOURCES.map((r, i) => {
               const Icon = r.icon;
               return (
-                <div key={i} className="click-press" style={{ background: '#ffffff', borderRadius: '14px', padding: '22px 18px', textAlign: 'center', border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'all 0.3s' }}
+                <div key={i} className="click-press" style={{ background: '#ffffff', borderRadius: '14px', padding: 'var(--card-padding-5col, 22px 18px)', textAlign: 'center', border: '1px solid #f1f5f9', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', cursor: 'pointer', transition: 'all 0.3s' }}
                   onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 10px 24px ${r.color}18`; e.currentTarget.style.borderColor = `${r.color}30`; }}
                   onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = '#f1f5f9'; }}>
-                  <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: r.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: r.color }}>
-                    <Icon size={24} />
+                  <div style={{ width: 'var(--resource-icon-bg-size, 52px)', height: 'var(--resource-icon-bg-size, 52px)', borderRadius: '14px', background: r.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', color: r.color }}>
+                    <Icon style={{ width: 'var(--resource-icon-size, 24px)', height: 'var(--resource-icon-size, 24px)' }} />
                   </div>
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e1b4b', marginBottom: '4px' }}>{r.title}</div>
-                  <div style={{ fontSize: '11px', color: '#94a3b8' }}>{r.count}</div>
+                  <div style={{ fontSize: 'var(--text-title-5col, 13px)', fontWeight: 700, color: '#1e1b4b', marginBottom: '4px' }}>{r.title}</div>
+                  <div style={{ fontSize: 'var(--text-stats-5col, 11px)', color: '#94a3b8' }}>{r.count}</div>
                 </div>
               );
             })}
