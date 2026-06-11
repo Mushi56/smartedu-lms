@@ -138,7 +138,7 @@ export default function PublicLayout({ children, onGetStarted }) {
       <div style={{
         position: 'fixed', top: 0, right: 0, bottom: 0,
         width: '280px',
-        background: '#ffffff',
+        background: '#3A2048',
         zIndex: 1200,
         display: 'flex', flexDirection: 'column',
         transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(100%)',
@@ -150,16 +150,24 @@ export default function PublicLayout({ children, onGetStarted }) {
         {/* Drawer Header */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '20px 24px', borderBottom: '1px solid rgba(0,0,0,0.07)'
+          padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.07)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ height: '44px', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+            <div style={{ 
+              width: '44px',
+              height: '44px',
+              padding: '6px',
+              borderRadius: '10px', 
+              background: '#ffffff', 
+              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 
+            }}>
               <img src="/logo.svg" alt="SURIA TECH" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
             </div>
           </div>
           <button
             onClick={() => setMobileMenuOpen(false)}
-            style={{ background: 'transparent', border: 'none', borderRadius: '8px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1c1d1f', cursor: 'pointer' }}
+            style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', cursor: 'pointer' }}
           >
             <X size={18} />
           </button>
@@ -175,11 +183,11 @@ export default function PublicLayout({ children, onGetStarted }) {
               style={{
                 display: 'flex', alignItems: 'center', gap: '14px',
                 padding: '14px 24px',
-                color: i === 0 ? '#5624d0' : '#1c1d1f',
+                color: i === 0 ? '#CABA61' : 'rgba(255,255,255,0.75)',
                 fontSize: '15px', fontWeight: i === 0 ? 700 : 500,
                 textDecoration: 'none',
-                borderLeft: i === 0 ? '3px solid #5624d0' : '3px solid transparent',
-                backgroundColor: i === 0 ? 'rgba(86,36,208,0.06)' : 'transparent',
+                borderLeft: i === 0 ? '3px solid #CABA61' : '3px solid transparent',
+                backgroundColor: i === 0 ? 'rgba(202,186,97,0.06)' : 'transparent',
                 transition: 'all 0.15s',
               }}
             >
@@ -189,7 +197,7 @@ export default function PublicLayout({ children, onGetStarted }) {
         </nav>
 
         {/* CTA in drawer */}
-        <div style={{ padding: '20px 24px', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ padding: '20px 24px', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
           <button
             onClick={() => { setMobileMenuOpen(false); onGetStarted(); }}
             style={{

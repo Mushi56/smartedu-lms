@@ -79,10 +79,11 @@ export default function Sidebar({ currentPortal, activeTab, setActiveTab, mobile
         flexShrink: 0
       }}>
         {/* Sidebar Brand Header */}
-        <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '24px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+        <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', padding: '24px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
           <div style={{ 
-            width: '38px', 
-            height: '38px', 
+            width: '44px',
+            height: '44px',
+            padding: '6px',
             borderRadius: '10px', 
             background: '#ffffff', 
             boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
@@ -92,13 +93,7 @@ export default function Sidebar({ currentPortal, activeTab, setActiveTab, mobile
             flexShrink: 0,
             overflow: 'hidden'
           }}>
-            <img src="/logo.png" alt="SURIA TECH Logo" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
-          </div>
-          <div className="logo-text-wrapper" style={{ textAlign: 'left', overflow: 'hidden', minWidth: 0 }}>
-            <span style={{ fontWeight: 800, letterSpacing: '-0.5px', color: '#ffffff', fontSize: '15px', display: 'block', whiteSpace: 'nowrap' }}>SURIA TECH</span>
-            <span className="logo-subtitle" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '9.5px', display: 'block', whiteSpace: 'nowrap', letterSpacing: '0.2px' }}>
-              {isStudent ? 'Learn. Grow. Succeed.' : 'Admin Panel'}
-            </span>
+            <img src="/logo.svg" alt="SURIA TECH Logo" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
           </div>
 
 
