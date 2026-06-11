@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, ArrowUp, Menu, X } from 'lucide-react';
+import { ArrowRight, ArrowUp, Menu, X, Search, User } from 'lucide-react';
 
-const NAV_LINKS = ['Home', 'Courses', 'Teachers', 'Exams', 'Resources', 'About'];
+const NAV_LINKS = ['Admin Panel', 'Student Panel'];
 
 export default function PublicLayout({ children, onGetStarted }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,12 +25,12 @@ export default function PublicLayout({ children, onGetStarted }) {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  const navBg = '#3A2048';
-  const navShadow = isScrolled ? '0 4px 24px rgba(0,0,0,0.15)' : 'none';
-  const navBorder = isScrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent';
-  const logoColor = '#ffffff';
-  const linkColor = 'rgba(255,255,255,0.85)';
-  const linkHoverColor = '#ffffff';
+  const navBg = '#ffffff';
+  const navShadow = '0 2px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.08)';
+  const navBorder = 'none';
+  const logoColor = '#1c1d1f';
+  const linkColor = '#1c1d1f';
+  const linkHoverColor = '#5624d0';
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#ffffff' }}>
@@ -55,64 +55,68 @@ export default function PublicLayout({ children, onGetStarted }) {
         borderBottom: navBorder,
       }}>
 
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', flexShrink: 0 }}>
-          <div style={{
-            width: '38px', height: '38px', borderRadius: '9px',
-            background: '#ffffff', boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            overflow: 'hidden', flexShrink: 0
-          }}>
-            <img src="/logo.png" alt="SURIA TECH Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
-            <span style={{ fontSize: '16px', fontWeight: 800, color: logoColor, letterSpacing: '-0.5px', lineHeight: 1.1, whiteSpace: 'nowrap', transition: 'color 0.3s' }}>
-              SURIA TECH
-            </span>
-            <span style={{ fontSize: '9px', fontWeight: 700, color: isScrolled ? '#CABA61' : 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: '1px', whiteSpace: 'nowrap', transition: 'color 0.3s' }}>
-              Learn. Grow. Succeed.
-            </span>
-          </div>
-        </div>
-
-        {/* Desktop Nav Links (Removed) */}
-        <div className="pub-nav-links" style={{ display: 'none' }}>
-        </div>
-
-        {/* Right: Get Started + Hamburger */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={onGetStarted}
-            className="click-press pub-get-started"
-            style={{
-              padding: '10px 22px', backgroundColor: '#CABA61', color: '#1e1b4b',
-              borderRadius: '30px', fontWeight: 700, fontSize: '13px',
-              display: 'flex', alignItems: 'center', gap: '7px',
-              boxShadow: '0 4px 14px rgba(202,186,97,0.35)', border: 'none', cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#3A2048'; e.currentTarget.style.color = '#ffffff'; }}
-            onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#CABA61'; e.currentTarget.style.color = '#1e1b4b'; }}
-          >
-            <span>Get Started</span>
-            <ArrowRight size={14} />
-          </button>
-
-          {/* Mobile hamburger (Now used for all screen sizes) */}
+        {/* Left: Hamburger */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="pub-hamburger click-press"
             style={{
-              display: 'none', width: '40px', height: '40px', borderRadius: '10px',
-              backgroundColor: isScrolled ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.15)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-              color: '#ffffff',
-              transition: 'all 0.2s'
+              width: '40px', height: '40px', borderRadius: '10px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+              color: '#1c1d1f',
+              transition: 'all 0.2s',
+              padding: 0
             }}
             aria-label="Open menu"
           >
-            <Menu size={20} />
+            <Menu size={24} />
+          </button>
+        </div>
+
+        {/* Center: Logo */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}>
+          <div style={{
+            height: '44px',
+            background: 'transparent',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            overflow: 'hidden'
+          }}>
+            <img src="/logo.svg" alt="SURIA TECH Logo" style={{ height: '100%', width: 'auto', objectFit: 'contain', objectPosition: 'center' }} />
+          </div>
+        </div>
+
+        {/* Right: Search & Login Icons */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '8px' }}>
+          <button
+            className="click-press"
+            style={{
+              width: '40px', height: '40px', borderRadius: '50%',
+              backgroundColor: 'transparent',
+              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+              color: '#1c1d1f',
+              transition: 'all 0.2s'
+            }}
+            aria-label="Search"
+          >
+            <Search size={22} />
+          </button>
+          
+          <button
+            className="click-press"
+            style={{
+              width: '40px', height: '40px', borderRadius: '50%',
+              backgroundColor: 'transparent',
+              border: 'none',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+              color: '#1c1d1f',
+              transition: 'all 0.2s'
+            }}
+            aria-label="Login"
+          >
+            <User size={22} />
           </button>
         </div>
       </nav>
@@ -134,7 +138,7 @@ export default function PublicLayout({ children, onGetStarted }) {
       <div style={{
         position: 'fixed', top: 0, right: 0, bottom: 0,
         width: '280px',
-        background: '#3A2048',
+        background: '#ffffff',
         zIndex: 1200,
         display: 'flex', flexDirection: 'column',
         transform: mobileMenuOpen ? 'translateX(0)' : 'translateX(100%)',
@@ -146,20 +150,16 @@ export default function PublicLayout({ children, onGetStarted }) {
         {/* Drawer Header */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.07)'
+          padding: '20px 24px', borderBottom: '1px solid rgba(0,0,0,0.07)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              <img src="/logo.png" alt="SURIA TECH" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 800, color: '#fff', fontSize: '14px', letterSpacing: '-0.3px', whiteSpace: 'nowrap' }}>SURIA TECH</div>
-              <div style={{ fontSize: '9px', color: '#CABA61', textTransform: 'uppercase', letterSpacing: '1px', whiteSpace: 'nowrap' }}>Learn. Grow. Succeed.</div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ height: '44px', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              <img src="/logo.svg" alt="SURIA TECH" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
             </div>
           </div>
           <button
             onClick={() => setMobileMenuOpen(false)}
-            style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer' }}
+            style={{ background: 'transparent', border: 'none', borderRadius: '8px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1c1d1f', cursor: 'pointer' }}
           >
             <X size={18} />
           </button>
@@ -175,11 +175,11 @@ export default function PublicLayout({ children, onGetStarted }) {
               style={{
                 display: 'flex', alignItems: 'center', gap: '14px',
                 padding: '14px 24px',
-                color: i === 0 ? '#CABA61' : 'rgba(255,255,255,0.75)',
+                color: i === 0 ? '#5624d0' : '#1c1d1f',
                 fontSize: '15px', fontWeight: i === 0 ? 700 : 500,
                 textDecoration: 'none',
-                borderLeft: i === 0 ? '3px solid #CABA61' : '3px solid transparent',
-                backgroundColor: i === 0 ? 'rgba(202,186,97,0.06)' : 'transparent',
+                borderLeft: i === 0 ? '3px solid #5624d0' : '3px solid transparent',
+                backgroundColor: i === 0 ? 'rgba(86,36,208,0.06)' : 'transparent',
                 transition: 'all 0.15s',
               }}
             >
@@ -189,7 +189,7 @@ export default function PublicLayout({ children, onGetStarted }) {
         </nav>
 
         {/* CTA in drawer */}
-        <div style={{ padding: '20px 24px', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+        <div style={{ padding: '20px 24px', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
           <button
             onClick={() => { setMobileMenuOpen(false); onGetStarted(); }}
             style={{
@@ -250,11 +250,10 @@ export default function PublicLayout({ children, onGetStarted }) {
             }}>
             {/* Logo Column */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '34px', height: '34px', borderRadius: '8px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                  <img src="/logo.png" alt="SURIA TECH" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ height: '44px', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', overflow: 'hidden' }}>
+                  <img src="/logo.svg" alt="SURIA TECH" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
                 </div>
-                <span style={{ fontSize: '18px', fontWeight: 800, color: 'white', letterSpacing: '-0.5px' }}>SURIA TECH</span>
               </div>
               <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, margin: 0 }}>
                 Your trusted partner in exam preparation and academic success worldwide.

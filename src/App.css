@@ -2301,10 +2301,7 @@
   --text-desc-3col: 13px;
 }
 
-/* Desktop: hamburger hidden; shown only on mobile via media query */
-.pub-hamburger {
-  display: none !important;
-}
+
 
 @media (max-width: 1024px) {
   :root {
