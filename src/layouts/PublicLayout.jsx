@@ -149,22 +149,9 @@ export default function PublicLayout({ children, onGetStarted }) {
       }}>
         {/* Drawer Header */}
         <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
           padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.07)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ 
-              width: '44px',
-              height: '44px',
-              padding: '6px',
-              borderRadius: '10px', 
-              background: '#ffffff', 
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 
-            }}>
-              <img src="/logo.svg" alt="SURIA TECH" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
-            </div>
-          </div>
           <button
             onClick={() => setMobileMenuOpen(false)}
             style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '8px', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', cursor: 'pointer' }}

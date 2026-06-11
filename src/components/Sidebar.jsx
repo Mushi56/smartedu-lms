@@ -79,22 +79,7 @@ export default function Sidebar({ currentPortal, activeTab, setActiveTab, mobile
         flexShrink: 0
       }}>
         {/* Sidebar Brand Header */}
-        <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', padding: '24px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
-          <div style={{ 
-            width: '44px',
-            height: '44px',
-            padding: '6px',
-            borderRadius: '10px', 
-            background: '#ffffff', 
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            overflow: 'hidden'
-          }}>
-            <img src="/logo.svg" alt="SURIA TECH Logo" style={{ height: '100%', width: 'auto', objectFit: 'contain' }} />
-          </div>
+        <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', padding: '24px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', justifyContent: 'flex-end' }}>
 
 
           {/* Close button inside sidebar — visible on mobile via CSS */}
