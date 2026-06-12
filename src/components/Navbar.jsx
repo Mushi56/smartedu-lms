@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Bell, MessageSquare, Sun, Moon, Menu, ArrowLeft, X } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar({ 
   currentPortal, 
@@ -13,6 +14,7 @@ export default function Navbar({
   setTheme,
   setMobileSidebarOpen
 }) {
+  const { user } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -141,9 +143,9 @@ export default function Navbar({
           style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
         >
           <img 
-            src={isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100"} 
+            src={user?.avatar || (isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100")} 
             className="user-avatar" 
-            alt={isStudent ? "Student Profile" : "Admin Profile"} 
+            alt="User Profile" 
             style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--border-color)' }}
           />
         </button>

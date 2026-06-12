@@ -2412,7 +2412,7 @@
   /* Homepage grids → 2-col on mobile */
   .home-teachers-grid   { grid-template-columns: repeat(2, 1fr) !important; }
   .home-categories-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .home-courses-grid    { grid-template-columns: 1fr !important; }
+  .home-courses-grid    { grid-template-columns: repeat(2, 1fr) !important; }
   .home-features-grid   { grid-template-columns: repeat(2, 1fr) !important; }
   .home-resources-grid  { grid-template-columns: repeat(2, 1fr) !important; }
   .home-stories-grid    { grid-template-columns: 1fr !important; }

@@ -6,8 +6,10 @@ import {
   Heart, HelpCircle, Megaphone, Coins, Star, Ticket, ChevronRight, ChevronDown, X,
   Sun, Moon
 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Sidebar({ currentPortal, setCurrentPortal, activeTab, setActiveTab, mobileSidebarOpen, setMobileSidebarOpen, theme, setTheme }) {
+  const { user, logout } = useAuth();
   const isStudent = currentPortal === 'student';
 
   const studentLinks = [
@@ -83,13 +85,15 @@ export default function Sidebar({ currentPortal, setCurrentPortal, activeTab, se
         <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <img 
-              src={isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100"} 
+              src={user?.avatar || (isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100")} 
               alt="User Profile" 
               style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(255, 255, 255, 0.2)' }}
             />
             <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-              <span style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', lineHeight: 1.2 }}>{isStudent ? 'Omar Hassan' : 'Admin User'}</span>
-              <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>{isStudent ? 'Student' : 'Super Admin'}</span>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', lineHeight: 1.2 }}>{user?.name || (isStudent ? 'Omar Hassan' : 'Admin User')}</span>
+              <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>
+                {user?.role === 'super-admin' ? 'Super Admin' : user?.role === 'admin' ? 'Admin' : 'Student'}
+              </span>
             </div>
           </div>
 
@@ -199,20 +203,21 @@ export default function Sidebar({ currentPortal, setCurrentPortal, activeTab, se
         {/* Sidebar Actions (Theme & Portal Switch) */}
         <div style={{ padding: '0 16px', display: 'flex', gap: '8px', marginBottom: '8px' }}>
           <button 
-            onClick={() => setCurrentPortal(isStudent ? 'admin' : 'student')}
+            onClick={logout}
             style={{
               flex: 1,
               fontSize: '11px',
               fontWeight: 700,
               padding: '8px 12px',
               borderRadius: '20px',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              color: '#ffffff',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              color: '#f87171',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              cursor: 'pointer'
             }}
             className="click-press"
           >
-            {isStudent ? 'Go Admin' : 'Go Student'}
+            Sign Out
           </button>
 
           <button 

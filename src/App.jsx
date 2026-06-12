@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import AiPanel from './components/AiPanel';
 import { getDB, saveDB } from './data/mockData';
+import { useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Student Page Imports
 import StudentDashboard from './pages/student/Dashboard';
@@ -31,13 +34,31 @@ import AdminSettings from './pages/admin/Settings';
 // Public Page Imports
 import PublicLayout from './layouts/PublicLayout';
 import Homepage from './pages/public/Homepage';
+import Login from './pages/public/Login';
+import AccessDenied from './pages/public/AccessDenied';
 
 import './App.css';
 
 export default function App() {
-  // 1. Role and Navigation State
-  const [currentPortal, setCurrentPortal] = useState('public'); // 'public', 'student', or 'admin'
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+
+  // Extract path info
+  const pathParts = location.pathname.split('/');
+  const rawPortal = pathParts[1] || 'public'; // 'student', 'admin', 'super-admin'
+  const currentPortal = (rawPortal === 'super-admin' || rawPortal === 'admin') ? 'admin' : 'student';
+  const activeTab = pathParts[2] || 'dashboard';
+
+  const setActiveTab = (tabId) => {
+    navigate(`/${rawPortal}/${tabId}`);
+  };
+
+  const setCurrentPortal = (portal) => {
+    navigate(`/${portal}/dashboard`);
+  };
+
+  // 1. Navigation & Search States
   const [searchQuery, setSearchQuery] = useState('');
   const [theme, setTheme] = useState('light');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -369,36 +390,6 @@ export default function App() {
             </div>
           );
 
-        case 'courses':
-          return (
-            <CourseManager 
-              courses={db.courses} 
-              setCourses={setCourses} 
-              initialView="list"
-            />
-          );
-
-        case 'add-course':
-        case 'categories':
-        case 'tags':
-        case 'levels':
-          return (
-            <CourseManager 
-              courses={db.courses} 
-              setCourses={setCourses} 
-              initialView="create"
-            />
-          );
-
-        case 'live-classes':
-          return (
-            <ClassScheduler 
-              classes={db.classes} 
-              setClasses={setClasses} 
-              courses={db.courses}
-            />
-          );
-
         case 'exams':
         case 'quizzes':
           return (
@@ -566,54 +557,100 @@ export default function App() {
     }
   };
 
-  if (currentPortal === 'public') {
+  const renderPortalContainer = () => {
     return (
-      <PublicLayout 
-        onGetStarted={() => setCurrentPortal('student')}
-        onGoAdmin={() => setCurrentPortal('admin')}
-        onGoStudent={() => setCurrentPortal('student')}
-      >
-        <Homepage onGetStarted={() => setCurrentPortal('student')} />
-      </PublicLayout>
-    );
-  }
-
-  return (
-    <div className="app-container">
-      {/* 1. Left Navigation Sidebar Adaptable to portals roles */}
-      <Sidebar 
-        currentPortal={currentPortal}
-        setCurrentPortal={setCurrentPortal}
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        mobileSidebarOpen={mobileSidebarOpen}
-        setMobileSidebarOpen={setMobileSidebarOpen}
-        theme={theme}
-        setTheme={handleSetTheme}
-      />
-
-      {/* 2. Main content viewport layout */}
-      <div className="main-layout">
-        <Navbar 
-          currentPortal={currentPortal} 
-          setCurrentPortal={setCurrentPortal} 
+      <div className="app-container">
+        {/* 1. Left Navigation Sidebar Adaptable to portals roles */}
+        <Sidebar 
+          currentPortal={rawPortal}
+          setCurrentPortal={setCurrentPortal}
+          activeTab={activeTab} 
           setActiveTab={setActiveTab} 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          notifications={db.notifications}
-          markAllNotificationsRead={markAllNotificationsRead}
+          mobileSidebarOpen={mobileSidebarOpen}
+          setMobileSidebarOpen={setMobileSidebarOpen}
           theme={theme}
           setTheme={handleSetTheme}
-          setMobileSidebarOpen={setMobileSidebarOpen}
         />
 
-        {/* Scrollable workspace */}
-        <main className="content-scrollable">
-          <div className="dashboard-main-content" style={{ width: '100%' }}>
-            {renderContent()}
-          </div>
-        </main>
+        {/* 2. Main content viewport layout */}
+        <div className="main-layout">
+          <Navbar 
+            currentPortal={rawPortal} 
+            setCurrentPortal={setCurrentPortal} 
+            setActiveTab={setActiveTab} 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            notifications={db.notifications}
+            markAllNotificationsRead={markAllNotificationsRead}
+            theme={theme}
+            setTheme={handleSetTheme}
+            setMobileSidebarOpen={setMobileSidebarOpen}
+          />
+
+          {/* Scrollable workspace */}
+          <main className="content-scrollable">
+            <div className="dashboard-main-content" style={{ width: '100%' }}>
+              {renderContent()}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <Routes>
+      <Route path="/" element={
+        <PublicLayout 
+          onGetStarted={() => {
+            if (isAuthenticated && user) {
+              navigate(user.role === 'super-admin' ? '/super-admin/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard');
+            } else {
+              navigate('/login');
+            }
+          }}
+          onGoAdmin={() => navigate('/admin/dashboard')}
+          onGoStudent={() => navigate('/student/dashboard')}
+        >
+          <Homepage onGetStarted={() => {
+            if (isAuthenticated && user) {
+              navigate(user.role === 'super-admin' ? '/super-admin/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard');
+            } else {
+              navigate('/login');
+            }
+          }} />
+        </PublicLayout>
+      } />
+
+      <Route path="/login" element={<Login />} />
+      <Route path="/access-denied" element={<AccessDenied />} />
+
+      {/* Student Protected Portal */}
+      <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
+      <Route path="/student/:tab" element={
+        <ProtectedRoute allowedRoles={['student']}>
+          {renderPortalContainer()}
+        </ProtectedRoute>
+      } />
+
+      {/* Admin Protected Portal */}
+      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/admin/:tab" element={
+        <ProtectedRoute allowedRoles={['admin']}>
+          {renderPortalContainer()}
+        </ProtectedRoute>
+      } />
+
+      {/* Super Admin Protected Portal */}
+      <Route path="/super-admin" element={<Navigate to="/super-admin/dashboard" replace />} />
+      <Route path="/super-admin/:tab" element={
+        <ProtectedRoute allowedRoles={['super-admin']}>
+          {renderPortalContainer()}
+        </ProtectedRoute>
+      } />
+
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

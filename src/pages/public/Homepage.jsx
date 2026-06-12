@@ -271,7 +271,7 @@ export default function Homepage({ onGetStarted }) {
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 14px 32px rgba(58,32,72,0.1)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.04)'; }}>
                 <div style={{ position: 'relative' }}>
-                  <img src={course.img} alt={course.title} style={{ width: '100%', height: 'var(--course-img-height, 120px)', objectFit: 'cover', display: 'block' }} />
+                  <img src={course.img} alt={course.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover', display: 'block' }} />
                   {course.badge && (
                     <span style={{ position: 'absolute', top: '8px', left: '8px', padding: '3px 8px', background: course.badge === 'Bestseller' ? '#f59e0b' : course.badge === 'New' ? '#10b981' : '#7c3aed', color: '#fff', borderRadius: '6px', fontSize: '9px', fontWeight: 700 }}>
                       {course.badge}
