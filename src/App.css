@@ -9,10 +9,17 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
-  transition: all var(--transition-normal);
+  left: -280px;
+  z-index: 1000;
+  box-shadow: none;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.sidebar-open {
+  left: 0;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar.dark-bg {
@@ -1456,7 +1463,7 @@
 
 /* 1. Global Hidden/Shown States for Mobile Components */
 .mobile-menu-toggle {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
@@ -1477,67 +1484,39 @@
 }
 
 .sidebar-close-btn {
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-app);
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  transition: all var(--transition-fast);
+}
+
+/* Backdrop Overlay when Sidebar is open */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999;
+  animation: fade-in 0.2s ease-out;
 }
 
 /* 2. Media Query for Tablets and Smaller (max-width: 1024px) */
 @media (max-width: 1024px) {
-  .mobile-menu-toggle {
-    display: flex;
-  }
-
-  .sidebar-close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-app);
-    color: var(--text-secondary);
-    cursor: pointer;
-    position: absolute;
-    right: 16px;
-    top: 18px;
-    transition: all var(--transition-fast);
-  }
-
-  .sidebar-close-btn:hover {
-    background-color: var(--primary-glow);
-    color: var(--primary-color);
-  }
-
-  /* Slide-out Mobile Sidebar Layout */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -280px;
-    width: 260px;
-    height: 100vh;
-    z-index: 1000;
-    box-shadow: none;
-    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .sidebar.mobile-open {
-    left: 0;
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.15);
-  }
-
-  /* Backdrop Overlay when Sidebar is open */
-  .sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 999;
-    animation: fade-in 0.2s ease-out;
-  }
+  /* App Layout Adjustments */
 
   /* App Layout Adjustments */
   .app-container {
