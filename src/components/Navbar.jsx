@@ -44,14 +44,8 @@ export default function Navbar({
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)'
       }}>
-        {/* Left Side: Welcoming Title */}
-        <div style={{ textAlign: 'left' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Welcome back, Omar! 👋</h2>
-          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>Let's continue your learning journey.</p>
-        </div>
-
-        {/* Right Side: Simple circular search & notification controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Left Side: Hamburger & Welcoming Title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
           {/* Mobile hamburger menu toggle */}
           <button 
             onClick={() => setMobileSidebarOpen(true)} 
@@ -63,14 +57,25 @@ export default function Navbar({
               borderRadius: '50%',
               backgroundColor: '#ffffff',
               boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'var(--text-primary)',
-              border: '1px solid var(--border-color)'
+              border: '1px solid var(--border-color)',
+              flexShrink: 0
             }}
           >
             <Menu size={18} />
           </button>
+          
+          <div>
+            <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Welcome back, Omar! 👋</h2>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px', margin: 0 }}>Let's continue your learning journey.</p>
+          </div>
+        </div>
+
+        {/* Right Side: Simple circular search & notification controls */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
 
           {/* Switch Portal Button (Hidden in mock, kept for easy testing) */}
           <button 
