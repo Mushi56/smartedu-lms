@@ -2227,8 +2227,17 @@
   }
 
   /* Navbar profile info text: hide on mobile */
-  .navbar .user-avatar + div {
+  .navbar .mobile-menu-toggle + span {
     display: none;
+  }
+
+  .navbar {
+    padding: 0 16px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .navbar > div:last-child {
+    gap: 12px !important;
   }
 }
 
