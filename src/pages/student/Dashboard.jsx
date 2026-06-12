@@ -32,10 +32,10 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'left' }} className="animate-fade-in">
       
       {/* ROW 1: Progress & Live Class */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+      <div className="dash-row-1" style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
         
         {/* Overall Progress Card */}
-        <div style={{
+        <div className="dash-progress-card" style={{
           flex: '1.8 1 500px',
           background: 'linear-gradient(135deg, #3A2048 0%, #1e0b29 100%)',
           color: '#ffffff',
@@ -53,16 +53,16 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
               <svg width="100" height="100" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="40" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="7" fill="none" />
                 <circle cx="50" cy="50" r="40" stroke="var(--secondary-color)" strokeWidth="7" fill="none"
-                  strokeDasharray="251" strokeDashoffset={251 - (251 * 72) / 100}
+                  strokeDasharray="251" strokeDashoffset={251 - (251 * overallProgress) / 100}
                   strokeLinecap="round" transform="rotate(-90 50 50)" style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
-                <text x="50" y="46" textAnchor="middle" dominantBaseline="middle" fill="#ffffff" fontSize="18" fontWeight="800">72%</text>
+                <text x="50" y="46" textAnchor="middle" dominantBaseline="middle" fill="#ffffff" fontSize="18" fontWeight="800">{overallProgress}%</text>
                 <text x="50" y="64" textAnchor="middle" dominantBaseline="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="600">Keep going!</text>
               </svg>
             </div>
 
             {/* Progress breakdown stats */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', gap: '40px' }}>
+              <div className="dash-stats-row" style={{ display: 'flex', gap: '40px' }}>
                 <div>
                   <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', display: 'block' }}>Completed Lessons</span>
                   <span style={{ fontSize: '16px', fontWeight: 700 }}>{completedLessons}</span>
@@ -181,7 +181,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
           <button onClick={() => setActiveTab('courses')} style={{ fontSize: '12px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
+        <div className="dash-courses-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
           {courses.slice(0, 4).map((course, idx) => {
             const avatars = [
               "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",

@@ -14,6 +14,11 @@ import StudentAssignments from './pages/student/Assignments';
 import StudentSchedule from './pages/student/Schedule';
 import StudentProgress from './pages/student/Progress';
 import StudentProfile from './pages/student/Profile';
+import StudentResources from './pages/student/Resources';
+import StudentMessages from './pages/student/Messages';
+import StudentPayments from './pages/student/Payments';
+import StudentFavorites from './pages/student/Favorites';
+import StudentNotes from './pages/student/Notes';
 
 // Admin Page Imports
 import AdminDashboard from './pages/admin/Dashboard';
@@ -176,13 +181,6 @@ export default function App() {
           );
 
         case 'live-classes':
-          return (
-            <StudentSchedule 
-              classes={db.classes} 
-              onSelectCourse={handleSelectCourseFromCard} 
-            />
-          );
-
         case 'schedule':
           return (
             <StudentSchedule 
@@ -222,25 +220,13 @@ export default function App() {
             </div>
           );
 
+        case 'resources':
+          return <StudentResources />;
+
         case 'notes':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>AI-Generated Revision Notes</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
-                Your study tutor automatically structures notes from lessons you stream. Open individual videos to examine generated definitions and syllabus guides.
-              </p>
-            </div>
-          );
+          return <StudentNotes />;
 
         case 'progress':
-          return (
-            <StudentProgress 
-              courses={db.courses} 
-              streak={db.streak}
-              overallProgress={db.overallProgress}
-            />
-          );
-
         case 'certificates':
           return (
             <StudentProgress 
@@ -251,12 +237,13 @@ export default function App() {
           );
 
         case 'messages':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Student Messaging Center</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Connect directly with instructors and peers. Use the **AI Tutor** tab for instant doubt resolution!</p>
-            </div>
-          );
+          return <StudentMessages />;
+
+        case 'payments':
+          return <StudentPayments />;
+
+        case 'favorites':
+          return <StudentFavorites courses={db.courses} onSelectCourse={handleSelectCourseFromCard} />;
 
         case 'settings':
           return (
@@ -311,6 +298,7 @@ export default function App() {
             />
           );
 
+        case 'users':
         case 'students':
           return (
             <div className="smart-card text-left" style={{ textAlign: 'left' }}>
@@ -323,17 +311,19 @@ export default function App() {
                       <th>Email</th>
                       <th>Class</th>
                       <th>Enrolled On</th>
-                      <th>Grade Performance</th>
+                      <th>Amount</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {db.students.map(s => (
                       <tr key={s.id}>
-                        <td td="true" style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{s.name}</td>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{s.name}</td>
                         <td>{s.email}</td>
                         <td>{s.course}</td>
                         <td>{s.enrolledOn}</td>
-                        <td style={{ fontWeight: 700, color: 'var(--status-success)' }}>94% Avg</td>
+                        <td style={{ fontWeight: 600 }}>{s.amount}</td>
+                        <td><span className="status-pill success">{s.status}</span></td>
                       </tr>
                     ))}
                   </tbody>
@@ -349,15 +339,29 @@ export default function App() {
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
                 <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <strong style={{ fontSize: '14px', display: 'block' }}>Dr. Vivek Sharma</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Senior Professor of Computer Science & Algorithmic Systems</span>
+                    <strong style={{ fontSize: '14px', display: 'block' }}>Dr. Ahmed Al-Hassan</strong>
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Senior SAT & Test Prep Instructor</span>
                   </div>
                   <span className="status-pill success">Active</span>
                 </li>
                 <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <strong style={{ fontSize: '14px', display: 'block' }}>Dr. Neha Verma</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Lead Research Scientist in Machine Learning & AI Models</span>
+                    <strong style={{ fontSize: '14px', display: 'block' }}>Ms. Sarah Johnson</strong>
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>IELTS Speaking & Writing Coach</span>
+                  </div>
+                  <span className="status-pill success">Active</span>
+                </li>
+                <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <strong style={{ fontSize: '14px', display: 'block' }}>Ms. Lisa Park</strong>
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>TOEFL iBT & Academic English Expert</span>
+                  </div>
+                  <span className="status-pill success">Active</span>
+                </li>
+                <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <strong style={{ fontSize: '14px', display: 'block' }}>Dr. Michael Chen</strong>
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>GRE Quantitative Reasoning Specialist</span>
                   </div>
                   <span className="status-pill success">Active</span>
                 </li>
@@ -365,22 +369,37 @@ export default function App() {
             </div>
           );
 
-        case 'enrollments':
+        case 'courses':
           return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Transaction Ledger</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Review all courses tuition, billing registries, and receipts.</p>
-            </div>
+            <CourseManager 
+              courses={db.courses} 
+              setCourses={setCourses} 
+              initialView="list"
+            />
           );
 
-        case 'assignments':
+        case 'add-course':
+        case 'categories':
+        case 'tags':
+        case 'levels':
           return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Coursework Submissions Panel</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Observe homework deadlines, view answers sent by students, and configure grader settings.</p>
-            </div>
+            <CourseManager 
+              courses={db.courses} 
+              setCourses={setCourses} 
+              initialView="create"
+            />
           );
 
+        case 'live-classes':
+          return (
+            <ClassScheduler 
+              classes={db.classes} 
+              setClasses={setClasses} 
+              courses={db.courses}
+            />
+          );
+
+        case 'exams':
         case 'quizzes':
           return (
             <AdminQuizManager 
@@ -389,16 +408,149 @@ export default function App() {
             />
           );
 
+        case 'orders':
+        case 'enrollments':
+          return (
+            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Orders & Payments</h3>
+              <div className="smart-table-wrapper" style={{ marginTop: '20px' }}>
+                <table className="smart-table">
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Course</th>
+                      <th>Amount</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {db.students.map(s => (
+                      <tr key={s.id}>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{s.name}</td>
+                        <td>{s.course}</td>
+                        <td style={{ fontWeight: 600 }}>{s.amount}</td>
+                        <td>{s.enrolledOn}</td>
+                        <td><span className="status-pill success">{s.status}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+
+        case 'reports':
+        case 'analytics':
+          return <AdminAnalytics />;
+
+        case 'reviews':
+          return (
+            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Course Reviews</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
+                {db.students.slice(0, 3).map((s, i) => (
+                  <div key={s.id} style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                      <strong style={{ fontSize: '13px' }}>{s.name}</strong>
+                      <span style={{ fontSize: '12px', color: '#f59e0b', fontWeight: 700 }}>{'⭐'.repeat(4 + (i % 2))} {4 + (i % 2)}.0</span>
+                    </div>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>
+                      {s.course} — Excellent course content and well-structured lessons. The instructor explains concepts very clearly.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+
+        case 'coupons':
+          return (
+            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Coupons & Discounts</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
+                {[
+                  { code: 'WELCOME25', discount: '25% Off', desc: 'First-time student discount', expires: 'Jun 30, 2026', status: 'Active' },
+                  { code: 'SUMMER2026', discount: '15% Off', desc: 'Summer enrollment special', expires: 'Aug 31, 2026', status: 'Active' },
+                  { code: 'BUNDLE10', discount: '10% Off', desc: 'Course bundle discount', expires: 'Dec 31, 2026', status: 'Active' },
+                ].map((c) => (
+                  <div key={c.code} style={{ padding: '16px', border: '1px dashed var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                        <code style={{ fontSize: '14px', fontWeight: 700, color: 'var(--primary-color)', backgroundColor: 'rgba(58,32,72,0.06)', padding: '4px 10px', borderRadius: '6px' }}>{c.code}</code>
+                        <span style={{ fontSize: '13px', fontWeight: 700, color: '#2BA84A' }}>{c.discount}</span>
+                      </div>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{c.desc} • Expires: {c.expires}</span>
+                    </div>
+                    <span className="status-pill success">{c.status}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+
+        case 'resources':
+          return (
+            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Platform Resources</h3>
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>Manage downloadable course materials and study resources.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {['SAT Math Formula Sheet', 'IELTS Writing Samples', 'GRE Quant Formula Sheet', 'TOEFL Vocabulary List'].map((name, i) => (
+                  <div key={i} style={{ padding: '12px 16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600 }}>{name}</span>
+                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>PDF</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+
+        case 'assignments':
+          return (
+            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Assignment Management</h3>
+              <div className="smart-table-wrapper" style={{ marginTop: '16px' }}>
+                <table className="smart-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Course</th>
+                      <th>Due Date</th>
+                      <th>Submissions</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {db.assignments.map(a => (
+                      <tr key={a.id}>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{a.title}</td>
+                        <td>{a.course}</td>
+                        <td>{a.dueDate}</td>
+                        <td>{a.status === 'Graded' ? '5/5' : '3/5'}</td>
+                        <td><span className={`status-pill ${a.status === 'Graded' ? 'success' : 'warning'}`}>{a.status === 'Graded' ? 'Graded' : 'Open'}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+
         case 'announcements':
           return (
             <div className="smart-card text-left" style={{ textAlign: 'left' }}>
               <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Announcements Center</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Broadcast platform-wide updates or schedule alerts directly inside the navigation head.</p>
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>Broadcast platform-wide updates or schedule alerts.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {db.notifications.map(n => (
+                  <div key={n.id} style={{ padding: '14px 16px', border: '1px solid var(--border-color)', borderRadius: '8px', backgroundColor: n.read ? 'transparent' : 'rgba(58,32,72,0.02)' }}>
+                    <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-primary)', fontWeight: n.read ? 400 : 600 }}>{n.text}</p>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>{n.time}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           );
-
-        case 'analytics':
-          return <AdminAnalytics />;
 
         case 'settings':
           return (
@@ -416,7 +568,11 @@ export default function App() {
 
   if (currentPortal === 'public') {
     return (
-      <PublicLayout onGetStarted={() => setCurrentPortal('student')}>
+      <PublicLayout 
+        onGetStarted={() => setCurrentPortal('student')}
+        onGoAdmin={() => setCurrentPortal('admin')}
+        onGoStudent={() => setCurrentPortal('student')}
+      >
         <Homepage onGetStarted={() => setCurrentPortal('student')} />
       </PublicLayout>
     );

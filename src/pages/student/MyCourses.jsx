@@ -6,7 +6,7 @@ export default function MyCourses({ courses, onSelectCourse }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchFilter, setSearchFilter] = useState('');
 
-  const categories = ['All', 'Development', 'Computer Science', 'Data Science'];
+  const categories = ['All', 'Test Prep', 'Language', 'Writing'];
 
   const filteredCourses = courses.filter(course => {
     const matchesCategory = activeCategory === 'All' || course.category === activeCategory;

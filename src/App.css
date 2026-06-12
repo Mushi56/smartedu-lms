@@ -1864,8 +1864,20 @@
     padding: 12px 14px !important;
   }
 
-  /* Hide "Go Admin/Student" switch button on mobile */
+  /* Hide "Go Admin/Student" switch button on mobile (no longer in navbar, kept for safety) */
   header button[style*="borderRadius: '20px'"] {
+    display: none;
+  }
+
+  /* Student welcome text — truncate on mobile */
+  header h2 {
+    font-size: 16px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  header h2 + p {
     display: none;
   }
 
@@ -2152,6 +2164,66 @@
   /* ─── TYPOGRAPHY SCALING ────────────────────────────────────── */
   body {
     font-size: 14px;
+  }
+
+  /* ─── STUDENT DASHBOARD: Progress card fix ─────────────────── */
+  /* Prevent progress card from forcing horizontal scroll */
+  .dash-progress-card {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px;
+    padding: 20px !important;
+  }
+
+  .dash-progress-card > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px;
+    width: 100%;
+  }
+
+  /* Progress stats inside the purple card */
+  .dash-stats-row {
+    gap: 16px !important;
+    flex-wrap: wrap;
+  }
+
+  /* Course grid — smaller minmax for phone */
+  .dash-courses-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    gap: 12px !important;
+  }
+
+  /* Messages page: stack sidebar above chat */
+  .messages-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-height: 200px;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .messages-container {
+    flex-direction: column !important;
+  }
+
+  /* Admin profile dropdown fix */
+  .smart-card.glass-effect.animate-fade-in[style*="width: '200px'"] {
+    right: 8px !important;
+    width: calc(100vw - 32px) !important;
+    max-width: 220px !important;
+  }
+
+  /* Admin navbar: hide search bar on mobile */
+  .navbar > div:nth-child(2) {
+    display: none;
+  }
+
+  /* Admin profile info text: hide on mobile */
+  .navbar .user-avatar + div {
+    display: none;
   }
 }
 

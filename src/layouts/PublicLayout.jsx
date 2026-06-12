@@ -3,7 +3,7 @@ import { ArrowRight, ArrowUp, Menu, X, Search, User } from 'lucide-react';
 
 const NAV_LINKS = ['Admin Panel', 'Student Panel'];
 
-export default function PublicLayout({ children, onGetStarted }) {
+export default function PublicLayout({ children, onGetStarted, onGoAdmin, onGoStudent }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -162,25 +162,38 @@ export default function PublicLayout({ children, onGetStarted }) {
 
         {/* Nav Links */}
         <nav style={{ padding: '16px 0', flex: 1 }}>
-          {NAV_LINKS.map((link, i) => (
-            <a
-              key={link}
-              href="#"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '14px',
-                padding: '14px 24px',
-                color: i === 0 ? '#CABA61' : 'rgba(255,255,255,0.75)',
-                fontSize: '15px', fontWeight: i === 0 ? 700 : 500,
-                textDecoration: 'none',
-                borderLeft: i === 0 ? '3px solid #CABA61' : '3px solid transparent',
-                backgroundColor: i === 0 ? 'rgba(202,186,97,0.06)' : 'transparent',
-                transition: 'all 0.15s',
-              }}
-            >
-              {link}
-            </a>
-          ))}
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); if (onGoAdmin) onGoAdmin(); }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '14px',
+              padding: '14px 24px',
+              color: '#CABA61',
+              fontSize: '15px', fontWeight: 700,
+              textDecoration: 'none',
+              borderLeft: '3px solid #CABA61',
+              backgroundColor: 'rgba(202,186,97,0.06)',
+              transition: 'all 0.15s',
+            }}
+          >
+            Admin Panel
+          </a>
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); if (onGoStudent) onGoStudent(); }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '14px',
+              padding: '14px 24px',
+              color: 'rgba(255,255,255,0.75)',
+              fontSize: '15px', fontWeight: 500,
+              textDecoration: 'none',
+              borderLeft: '3px solid transparent',
+              backgroundColor: 'transparent',
+              transition: 'all 0.15s',
+            }}
+          >
+            Student Panel
+          </a>
         </nav>
 
         {/* CTA in drawer */}
