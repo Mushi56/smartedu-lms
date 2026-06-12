@@ -283,39 +283,7 @@ export default function Sidebar({ currentPortal, setCurrentPortal, activeTab, se
           </button>
         </div>
 
-        {/* Profile Footer only on Student Panel */}
-        {isStudent && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '16px 20px',
-            borderTop: '1px solid rgba(255, 255, 255, 0.05)',
-            backgroundColor: 'rgba(0, 0, 0, 0.15)'
-          }}>
-            <div style={{ position: 'relative', width: '38px', height: '38px', flexShrink: 0 }}>
-              <img 
-                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=100" 
-                alt="Omar Hassan Profile" 
-                style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} 
-              />
-              <span style={{
-                position: 'absolute',
-                bottom: '0',
-                right: '0',
-                width: '10px',
-                height: '10px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--status-success)',
-                border: '2px solid #3A2048'
-              }}></span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-              <span style={{ fontSize: '13px', fontWeight: 600, color: '#ffffff' }}>Omar Hassan</span>
-              <span style={{ fontSize: '10px', color: '#8a8d9a' }}>Student</span>
-            </div>
-          </div>
-        )}
+
       </aside>
     </>
   );
