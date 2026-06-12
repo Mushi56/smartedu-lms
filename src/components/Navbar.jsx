@@ -149,9 +149,6 @@ export default function Navbar({
             style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--border-color)' }}
           />
         </button>
-        <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
-          {isStudent ? 'Student Dashboard' : 'Admin Dashboard'}
-        </span>
       </div>
 
       {/* Middle/Right: Search bar */}
