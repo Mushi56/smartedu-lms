@@ -79,16 +79,26 @@ export default function Sidebar({ currentPortal, setCurrentPortal, activeTab, se
         width: '260px',
         flexShrink: 0
       }}>
-        {/* Sidebar Brand Header */}
-        <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', padding: '24px 20px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', justifyContent: 'flex-end' }}>
-
+        {/* Sidebar Brand Header & Profile */}
+        <div className="sidebar-logo" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <img 
+              src={isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100"} 
+              alt="User Profile" 
+              style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(255, 255, 255, 0.2)' }}
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+              <span style={{ fontSize: '14px', fontWeight: 700, color: '#ffffff', lineHeight: 1.2 }}>{isStudent ? 'Omar Hassan' : 'Admin User'}</span>
+              <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>{isStudent ? 'Student' : 'Super Admin'}</span>
+            </div>
+          </div>
 
           {/* Close button inside sidebar — visible on mobile via CSS */}
           <button 
             onClick={() => setMobileSidebarOpen(false)} 
             className="sidebar-close-btn click-press"
             title="Close Menu"
-            style={{ color: '#ffffff', marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer' }}
+            style={{ color: '#ffffff', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
           >
             <X size={18} />
           </button>
