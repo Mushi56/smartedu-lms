@@ -43,15 +43,20 @@ export default function Navbar({
       top: 0,
       zIndex: 99
     }}>
-      {/* Left side: Hamburger toggle & page identifier */}
+      {/* Left side: Profile toggle & page identifier */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <button 
           onClick={() => setMobileSidebarOpen(true)} 
           className="mobile-menu-toggle click-press"
           title="Open Menu"
-          style={{ color: 'var(--text-primary)' }}
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center' }}
         >
-          <Menu size={20} />
+          <img 
+            src={isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100"} 
+            className="user-avatar" 
+            alt={isStudent ? "Student Profile" : "Admin Profile"} 
+            style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--border-color)' }}
+          />
         </button>
         <span style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-primary)' }}>
           {isStudent ? 'Student Dashboard' : 'Admin Dashboard'}
@@ -144,55 +149,6 @@ export default function Navbar({
           )}
         </div>
 
-        {/* Profile Details layout */}
-        <div 
-          onClick={() => setShowProfileMenu(!showProfileMenu)}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', padding: '4px 8px', borderRadius: '8px' }}
-          className="hover-bg-app click-press"
-        >
-          <img 
-            src={isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100"} 
-            className="user-avatar" 
-            alt={isStudent ? "Student Profile" : "Admin Profile"} 
-            style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--border-color)' }}
-          />
-          <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>{isStudent ? 'Omar Hassan' : 'Admin User'}</span>
-            <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}>{isStudent ? 'Student' : 'Super Admin'}</span>
-          </div>
-        </div>
-
-        {showProfileMenu && (
-          <div className="smart-card glass-effect animate-fade-in" style={{
-            position: 'absolute',
-            right: '24px',
-            top: '72px',
-            width: '200px',
-            zIndex: 1000,
-            padding: '8px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '4px'
-          }}>
-            <button 
-              onClick={() => {
-                handlePortalSwitch(isStudent ? 'admin' : 'student');
-                setShowProfileMenu(false);
-              }}
-              style={{ textAlign: 'left', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', color: 'var(--text-primary)', width: '100%' }}
-              className="hover-bg-app"
-            >
-              Switch to {isStudent ? 'Admin' : 'Student'} Portal
-            </button>
-            <button 
-              onClick={() => { setActiveTab('settings'); setShowProfileMenu(false); }}
-              style={{ textAlign: 'left', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', color: 'var(--text-primary)', width: '100%' }}
-              className="hover-bg-app"
-            >
-              Settings
-            </button>
-          </div>
-        )}
       </div>
     </header>
   );
