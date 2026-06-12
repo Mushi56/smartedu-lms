@@ -2216,12 +2216,17 @@
     max-width: 220px !important;
   }
 
-  /* Admin navbar: hide search bar on mobile */
-  .navbar > div:nth-child(2) {
-    display: none;
+  /* Navbar: hide desktop search bar on mobile */
+  .desktop-search-bar {
+    display: none !important;
   }
 
-  /* Admin profile info text: hide on mobile */
+  /* Navbar: show mobile search trigger button */
+  .mobile-only-btn {
+    display: flex !important;
+  }
+
+  /* Navbar profile info text: hide on mobile */
   .navbar .user-avatar + div {
     display: none;
   }

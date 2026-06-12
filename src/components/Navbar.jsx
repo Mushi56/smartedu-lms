@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Bell, MessageSquare, Sun, Moon, Menu } from 'lucide-react';
+import { Search, Bell, MessageSquare, Sun, Moon, Menu, ArrowLeft, X } from 'lucide-react';
 
 export default function Navbar({ 
   currentPortal, 
@@ -15,6 +15,7 @@ export default function Navbar({
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const unreadCount = currentPortal === 'student' ? 3 : 7; // Matching mockup badge values
 
   const handlePortalSwitch = (portal) => {
@@ -29,6 +30,57 @@ export default function Navbar({
   };
 
   const isStudent = currentPortal === 'student';
+
+  if (isMobileSearchOpen) {
+    return (
+      <header className="navbar animate-fade-in" style={{
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 16px',
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid var(--border-color)',
+        height: '70px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 99,
+        gap: '12px'
+      }}>
+        <button 
+          onClick={() => setIsMobileSearchOpen(false)}
+          style={{ background: 'none', border: 'none', padding: '8px', cursor: 'pointer', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          className="click-press"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <div style={{ flex: 1, position: 'relative' }}>
+          <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <input 
+            type="text" 
+            placeholder="Search anything..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            autoFocus
+            style={{ 
+              width: '100%', 
+              padding: '10px 36px', 
+              borderRadius: '24px', 
+              border: '1px solid var(--border-color)', 
+              backgroundColor: '#f8fafc',
+              fontSize: '14px'
+            }}
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="navbar" style={{
@@ -64,7 +116,7 @@ export default function Navbar({
       </div>
 
       {/* Middle/Right: Search bar */}
-      <div style={{ flex: 1, maxWidth: '400px', margin: '0 24px', position: 'relative' }}>
+      <div className="desktop-search-bar" style={{ flex: 1, maxWidth: '400px', margin: '0 24px', position: 'relative' }}>
         <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
         <input 
           type="text" 
@@ -84,6 +136,26 @@ export default function Navbar({
 
       {/* Right side: Bell icon and Profile */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+
+        {/* Mobile Search Trigger */}
+        <button 
+          onClick={() => setIsMobileSearchOpen(true)}
+          className="mobile-only-btn click-press"
+          title="Search"
+          style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '50%',
+            backgroundColor: '#f8fafc',
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border-color)'
+          }}
+        >
+          <Search size={16} />
+        </button>
 
         {/* Notification bell */}
         <div style={{ position: 'relative' }}>
