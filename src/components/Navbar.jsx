@@ -31,6 +31,42 @@ export default function Navbar({
 
   const isStudent = currentPortal === 'student';
 
+  const dummyResults = [
+    { id: 1, title: 'React Masterclass', type: 'Course • Development' },
+    { id: 2, title: 'UI/UX Fundamentals', type: 'Course • Design' },
+    { id: 3, title: 'System Design Interview', type: 'Book • Engineering' }
+  ];
+
+  const renderSearchResults = () => {
+    if (!searchQuery) return null;
+    return (
+      <div className="smart-card glass-effect animate-fade-in" style={{
+        position: 'absolute',
+        top: 'calc(100% + 8px)',
+        left: 0,
+        right: 0,
+        maxHeight: '300px',
+        overflowY: 'auto',
+        zIndex: 1000,
+        padding: '8px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px',
+        boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{ padding: '8px 12px', fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600 }}>
+          Search Results for "{searchQuery}"
+        </div>
+        {dummyResults.map(result => (
+          <button key={result.id} onClick={() => { setSearchQuery(''); setIsMobileSearchOpen(false); }} style={{ textAlign: 'left', padding: '10px 12px', borderRadius: '6px', fontSize: '13px', color: 'var(--text-primary)', width: '100%', border: 'none', background: 'transparent', cursor: 'pointer' }} className="hover-bg-app click-press">
+            <div style={{ fontWeight: 600 }}>{result.title}</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{result.type}</div>
+          </button>
+        ))}
+      </div>
+    );
+  };
+
   if (isMobileSearchOpen) {
     return (
       <header className="navbar animate-fade-in" style={{
@@ -52,8 +88,8 @@ export default function Navbar({
         >
           <ArrowLeft size={20} />
         </button>
-        <div style={{ flex: 1, position: 'relative' }}>
-          <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <div style={{ flex: 1, position: 'relative', width: '100%', display: 'flex' }}>
+          <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', zIndex: 1 }} />
           <input 
             type="text" 
             placeholder="Search anything..." 
@@ -77,6 +113,7 @@ export default function Navbar({
               <X size={16} />
             </button>
           )}
+          {renderSearchResults()}
         </div>
       </header>
     );
@@ -132,6 +169,15 @@ export default function Navbar({
             fontSize: '13px'
           }}
         />
+        {searchQuery && (
+          <button 
+            onClick={() => setSearchQuery('')}
+            style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}
+          >
+            <X size={14} />
+          </button>
+        )}
+        {renderSearchResults()}
       </div>
 
       {/* Right side: Bell icon and Profile */}
