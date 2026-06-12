@@ -1799,15 +1799,7 @@
   animation: fadeIn 0.2s ease;
 }
 
-/* Hamburger toggle — hidden on desktop/tablet, shown on mobile */
-.mobile-menu-toggle {
-  display: none !important;
-}
 
-/* Sidebar close button — hidden on desktop/tablet, shown on mobile */
-.sidebar-close-btn {
-  display: none !important;
-}
 
 /* ================================================================
    MOBILE LAYOUT — max-width: 768px  (phones ONLY)
@@ -1833,14 +1825,7 @@
     box-shadow: 8px 0 40px rgba(0, 0, 0, 0.4);
   }
 
-  /* Show hamburger & close button on mobile */
-  .mobile-menu-toggle {
-    display: flex !important;
-  }
 
-  .sidebar-close-btn {
-    display: flex !important;
-  }
 
   /* ─── CORE LAYOUT ───────────────────────────────────────────── */
   .app-container {
