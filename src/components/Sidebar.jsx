@@ -3,10 +3,11 @@ import {
   LayoutDashboard, BookOpen, Video, Calendar, FileText, CheckSquare, 
   MessageSquare, Notebook, TrendingUp, Award, MessageCircle, Settings,
   Users, Volume2, BarChart2, Clock, Activity, CreditCard, Crown, 
-  Heart, HelpCircle, Megaphone, Coins, Star, Ticket, ChevronRight, ChevronDown, X
+  Heart, HelpCircle, Megaphone, Coins, Star, Ticket, ChevronRight, ChevronDown, X,
+  Sun, Moon
 } from 'lucide-react';
 
-export default function Sidebar({ currentPortal, activeTab, setActiveTab, mobileSidebarOpen, setMobileSidebarOpen }) {
+export default function Sidebar({ currentPortal, setCurrentPortal, activeTab, setActiveTab, mobileSidebarOpen, setMobileSidebarOpen, theme, setTheme }) {
   const isStudent = currentPortal === 'student';
 
   const studentLinks = [
@@ -184,6 +185,50 @@ export default function Sidebar({ currentPortal, activeTab, setActiveTab, mobile
             );
           })}
         </nav>
+
+        {/* Sidebar Actions (Theme & Portal Switch) */}
+        <div style={{ padding: '0 16px', display: 'flex', gap: '8px', marginBottom: '8px' }}>
+          <button 
+            onClick={() => setCurrentPortal(isStudent ? 'admin' : 'student')}
+            style={{
+              flex: 1,
+              fontSize: '11px',
+              fontWeight: 700,
+              padding: '8px 12px',
+              borderRadius: '20px',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              color: '#ffffff',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }}
+            className="click-press"
+          >
+            {isStudent ? 'Go Admin' : 'Go Student'}
+          </button>
+
+          <button 
+            onClick={() => {
+              const nextTheme = theme === 'light' ? 'dark' : 'light';
+              setTheme(nextTheme);
+              document.documentElement.setAttribute('data-theme', nextTheme);
+            }} 
+            style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '50%',
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#ffffff',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              flexShrink: 0
+            }}
+            className="click-press"
+            title="Theme Toggle"
+          >
+            {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+          </button>
+        </div>
 
         {/* Action Promotion Card */}
         <div style={{

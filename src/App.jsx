@@ -426,11 +426,14 @@ export default function App() {
     <div className="app-container">
       {/* 1. Left Navigation Sidebar Adaptable to portals roles */}
       <Sidebar 
-        currentPortal={currentPortal} 
+        currentPortal={currentPortal}
+        setCurrentPortal={setCurrentPortal}
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         mobileSidebarOpen={mobileSidebarOpen}
         setMobileSidebarOpen={setMobileSidebarOpen}
+        theme={theme}
+        setTheme={handleSetTheme}
       />
 
       {/* 2. Main content viewport layout */}

@@ -77,44 +77,7 @@ export default function Navbar({
         {/* Right Side: Simple circular search & notification controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
 
-          {/* Switch Portal Button (Hidden in mock, kept for easy testing) */}
-          <button 
-            onClick={() => handlePortalSwitch('admin')}
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              padding: '8px 12px',
-              borderRadius: '20px',
-              backgroundColor: 'rgba(58, 32, 72, 0.05)',
-              color: '#3A2048',
-              border: '1px solid rgba(58, 32, 72, 0.1)',
-              marginRight: '8px'
-            }}
-            className="click-press"
-          >
-            Go Admin
-          </button>
 
-          {/* Theme Toggle */}
-          <button 
-            onClick={toggleTheme} 
-            style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              backgroundColor: '#ffffff',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-color)'
-            }}
-            className="click-press"
-            title="Theme Toggle"
-          >
-            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-          </button>
 
           {/* Search trigger */}
           <button 
@@ -260,42 +223,7 @@ export default function Navbar({
 
       {/* Right side: Bell icon and Admin Profile */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        {/* Switch Portal Button (Hidden in mock, kept for easy testing) */}
-        <button 
-          onClick={() => handlePortalSwitch('student')}
-          style={{
-            fontSize: '11px',
-            fontWeight: 700,
-            padding: '8px 12px',
-            borderRadius: '20px',
-            backgroundColor: 'rgba(202, 186, 97, 0.1)',
-            color: '#3A2048',
-            border: '1px solid rgba(202, 186, 97, 0.2)'
-          }}
-          className="click-press"
-        >
-          Go Student
-        </button>
 
-        {/* Theme Toggle */}
-        <button 
-          onClick={toggleTheme} 
-          style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '50%',
-            backgroundColor: '#f8fafc',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-color)'
-          }}
-          className="click-press"
-          title="Theme Toggle"
-        >
-          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-        </button>
 
         {/* Notification bell */}
         <div style={{ position: 'relative' }}>
