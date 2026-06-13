@@ -3,7 +3,8 @@ import {
   Star, GraduationCap, Award, BookOpen, Clock, Users, ArrowRight,
   CheckCircle, Video, ChevronLeft, ChevronRight, Globe, Download,
   Calendar, Bookmark, PlayCircle, FileText, Mic, Laptop, Lightbulb,
-  Trophy, MessageSquare, TrendingUp, Target, Zap, BarChart2
+  Trophy, MessageSquare, TrendingUp, Target, Zap, BarChart2,
+  Search, ChevronDown, Play
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -110,71 +111,209 @@ export default function Homepage({ onGetStarted }) {
     <div style={{ fontFamily: "'Montserrat', sans-serif", color: '#1e1b4b', overflowX: 'hidden' }}>
 
       {/* ══════════════════════════════════════════════════
-          HERO SECTION
+          HERO SECTION (Light Theme Mockup)
       ═══════════════════════════════════════════════════ */}
       <section style={{
-        background: 'linear-gradient(135deg, #3A2048 0%, #20102b 60%, #2d1a40 100%)',
-        minHeight: 'calc(100vh - 72px)',
-        display: 'flex', alignItems: 'center',
-        padding: 'var(--hero-padding, 60px 5% 80px)',
+        background: 'radial-gradient(circle at center, rgba(124,58,237,0.03) 0%, rgba(255,255,255,1) 70%)',
+        backgroundColor: '#fbfaff',
+        minHeight: 'calc(100vh - 76px)',
+        padding: 'var(--hero-padding, 80px 5% 100px)',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        display: 'flex',
+        alignItems: 'center'
       }}>
-        {/* BG orbs */}
-        <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.08) 0%, transparent 70%)', top: '-100px', right: '-100px', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 70%)', bottom: '-80px', left: '-80px', pointerEvents: 'none' }} />
+        {/* Subtle Background Grid Pattern */}
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundImage: 'linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)',
+          backgroundSize: '40px 40px', zIndex: 0
+        }} />
+        {/* Purple/Gold corner glows */}
+        <div style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 60%)', bottom: '-200px', left: '-200px', pointerEvents: 'none', zIndex: 0 }} />
+        <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.1) 0%, transparent 60%)', top: '-100px', right: '-100px', pointerEvents: 'none', zIndex: 0 }} />
 
-        <div className="home-hero-grid" style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--hero-gap, 48px)', alignItems: 'center', width: '100%' }}>
-          {/* Left */}
-          <div style={{ textAlign: 'left', zIndex: 1 }}>
+        <div className="home-hero-grid" style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', width: '100%', position: 'relative', zIndex: 1 }}>
+          
+          {/* Left Column: Text & Search Form */}
+          <div style={{ textAlign: 'left', paddingRight: '20px' }}>
+            {/* Badge */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(124,58,237,0.1)', borderRadius: '24px', color: '#7c3aed', fontSize: '13px', fontWeight: 600, marginBottom: '24px' }}>
+              <GraduationCap size={16} />
+              <span>Your Success, Our Mission</span>
+            </div>
 
-            <h1 style={{ fontSize: 'clamp(32px, 4.5vw, 58px)', fontWeight: 900, color: '#ffffff', lineHeight: 1.1, marginBottom: '20px', letterSpacing: '-1px' }}>
+            {/* Typography */}
+            <h1 style={{ fontSize: 'clamp(42px, 5vw, 68px)', fontWeight: 800, color: '#2a1b54', lineHeight: 1.1, marginBottom: '24px', letterSpacing: '-1px', fontFamily: "'Playfair Display', Georgia, serif" }}>
               Pass the Exam<br />
-              That <span style={{ color: '#CABA61' }}>Matters Most</span>
+              <span style={{ color: '#d4af37' }}>That Matters Most</span>
             </h1>
 
-            <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, marginBottom: '32px', maxWidth: '480px' }}>
-              Connect with experienced instructors, join live classes, and prepare confidently for scholarships, university admissions, and professional certifications.
+            <p style={{ fontSize: '16px', color: '#64748b', lineHeight: 1.6, marginBottom: '40px', maxWidth: '460px', fontWeight: 500 }}>
+              Access expert-led courses, live classes, and exam resources designed to help you pass with confidence.
             </p>
 
-            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '40px' }}>
-              <button onClick={onGetStarted} className="click-press" style={{ padding: '14px 28px', background: '#CABA61', color: '#1e1b4b', borderRadius: '30px', fontWeight: 700, fontSize: '14px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 6px 20px rgba(202,186,97,0.35)', transition: 'all 0.2s' }}>
-                <span>Find a Teacher</span><ArrowRight size={16} />
+            {/* Buttons */}
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}>
+              <button onClick={onGetStarted} className="click-press" style={{ padding: '14px 28px', background: 'linear-gradient(to right, #d4af37, #b8860b)', color: '#ffffff', borderRadius: '8px', fontWeight: 600, fontSize: '15px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 8px 24px rgba(212,175,55,0.3)', transition: 'transform 0.2s' }}>
+                <span>Explore Courses</span><ArrowRight size={18} />
               </button>
-              <button className="click-press" style={{ padding: '14px 28px', background: 'rgba(255,255,255,0.08)', color: '#ffffff', borderRadius: '30px', fontWeight: 600, fontSize: '14px', border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}>
-                <PlayCircle size={16} /><span>Browse Courses</span>
+              <button className="click-press" style={{ padding: '14px 28px', background: '#ffffff', color: '#7c3aed', borderRadius: '8px', fontWeight: 600, fontSize: '15px', border: '1px solid rgba(124,58,237,0.2)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', transition: 'all 0.2s' }}>
+                <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Play size={10} fill="#7c3aed" style={{ marginLeft: '2px' }} />
+                </div>
+                <span>How It Works</span>
               </button>
             </div>
 
-            {/* Stats */}
-            <div style={{ display: 'flex', gap: 'var(--grid-gap-5col, 24px)', flexWrap: 'wrap', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ display: 'flex' }}>
-                  {['https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=40&h=40', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=40&h=40', 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=40&h=40'].map((s, i) => (
-                    <img key={i} src={s} alt="" style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px solid #3A2048', marginLeft: i > 0 ? '-8px' : 0, objectFit: 'cover' }} />
-                  ))}
+            {/* Floating Search Bar */}
+            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '16px 24px', boxShadow: '0 20px 40px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.03)', maxWidth: '580px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '16px', alignItems: 'center' }}>
+                {/* Column 1 */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', borderRight: '1px solid #f1f5f9', paddingRight: '16px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <GraduationCap size={16} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>I'm looking for</div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>Exams <ChevronDown size={14} color="#94a3b8"/></div>
+                  </div>
                 </div>
-                <div>
-                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff' }}>25,000+</div>
-                  <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Students Enrolled</div>
+                {/* Column 2 */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', borderRight: '1px solid #f1f5f9', paddingRight: '16px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <BookOpen size={16} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Category</div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>All Categories <ChevronDown size={14} color="#94a3b8"/></div>
+                  </div>
                 </div>
+                {/* Column 3 */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <BarChart2 size={16} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Level</div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>All Levels <ChevronDown size={14} color="#94a3b8"/></div>
+                  </div>
+                </div>
+                {/* Search Button */}
+                <button style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', boxShadow: '0 8px 16px rgba(212,175,55,0.25)' }}>
+                  <Search size={20} />
+                </button>
               </div>
-              <div style={{ width: '1px', height: '36px', background: 'rgba(255,255,255,0.12)' }} />
-              <div>
-                <div style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff' }}>1,200+</div>
-                <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Expert Teachers</div>
-              </div>
-              <div style={{ width: '1px', height: '36px', background: 'rgba(255,255,255,0.12)' }} />
-              <div>
-                <div style={{ fontSize: '15px', fontWeight: 800, color: '#CABA61' }}>98%</div>
-                <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.55)', fontWeight: 500 }}>Success Rate</div>
+              <div style={{ fontSize: '11px', color: '#94a3b8', textAlign: 'center', marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <span style={{ color: '#d4af37' }}>🔆</span> Find the right exam, teacher, or course for your goals
               </div>
             </div>
           </div>
 
-          {/* Right — Teacher Illustration */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
-            <TeacherIllustration />
+          {/* Right Column: Central Circle & Floating Elements */}
+          <div style={{ position: 'relative', width: '100%', height: '600px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            
+            {/* The Central Circle Placeholder */}
+            <div style={{
+              position: 'relative',
+              width: '450px', height: '450px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(124,58,237,0.05) 0%, rgba(124,58,237,0.15) 100%)',
+              border: '12px solid #ffffff',
+              boxShadow: '0 0 0 2px rgba(124,58,237,0.1), inset 0 0 50px rgba(124,58,237,0.2)',
+              display: 'flex', justifyContent: 'center', alignItems: 'center',
+              zIndex: 1
+            }}>
+              {/* Outer Glowing Ring */}
+              <div style={{ position: 'absolute', top: '-24px', left: '-24px', right: '-24px', bottom: '-24px', borderRadius: '50%', border: '2px solid transparent', background: 'linear-gradient(135deg, rgba(124,58,237,0.4), rgba(212,175,55,0.4)) border-box', WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'destination-out', maskComposite: 'exclude', zIndex: -1 }} />
+              
+              {/* Image goes here later */}
+              <div style={{ color: 'rgba(124,58,237,0.3)', fontSize: '14px', fontWeight: 600 }}>Model Image Here</div>
+            </div>
+
+            {/* Floating Card: Course Progress (Top Left) */}
+            <div style={{ position: 'absolute', top: '80px', left: '-20px', background: '#ffffff', padding: '16px 20px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', gap: '16px', zIndex: 10 }}>
+              <div style={{ position: 'relative', width: '48px', height: '48px' }}>
+                <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%' }}>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" strokeWidth="3" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#7c3aed" strokeWidth="3" strokeDasharray="75, 100" />
+                </svg>
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 800, color: '#1e293b' }}>75%</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e293b', marginBottom: '2px' }}>Course Progress</div>
+                <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600 }}>48 / 64 Lessons</div>
+                <div style={{ width: '100%', height: '4px', background: '#f1f5f9', borderRadius: '2px', marginTop: '6px' }}>
+                  <div style={{ width: '75%', height: '100%', background: '#7c3aed', borderRadius: '2px' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Card: Success Rate (Bottom Left) */}
+            <div style={{ position: 'absolute', bottom: '120px', left: '-10px', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'flex-start', gap: '12px', zIndex: 10 }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Award size={20} />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Success Rate</div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b' }}>94%</div>
+                <div style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 600 }}>Students Passed</div>
+                {/* Mini wave chart */}
+                <svg width="80" height="20" viewBox="0 0 80 20" style={{ marginTop: '4px' }}>
+                  <path d="M0 15 Q 10 5, 20 15 T 40 15 T 60 10 T 80 15 L 80 20 L 0 20 Z" fill="rgba(124,58,237,0.1)" />
+                  <path d="M0 15 Q 10 5, 20 15 T 40 15 T 60 10 T 80 15" fill="none" stroke="#7c3aed" strokeWidth="2" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Floating Card: Live Classes (Top Right) */}
+            <div style={{ position: 'absolute', top: '100px', right: '-10px', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'flex-start', gap: '12px', zIndex: 10 }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Video size={20} />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Live Classes</div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b' }}>128</div>
+                <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600 }}>This Week</div>
+                <svg width="80" height="20" viewBox="0 0 80 20" style={{ marginTop: '4px' }}>
+                  <path d="M0 15 Q 10 20, 20 10 T 40 15 T 60 5 T 80 10" fill="none" stroke="#d4af37" strokeWidth="2" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Floating Card: Featured Teacher (Middle Right) */}
+            <div style={{ position: 'absolute', top: '50%', right: '-40px', transform: 'translateY(-50%)', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 10 }}>
+              <div style={{ position: 'relative' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Users size={24} />
+                </div>
+                <div style={{ position: 'absolute', bottom: '-4px', right: '-4px', width: '20px', height: '20px', borderRadius: '50%', background: '#d4af37', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>
+                  <Star size={10} fill="#fff" color="#fff" />
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Featured Teacher</div>
+                <div style={{ fontSize: '13px', fontWeight: 800, color: '#1e293b' }}>Dr. A. Rahman</div>
+                <div style={{ fontSize: '10px', color: '#d4af37', fontWeight: 600, marginBottom: '4px' }}>10+ Years Experience</div>
+                <StarRating rating={5} size={10} />
+              </div>
+            </div>
+
+            {/* Floating Card: Students Enrolled (Bottom Right) */}
+            <div style={{ position: 'absolute', bottom: '60px', right: '0px', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'flex-start', gap: '12px', zIndex: 10 }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Users size={20} />
+              </div>
+              <div>
+                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Students Enrolled</div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b' }}>12.5K+</div>
+                <div style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 600 }}>Active Learners</div>
+                <svg width="80" height="20" viewBox="0 0 80 20" style={{ marginTop: '4px' }}>
+                  <path d="M0 10 Q 10 20, 20 10 T 40 10 T 60 15 T 80 5" fill="none" stroke="#7c3aed" strokeWidth="2" />
+                </svg>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

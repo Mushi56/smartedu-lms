@@ -92,178 +92,47 @@ export default function PublicLayout({ children, onGetStarted, onGoAdmin, onGoSt
 
         {/* --- DESKTOP LAYOUT --- */}
         {isDesktop ? (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             
-            {/* Left Brand and Explore */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-              <div 
-                style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
-                onClick={() => navigate('/')}
-              >
-                <img src="/logo.svg" alt="SURIA TECH Logo" style={{ height: '40px', width: 'auto' }} />
-              </div>
-
-              {/* Explore categories button */}
-              <div style={{ position: 'relative' }} ref={exploreRef}>
-                <button
-                  onClick={() => setShowExplore(!showExplore)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    padding: '8px 16px',
-                    backgroundColor: 'transparent',
-                    border: '1px solid rgba(58, 32, 72, 0.1)',
-                    borderRadius: '20px',
-                    color: '#3A2048',
-                    fontSize: '13px',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    fontFamily: "'Montserrat', sans-serif"
-                  }}
-                  className="hover-bg-app click-press"
-                >
-                  <span>Explore</span>
-                  <ChevronDown size={14} style={{ transform: showExplore ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                </button>
-
-                {/* Explore Dropdown Panel */}
-                {showExplore && (
-                  <div className="smart-card glass-effect animate-scale-up" style={{
-                    position: 'absolute',
-                    top: 'calc(100% + 12px)',
-                    left: 0,
-                    width: '320px',
-                    padding: '16px',
-                    borderRadius: '16px',
-                    boxShadow: '0 12px 30px rgba(58, 32, 72, 0.15)',
-                    border: '1px solid rgba(58, 32, 72, 0.08)',
-                    zIndex: 1010
-                  }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(58, 32, 72, 0.5)', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>
-                      Learning Pathways
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {categories.map((cat) => {
-                        const Icon = cat.icon;
-                        return (
-                          <button
-                            key={cat.id}
-                            onClick={() => handleCategoryClick(cat.id)}
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '12px',
-                              padding: '10px 12px',
-                              backgroundColor: 'transparent',
-                              border: 'none',
-                              borderRadius: '8px',
-                              textAlign: 'left',
-                              cursor: 'pointer',
-                              width: '100%',
-                              transition: 'all 0.2s'
-                            }}
-                            className="hover-bg-app"
-                          >
-                            <div style={{
-                              width: '32px',
-                              height: '32px',
-                              borderRadius: '6px',
-                              backgroundColor: `${cat.color}10`,
-                              color: cat.color,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center'
-                            }}>
-                              <Icon size={16} />
-                            </div>
-                            <div>
-                              <div style={{ fontSize: '13px', fontWeight: 700, color: '#3A2048' }}>{cat.title}</div>
-                              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{cat.desc}</div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
+            {/* Left Brand */}
+            <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate('/')}>
+              <img src="/logo.svg" alt="SURIA TECH Logo" style={{ height: '44px', width: 'auto' }} />
             </div>
 
-            {/* Middle Search Bar */}
-            <div style={{ flex: 1, maxWidth: '440px', position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(58, 32, 72, 0.4)' }} />
-              <input
-                type="text"
-                placeholder="What do you want to learn today?"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+            {/* Center Links */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+              <a href="#" style={{ fontSize: '14px', fontWeight: 700, color: '#4a148c', textDecoration: 'none', borderBottom: '2px solid #7c3aed', paddingBottom: '4px' }}>Home</a>
+              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Courses</a>
+              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Teachers</a>
+              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Exams</a>
+              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Resources</a>
+              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">About</a>
+            </div>
+
+            {/* Right Button */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <button
+                onClick={onGetStarted}
                 style={{
-                  width: '100%',
-                  padding: '12px 16px 12px 46px',
-                  borderRadius: '24px',
-                  border: '1px solid rgba(58, 32, 72, 0.1)',
-                  backgroundColor: '#f8fafc',
-                  fontSize: '13px',
-                  color: '#3a2048',
-                  fontFamily: "'Montserrat', sans-serif",
-                  transition: 'all 0.2s'
+                  padding: '12px 24px',
+                  background: 'linear-gradient(to right, #d4af37, #b8860b)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontFamily: "'Montserrat', sans-serif"
                 }}
-                className="desktop-nav-search"
-              />
+                className="hover-opacity click-press"
+              >
+                Get Started <ArrowRight size={16} />
+              </button>
             </div>
-
-            {/* Right Links & Auth Actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <a href="#" onClick={(e) => { e.preventDefault(); onGetStarted(); }} style={{ fontSize: '13px', fontWeight: 600, color: '#3A2048', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Become an Instructor</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); onGetStarted(); }} style={{ fontSize: '13px', fontWeight: 600, color: '#3A2048', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Pricing</a>
-              </div>
-
-              <div style={{ width: '1px', height: '20px', backgroundColor: 'rgba(58, 32, 72, 0.1)' }} />
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <button
-                  onClick={handleLoginClick}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: 'transparent',
-                    color: '#3A2048',
-                    border: '1px solid rgba(58, 32, 72, 0.2)',
-                    borderRadius: '12px',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    fontFamily: "'Montserrat', sans-serif"
-                  }}
-                  className="hover-bg-app click-press"
-                >
-                  Log In
-                </button>
-                <button
-                  onClick={onGetStarted}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#CABA61',
-                    color: '#1e1b4b',
-                    border: 'none',
-                    borderRadius: '12px',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(202, 186, 97, 0.25)',
-                    transition: 'all 0.2s',
-                    fontFamily: "'Montserrat', sans-serif"
-                  }}
-                  className="hover-bg-gold click-press"
-                >
-                  Join Free
-                </button>
-              </div>
-            </div>
-
           </div>
         ) : (
           /* --- MOBILE / TABLET LAYOUT --- */
