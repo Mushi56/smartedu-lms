@@ -3,29 +3,19 @@ import { Flame, Clock, BookOpen, Award, FileText, Play, CheckCircle, Calendar, S
 
 export default function Dashboard({ courses, classes, streak, overallProgress, setActiveTab, onSelectCourse }) {
   // Hardcoded values to match mockup exact states
-  const completedLessons = 67;
-  const inProgressLessons = 18;
-  const remainingLessons = 25;
+  const completedLessons = 0;
+  const inProgressLessons = 0;
+  const remainingLessons = 0;
 
-  const scheduleList = [
-    { id: 1, title: "SAT Math Mastery", type: "Live Class", time: "Today 6:00 PM" },
-    { id: 2, title: "IELTS Speaking Success", type: "Live Class", time: "Tomorrow 4:30 PM" },
-    { id: 3, title: "GRE Quantitative Reasoning", type: "Live Class", time: "May 17, 2025 7:00 PM" },
-    { id: 4, title: "TOEFL iBT Complete Guide", type: "Live Class", time: "May 18, 2025 5:00 PM" }
-  ];
+  const scheduleList = [];
 
-  const recentResources = [
-    { id: 1, name: "SAT Math Formula Sheet", type: "PDF", size: "2.4 MB" },
-    { id: 2, name: "IELTS Writing Samples", type: "PDF", size: "1.8 MB" },
-    { id: 3, name: "Essay Writing Guide", type: "PDF", size: "3.1 MB" },
-    { id: 4, name: "GRE Quant Formula Sheet", type: "PDF", size: "1.2 MB" }
-  ];
+  const recentResources = [];
 
   const achievements = [
-    { label: "Courses Enrolled", count: 7, color: "#eab308", bg: "rgba(234, 179, 8, 0.1)" },
-    { label: "Lessons Completed", count: 32, color: "#f97316", bg: "rgba(249, 115, 22, 0.1)" },
-    { label: "Assignments Done", count: 12, color: "#a855f7", bg: "rgba(168, 85, 247, 0.1)" },
-    { label: "Certificates Earned", count: 5, color: "#CABA61", bg: "rgba(202, 186, 97, 0.1)" }
+    { label: "Courses Enrolled", count: courses ? courses.length : 0, color: "#eab308", bg: "rgba(234, 179, 8, 0.1)" },
+    { label: "Lessons Completed", count: 0, color: "#f97316", bg: "rgba(249, 115, 22, 0.1)" },
+    { label: "Assignments Done", count: 0, color: "#a855f7", bg: "rgba(168, 85, 247, 0.1)" },
+    { label: "Certificates Earned", count: 0, color: "#CABA61", bg: "rgba(202, 186, 97, 0.1)" }
   ];
 
   return (
@@ -134,25 +124,23 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ paddingRight: '40px' }}>
               <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Next Live Class</span>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '4px 0 2px 0', color: 'var(--text-primary)' }}>SAT Math Mastery</h3>
-              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>with Dr. Ahmed Al-Hassan</p>
+              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '4px 0 2px 0', color: 'var(--text-primary)' }}>No Upcoming Classes</h3>
+              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>Enroll in a course to see live classes</p>
             </div>
             
-            <img 
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" 
-              alt="Dr. Ahmed Al-Hassan" 
-              style={{ width: '46px', height: '46px', borderRadius: '8px', objectFit: 'cover' }}
-            />
+            <div style={{ width: '46px', height: '46px', borderRadius: '8px', background: 'rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Calendar size={20} color="var(--text-muted)" />
+            </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '14px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Clock size={14} />
-              Today, 6:00 PM
+              --:--
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Clock size={14} />
-              45 min
+              -- min
             </span>
           </div>
 

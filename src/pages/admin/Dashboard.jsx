@@ -9,47 +9,23 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
   const [hoveredIdx, setHoveredIdx] = useState(null);
 
   // Hardcoded values to match mockup exact states
-  const totalStudents = "25,680";
-  const totalTeachers = "1,248";
-  const totalCourses = "2,324";
-  const totalRevenue = "$248,750";
+  const totalStudents = students ? students.length.toString() : "0";
+  const totalTeachers = courses ? new Set(courses.map(c => c.teacher)).size.toString() : "0";
+  const totalCourses = courses ? courses.length.toString() : "0";
+  const totalRevenue = "$" + (courses ? courses.reduce((acc, c) => acc + (c.price * c.studentsCount), 0).toLocaleString() : "0");
 
-  const registrations = [
-    { name: "Sara Ahmed", email: "sara.ahmed@example.com", role: "Student", time: "2 min ago", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100" },
-    { name: "Mohammed Ali", email: "mohammed.ali@example.com", role: "Student", time: "15 min ago", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" },
-    { name: "Fatima Zahra", email: "fatima.zahra@example.com", role: "Student", time: "32 min ago", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" },
-    { name: "Omar Hassan", email: "omar.hassan@example.com", role: "Student", time: "1 hr ago", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100" },
-    { name: "James Wilson", email: "james.wilson@example.com", role: "Teacher", time: "2 hr ago", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100" }
-  ];
+  const registrations = [];
 
-  const topCourses = [
-    { title: "SAT Math Mastery", enrollments: "4,250", price: "$59", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" },
-    { title: "IELTS Speaking Success", enrollments: "3,860", price: "$49", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100" },
-    { title: "TOEFL iBT Complete Guide", enrollments: "3,210", price: "$54", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=100" },
-    { title: "GRE Quantitative Reasoning", enrollments: "2,980", price: "$59", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" },
-    { title: "Essay Writing Excellence", enrollments: "2,450", price: "$49", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" }
-  ];
+  const topCourses = [];
 
-  const activities = [
-    { text: 'New course "Digital Marketing Mastery" created', meta: 'By Sarah Johnson', time: '10 min ago', color: '#a855f7', bg: 'rgba(168,85,247,0.1)' },
-    { text: 'Payment received from Omar Hassan', meta: 'Amount: $59', time: '1 hr ago', color: '#22c55e', bg: 'rgba(34,197,94,0.1)' },
-    { text: 'New teacher James Wilson joined', meta: 'Teacher ID: #T-9824', time: '2 hr ago', color: '#f97316', bg: 'rgba(249,115,22,0.1)' },
-    { text: 'Live class "IELTS Writing" started', meta: 'By Fatima Al-Zahra', time: '3 hr ago', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
-    { text: 'New review for "SAT Math Mastery"', meta: 'By Aisha Rahman', time: '5 hr ago', color: '#eab308', bg: 'rgba(234,179,8,0.1)' }
-  ];
+  const activities = [];
 
-  const countryStats = [
-    { label: 'United States', percent: '38%', count: 38, color: '#3A2048', strokeDash: '119 314', strokeOffset: '0' },
-    { label: 'Saudi Arabia', percent: '22%', count: 22, color: '#CABA61', strokeDash: '69 314', strokeOffset: '-119' },
-    { label: 'Egypt', percent: '15%', count: 15, color: '#FFC92F', strokeDash: '47 314', strokeOffset: '-188' },
-    { label: 'India', percent: '10%', count: 10, color: '#0E7C7B', strokeDash: '31 314', strokeOffset: '-235' },
-    { label: 'Others', percent: '15%', count: 15, color: '#94a3b8', strokeDash: '47 314', strokeOffset: '-266' }
-  ];
+  const countryStats = [];
 
   // SVG curved line chart coordinate calculation
   const days = ['May 1', 'May 6', 'May 11', 'May 16', 'May 21', 'May 26', 'May 31'];
-  const studentsCoordsY = [120, 140, 110, 130, 90, 80, 100];
-  const revenueCoordsY = [150, 160, 140, 150, 120, 130, 110];
+  const studentsCoordsY = [150, 150, 150, 150, 150, 150, 150];
+  const revenueCoordsY = [150, 150, 150, 150, 150, 150, 150];
 
   const getBezierPath = (yCoords) => {
     let path = `M 50,${yCoords[0]}`;
@@ -81,9 +57,8 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Students</span>
             <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalStudents}</span>
-            <span style={{ fontSize: '11px', color: '#2BA84A', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              <TrendingUp size={12} />
-              12.5% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
             </span>
           </div>
         </div>
@@ -96,9 +71,8 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Teachers</span>
             <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalTeachers}</span>
-            <span style={{ fontSize: '11px', color: '#2BA84A', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              <TrendingUp size={12} />
-              8.3% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
             </span>
           </div>
         </div>
@@ -111,9 +85,8 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Courses</span>
             <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalCourses}</span>
-            <span style={{ fontSize: '11px', color: '#2BA84A', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              <TrendingUp size={12} />
-              10.7% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
             </span>
           </div>
         </div>
@@ -126,9 +99,8 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Revenue</span>
             <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalRevenue}</span>
-            <span style={{ fontSize: '11px', color: '#2BA84A', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              <TrendingUp size={12} />
-              15.4% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
             </span>
           </div>
         </div>
@@ -247,7 +219,7 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
                 ))}
               </svg>
               <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>25K</span>
+                <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>0</span>
                 <span style={{ fontSize: '8px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Enrolled</span>
               </div>
             </div>
@@ -347,10 +319,9 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
             <div>
               <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Revenue Overview</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>$248,750</span>
-                <span style={{ fontSize: '11px', color: '#2BA84A', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  <TrendingUp size={10} />
-                  +15.4%
+                <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>{totalRevenue}</span>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '2px' }}>
+                  0%
                 </span>
               </div>
             </div>
@@ -366,7 +337,7 @@ export default function Dashboard({ courses, classes, students, setActiveTab }) 
               <line x1="0" y1="110" x2="450" y2="110" stroke="var(--border-color)" strokeWidth="1" />
 
               {/* Bars */}
-              {[45, 60, 35, 70, 85, 50, 40, 95, 80, 55, 75, 90, 60, 85, 45, 70, 95, 30, 65, 80, 50, 75, 90].map((h, idx) => (
+              {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map((h, idx) => (
                 <rect 
                   key={idx}
                   x={12 + idx * 18}

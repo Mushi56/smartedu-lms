@@ -9,30 +9,37 @@ import {
 /* ═══════════════════════════════════════════════════════════════
    DATA
 ══════════════════════════════════════════════════════════════════ */
-const TRUSTED_TEACHERS = [
-  { name: 'Dr. Ahmed Al-Hassan', subject: 'SAT & ACT Expert', students: '2,450', rating: 4.9, reviews: '320', exp: '8 yrs', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&h=200' },
-  { name: 'Ms. Sarah Johnson', subject: 'IELTS & TOEFL Expert', students: '1,980', rating: 4.8, reviews: '290', exp: '6 yrs', img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&h=200' },
-  { name: 'Dr. Michael Chen', subject: 'GRE & GMAT Expert', students: '3,210', rating: 4.9, reviews: '410', exp: '10 yrs', img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&h=200' },
-  { name: 'Ms. Fatima Al-Zahra', subject: 'Arabic Language Expert', students: '1,420', rating: 4.8, reviews: '180', exp: '7 yrs', img: 'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?auto=format&fit=crop&w=200&h=200' },
-  { name: 'Mr. David Wilson', subject: 'Computer Science Expert', students: '2,180', rating: 4.9, reviews: '260', exp: '9 yrs', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200' },
-];
+const TRUSTED_TEACHERS = Array.from({ length: 10 }).map((_, i) => ({
+  name: `Teacher ${i + 1}`,
+  subject: i % 2 === 0 ? 'SAT & ACT Expert' : 'IELTS & TOEFL Expert',
+  students: `${1000 + i * 150}`,
+  rating: (4.8 + Math.random() * 0.2).toFixed(1),
+  reviews: `${100 + i * 20}`,
+  exp: `${5 + i} yrs`,
+  img: i % 2 === 0 ? 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&h=200' : 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&h=200'
+}));
 
 const EXAM_CATEGORIES = [
-  { icon: Award, title: 'Scholarship Exams', desc: 'Prepare for international scholarships and funding opportunities.', teachers: '120+', courses: '400+', color: '#7c3aed', bg: 'rgba(124,58,237,0.08)' },
-  { icon: GraduationCap, title: 'University Admissions', desc: 'Secure admission to your dream universities worldwide.', teachers: '180+', courses: '680+', color: '#CABA61', bg: 'rgba(202,186,97,0.1)' },
-  { icon: Globe, title: 'Language Proficiency Tests', desc: 'IELTS, TOEFL, PTE and other language certifications.', teachers: '210+', courses: '520+', color: '#0ea5e9', bg: 'rgba(14,165,233,0.08)' },
-  { icon: Bookmark, title: 'Professional Certifications', desc: 'Industry-recognized credentials to advance your career.', teachers: '95+', courses: '310+', color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
-  { icon: TrendingUp, title: 'Career Development', desc: 'Skills for professional growth and workforce readiness.', teachers: '140+', courses: '450+', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)' },
-  { icon: BookOpen, title: 'Academic Success', desc: 'Strong academic foundations from school to university.', teachers: '160+', courses: '580+', color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
+  { icon: Award, title: 'Scholarship Exams', desc: 'Prepare for international scholarships and funding opportunities.', teachers: '10', courses: '25', color: '#7c3aed', bg: 'rgba(124,58,237,0.08)' },
+  { icon: GraduationCap, title: 'University Admissions', desc: 'Secure admission to your dream universities worldwide.', teachers: '15', courses: '30', color: '#CABA61', bg: 'rgba(202,186,97,0.1)' },
+  { icon: Globe, title: 'Language Proficiency Tests', desc: 'IELTS, TOEFL, PTE and other language certifications.', teachers: '12', courses: '20', color: '#0ea5e9', bg: 'rgba(14,165,233,0.08)' },
+  { icon: Bookmark, title: 'Professional Certifications', desc: 'Industry-recognized credentials to advance your career.', teachers: '8', courses: '15', color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
+  { icon: TrendingUp, title: 'Career Development', desc: 'Skills for professional growth and workforce readiness.', teachers: '10', courses: '18', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)' },
+  { icon: BookOpen, title: 'Academic Success', desc: 'Strong academic foundations from school to university.', teachers: '14', courses: '22', color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
 ];
 
-const FEATURED_COURSES = [
-  { title: 'SAT Math Mastery Course', instructor: 'Dr. Ahmed Al-Hassan', rating: 4.8, reviews: 4200, students: 12400, hours: 32, price: 79, oldPrice: 149, img: 'https://images.unsplash.com/photo-1509869175650-a1d97972541a?auto=format&fit=crop&w=400&h=220', badge: 'Bestseller' },
-  { title: 'IELTS Speaking Success', instructor: 'Ms. Sarah Johnson', rating: 4.9, reviews: 3249, students: 12560, hours: 28, price: 69, oldPrice: 129, img: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&w=400&h=220', badge: 'Top Rated' },
-  { title: 'GRE Quantitative Reasoning', instructor: 'Dr. Michael Chen', rating: 4.8, reviews: 3223, students: 8920, hours: 45, price: 89, oldPrice: 179, img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&h=220', badge: 'New' },
-  { title: 'TOEFL Complete Guide', instructor: 'Ms. Sarah Johnson', rating: 4.8, reviews: 2890, students: 7230, hours: 38, price: 74, oldPrice: 139, img: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=400&h=220', badge: '' },
-  { title: 'Essay Writing Excellence', instructor: 'Mr. David Wilson', rating: 4.9, reviews: 2200, students: 6890, hours: 22, price: 59, oldPrice: 99, img: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=400&h=220', badge: '' },
-];
+const FEATURED_COURSES = Array.from({ length: 10 }).map((_, i) => ({
+  title: `Featured Course ${i + 1}`,
+  instructor: `Instructor ${i + 1}`,
+  rating: (4.5 + Math.random() * 0.5).toFixed(1),
+  reviews: 100 + i * 20,
+  students: 1000 + i * 50,
+  hours: 20 + i * 2,
+  price: 59 + i * 5,
+  oldPrice: 129 + i * 5,
+  img: 'https://images.unsplash.com/photo-1509869175650-a1d97972541a?auto=format&fit=crop&w=400&h=220',
+  badge: i === 0 ? 'Bestseller' : i === 1 ? 'Top Rated' : ''
+}));
 
 const FEATURES = [
   { icon: Mic, title: 'Expert Teachers', desc: 'Learn from certified educators with years of experience.', color: '#7c3aed' },
@@ -50,18 +57,20 @@ const JOURNEY_STEPS = [
   { num: '04', icon: Trophy, title: 'Achieve Your Success', desc: 'Pass your exam and achieve your academic dreams.', color: '#15803d', bg: '#dcfce7' },
 ];
 
-const SUCCESS_STORIES = [
-  { name: 'Aisha Rahman', school: 'MIT Alum', text: 'Thanks to Dr. Ahmed\'s guidance, I improved my score by 300 points and got admitted to MIT on a full scholarship!', img: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=100&h=100', rating: 5 },
-  { name: 'Omar Hassan', school: 'Cambridge', text: "Ms. Sarah's IELTS course was excellent. I got 7.5 overall and am now studying at the University of Melbourne.", img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=100&h=100', rating: 5 },
-  { name: 'Fatima Al-Zahra', school: 'Carnegie Mellon', text: 'Dr. Michael\'s strategies and practice tests were exceptional. I earned a complete scholarship to Carnegie Mellon.', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100', rating: 5 },
-];
+const SUCCESS_STORIES = Array.from({ length: 5 }).map((_, i) => ({
+  name: `Successful Student ${i + 1}`,
+  school: i % 2 === 0 ? 'MIT Alum' : 'Cambridge',
+  text: `This platform really helped me achieve my goals! I highly recommend Teacher ${i + 1}.`,
+  img: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=100&h=100',
+  rating: 5
+}));
 
 const RESOURCES = [
-  { icon: BookOpen, title: 'Study Guides', count: '24 Articles', color: '#7c3aed', bg: 'rgba(124,58,237,0.08)' },
-  { icon: Lightbulb, title: 'Exam Tips', count: '18 Articles', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)' },
-  { icon: Download, title: 'Downloadable Notes', count: '45 Resources', color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
-  { icon: BarChart2, title: 'Learning Analytics', count: '12 Reports', color: '#0ea5e9', bg: 'rgba(14,165,233,0.08)' },
-  { icon: FileText, title: 'Educational Articles', count: '36 Articles', color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
+  { icon: BookOpen, title: 'Study Guides', count: '10 Articles', color: '#7c3aed', bg: 'rgba(124,58,237,0.08)' },
+  { icon: Lightbulb, title: 'Exam Tips', count: '15 Articles', color: '#f59e0b', bg: 'rgba(245,158,11,0.08)' },
+  { icon: Download, title: 'Downloadable Notes', count: '20 Resources', color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
+  { icon: BarChart2, title: 'Learning Analytics', count: '5 Reports', color: '#0ea5e9', bg: 'rgba(14,165,233,0.08)' },
+  { icon: FileText, title: 'Educational Articles', count: '12 Articles', color: '#ef4444', bg: 'rgba(239,68,68,0.08)' },
 ];
 
 
