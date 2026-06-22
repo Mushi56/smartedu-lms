@@ -243,8 +243,8 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                   cursor: 'pointer'
                 }}
               >
-                {/* 16:9 Thumbnail */}
-                <div style={{ width: '100%', aspectRatio: '16/9', position: 'relative', flexShrink: 0 }}>
+                {/* 9:16 Portrait Thumbnail */}
+                <div style={{ width: '100%', aspectRatio: '9/16', position: 'relative', flexShrink: 0, maxHeight: '200px', overflow: 'hidden' }}>
                   <img 
                     src={activeCourse.thumbnail} 
                     alt={activeCourse.title} 
@@ -441,8 +441,8 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
           </div>
         </div>
 
-        {/* Metrics Grid (2x2 - all 4 cards visible, no scroll needed) */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '0 0 -30px 0', zIndex: 20 }}>
+        {/* Metrics Row - all 4 cards in one line */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', margin: '0 0 -30px 0', zIndex: 20 }}>
           {adminMetrics.map((metric, idx) => {
             const IconComponent = metric.icon;
             return (
@@ -450,21 +450,18 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                 key={idx} 
                 className="custom-home-card" 
                 style={{ 
-                  padding: '12px',
+                  padding: '10px 8px',
                   boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
-                  textAlign: 'left'
+                  textAlign: 'left',
+                  gap: '6px'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '8.5px', fontWeight: 700, color: '#8c7f94' }}>{metric.title}</span>
-                  <div style={{ width: '24px', height: '24px', borderRadius: '6px', backgroundColor: `${metric.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <IconComponent size={13} style={{ color: metric.color }} />
-                  </div>
+                <div style={{ width: '22px', height: '22px', borderRadius: '6px', backgroundColor: `${metric.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
+                  <IconComponent size={12} style={{ color: metric.color }} />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 800, color: '#1e0926', lineHeight: 1.1 }}>{metric.value}</span>
-                  <span style={{ fontSize: '8.5px', fontWeight: 800, color: '#10b981' }}>{metric.change}</span>
-                </div>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#1e0926', lineHeight: 1.1, display: 'block' }}>{metric.value}</span>
+                <span style={{ fontSize: '7px', fontWeight: 700, color: '#8c7f94', lineHeight: 1.2, display: 'block' }}>{metric.title}</span>
+                <span style={{ fontSize: '7.5px', fontWeight: 800, color: '#10b981', display: 'block' }}>{metric.change}</span>
               </div>
             );
           })}
