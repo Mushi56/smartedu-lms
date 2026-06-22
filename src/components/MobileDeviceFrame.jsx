@@ -25,20 +25,11 @@ export default function MobileDeviceFrame({ children }) {
     <div className="desktop-wrapper">
       <div className="device-frame">
         {/* Device Status Bar */}
-        <div className="device-status-bar simulator-only">
-          <span>{time}</span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Signal size={12} />
-            <Wifi size={12} />
-            <Battery size={13} style={{ transform: 'rotate(90deg)' }} />
-          </div>
-        </div>
 
         {/* Device Screen Content */}
         {children}
 
         {/* Home Navigation Indicator Bar */}
-        <div className="device-home-bar simulator-only" />
       </div>
     </div>
   );
