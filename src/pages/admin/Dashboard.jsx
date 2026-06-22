@@ -1,399 +1,277 @@
 import React, { useState } from 'react';
-import { 
-  Users, BookOpen, Video, CreditCard, DollarSign, Calendar, TrendingUp,
-  UserPlus, Star, ArrowRight, Activity, PlusCircle, CheckCircle, HelpCircle
+import {
+  Users, BookOpen, DollarSign, TrendingUp, Star,
+  UserPlus, Activity, ChevronRight, Video, BarChart2,
+  ArrowUpRight, Clock, CheckCircle, AlertCircle
 } from 'lucide-react';
 
+const card = {
+  background: '#fff',
+  borderRadius: '16px',
+  border: '1px solid #ede9f4',
+  padding: '16px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+};
+
+const sectionLabel = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+};
+
+const seeAllBtn = {
+  fontSize: '11px', fontWeight: 700,
+  color: 'var(--primary-color)',
+  background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+};
+
+const AVATARS = [
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80',
+  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=80&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80',
+  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=80&q=80',
+];
+
 export default function Dashboard({ courses, classes, students, setActiveTab }) {
-  const [analyticsMonth, setAnalyticsMonth] = useState('This Month');
   const [hoveredIdx, setHoveredIdx] = useState(null);
 
-  // Hardcoded values to match mockup exact states
-  const totalStudents = students ? students.length.toString() : "0";
-  const totalTeachers = courses ? new Set(courses.map(c => c.teacher)).size.toString() : "0";
-  const totalCourses = courses ? courses.length.toString() : "0";
-  const totalRevenue = "$" + (courses ? courses.reduce((acc, c) => acc + (c.price * c.studentsCount), 0).toLocaleString() : "0");
+  const totalStudents = students ? students.length : 0;
+  const totalTeachers = courses ? new Set(courses.map(c => c.teacher)).size : 0;
+  const totalCourses = courses ? courses.length : 0;
+  const totalRevenue = courses ? courses.reduce((acc, c) => acc + (c.price * (c.studentsCount || 0)), 0) : 0;
 
-  const registrations = [];
+  const metricCards = [
+    { label: 'Students', value: totalStudents.toLocaleString(), change: '+12%', icon: Users, color: '#3A2048', bg: 'rgba(58,32,72,0.08)' },
+    { label: 'Teachers', value: totalTeachers.toLocaleString(), change: '+5%', icon: UserPlus, color: '#CABA61', bg: 'rgba(202,186,97,0.12)' },
+    { label: 'Courses', value: totalCourses.toLocaleString(), change: '+8%', icon: BookOpen, color: '#0E7C7B', bg: 'rgba(14,124,123,0.08)' },
+    { label: 'Revenue', value: `$${(totalRevenue / 1000).toFixed(1)}k`, change: '+18%', icon: DollarSign, color: '#2BA84A', bg: 'rgba(43,168,74,0.08)' },
+  ];
 
-  const topCourses = [];
+  // Mini chart data for bar sparkline
+  const barData = [35, 52, 40, 68, 45, 78, 60, 90, 55, 80, 72, 95];
+  const maxBar = Math.max(...barData);
 
-  const activities = [];
+  // SVG line chart
+  const linePoints = [80, 65, 72, 50, 60, 40, 45, 30, 42, 25, 35, 20];
+  const lineMax = Math.max(...linePoints);
+  const lineMin = Math.min(...linePoints);
+  const chartH = 80;
+  const chartW = 280;
+  const pts = linePoints.map((v, i) => {
+    const x = (i / (linePoints.length - 1)) * chartW;
+    const y = chartH - ((v - lineMin) / (lineMax - lineMin)) * (chartH - 10) - 5;
+    return `${x},${y}`;
+  }).join(' ');
 
-  const countryStats = [];
+  // Recent activities (mock)
+  const activities = [
+    { icon: UserPlus, color: '#6366f1', bg: 'rgba(99,102,241,0.1)', text: 'New student registered', meta: 'Ahmed K. · SAT Math', time: '2m ago' },
+    { icon: BookOpen, color: '#22c55e', bg: 'rgba(34,197,94,0.1)', text: 'Course published', meta: 'IELTS Writing Mastery', time: '18m ago' },
+    { icon: DollarSign, color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', text: 'Payment received', meta: '$149 · GRE Prep', time: '1h ago' },
+    { icon: Video, color: '#ef4444', bg: 'rgba(239,68,68,0.1)', text: 'Live class started', meta: 'SAT Math Practice', time: '2h ago' },
+    { icon: CheckCircle, color: '#0E7C7B', bg: 'rgba(14,124,123,0.1)', text: 'Student completed course', meta: 'Sara A. · TOEFL', time: '3h ago' },
+  ];
 
-  // SVG curved line chart coordinate calculation
-  const days = ['May 1', 'May 6', 'May 11', 'May 16', 'May 21', 'May 26', 'May 31'];
-  const studentsCoordsY = [150, 150, 150, 150, 150, 150, 150];
-  const revenueCoordsY = [150, 150, 150, 150, 150, 150, 150];
-
-  const getBezierPath = (yCoords) => {
-    let path = `M 50,${yCoords[0]}`;
-    for (let i = 0; i < yCoords.length - 1; i++) {
-      const x1 = 50 + i * 80;
-      const y1 = yCoords[i];
-      const x2 = 50 + (i + 1) * 80;
-      const y2 = yCoords[i + 1];
-      const cx1 = x1 + 40;
-      const cy1 = y1;
-      const cx2 = x2 - 40;
-      const cy2 = y2;
-      path += ` C ${cx1},${cy1} ${cx2},${cy2} ${x2},${y2}`;
-    }
-    return path;
-  };
+  // Top courses (from real data or fallback)
+  const topCourses = courses && courses.length > 0
+    ? courses.slice(0, 4).map((c, i) => ({ ...c, enrollments: c.studentsCount || Math.floor(Math.random() * 500 + 100) }))
+    : [
+        { id: 't1', title: 'SAT Math Mastery', teacher: 'Dr. Ahmed', price: 149, enrollments: 1240 },
+        { id: 't2', title: 'IELTS Writing', teacher: 'Ms. Sarah', price: 99, enrollments: 980 },
+        { id: 't3', title: 'GRE Prep', teacher: 'Dr. Michael', price: 179, enrollments: 740 },
+      ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'left' }} className="animate-fade-in">
-      
-      {/* SECTION 1: Stat Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
-        
-        {/* Total Students */}
-        <div className="smart-card" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
-          <div style={{ width: '46px', height: '46px', borderRadius: '12px', backgroundColor: 'rgba(58, 32, 72, 0.08)', color: '#3A2048', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Users size={22} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Students</span>
-            <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalStudents}</span>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
-            </span>
-          </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }} className="animate-fade-in">
+
+      {/* ── Welcome Banner ──────────────────────────────────────── */}
+      <div style={{
+        background: 'linear-gradient(135deg, #3A2048 0%, #5a2d80 100%)',
+        borderRadius: '18px', padding: '18px 20px', color: '#fff',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div>
+          <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>Good morning 👋</div>
+          <h2 style={{ fontSize: '18px', fontWeight: 800, margin: '2px 0 4px 0' }}>Admin Dashboard</h2>
+          <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.65)', margin: 0 }}>
+            {totalCourses} active course{totalCourses !== 1 ? 's' : ''} · {totalStudents} student{totalStudents !== 1 ? 's' : ''}
+          </p>
         </div>
-
-        {/* Total Teachers */}
-        <div className="smart-card" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
-          <div style={{ width: '46px', height: '46px', borderRadius: '12px', backgroundColor: 'rgba(202, 186, 97, 0.15)', color: '#CABA61', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Users size={22} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Teachers</span>
-            <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalTeachers}</span>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Total Courses */}
-        <div className="smart-card" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
-          <div style={{ width: '46px', height: '46px', borderRadius: '12px', backgroundColor: 'rgba(14, 124, 123, 0.08)', color: '#0E7C7B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <BookOpen size={22} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Courses</span>
-            <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalCourses}</span>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Total Revenue */}
-        <div className="smart-card" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px' }}>
-          <div style={{ width: '46px', height: '46px', borderRadius: '12px', backgroundColor: 'rgba(43, 168, 74, 0.08)', color: '#2BA84A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <DollarSign size={22} />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Revenue</span>
-            <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0' }}>{totalRevenue}</span>
-            <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-              0% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>vs last month</span>
-            </span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* SECTION 2: Line Chart & Donut Chart */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-        
-        {/* Line Chart */}
-        <div className="smart-card" style={{ flex: '2 1 500px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Analytics Overview</h3>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{ display: 'flex', gap: '12px', fontSize: '11px', fontWeight: 600 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#6366f1' }}></span>
-                  Students
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)' }}>
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--secondary-color)' }}></span>
-                  Revenue
-                </div>
-              </div>
-              <select 
-                value={analyticsMonth} 
-                onChange={(e) => setAnalyticsMonth(e.target.value)}
-                style={{ padding: '4px 10px', fontSize: '11px', borderRadius: '4px', border: '1px solid var(--border-color)', backgroundColor: '#ffffff' }}
-              >
-                <option>This Month</option>
-                <option>Last Month</option>
-              </select>
-            </div>
-          </div>
-
-          <div style={{ flex: 1, minHeight: '180px', position: 'relative' }}>
-            {/* Custom SVG Line Chart */}
-            <svg viewBox="0 0 580 180" width="100%" height="100%">
-              {/* Horizontal grid lines */}
-              <line x1="40" y1="40" x2="540" y2="40" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="40" y1="80" x2="540" y2="80" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="40" y1="120" x2="540" y2="120" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="40" y1="150" x2="540" y2="150" stroke="var(--border-color)" strokeWidth="1" />
-
-              {/* Curves */}
-              <path d={getBezierPath(studentsCoordsY)} fill="none" stroke="#6366f1" strokeWidth="3" strokeLinecap="round" />
-              <path d={getBezierPath(revenueCoordsY)} fill="none" stroke="var(--secondary-color)" strokeWidth="3" strokeLinecap="round" />
-
-              {/* Grid dots and Interaction anchors */}
-              {studentsCoordsY.map((sy, idx) => {
-                const x = 50 + idx * 80;
-                const ry = revenueCoordsY[idx];
-                const isHovered = hoveredIdx === idx;
-                return (
-                  <g key={idx} onMouseEnter={() => setHoveredIdx(idx)} onMouseLeave={() => setHoveredIdx(null)} style={{ cursor: 'pointer' }}>
-                    {isHovered && (
-                      <line x1={x} y1="30" x2={x} y2="150" stroke="#3A2048" strokeOpacity="0.15" strokeWidth="1.5" />
-                    )}
-                    <circle cx={x} cy={sy} r={isHovered ? 6 : 4} fill="#6366f1" stroke="#ffffff" strokeWidth="2" />
-                    <circle cx={x} cy={ry} r={isHovered ? 6 : 4} fill="var(--secondary-color)" stroke="#ffffff" strokeWidth="2" />
-                  </g>
-                );
-              })}
-
-              {/* X Axis labels */}
-              {days.map((day, idx) => (
-                <text key={idx} x={50 + idx * 80} y="170" fill="var(--text-muted)" fontSize="9" fontWeight="600" textAnchor="middle">
-                  {day}
-                </text>
-              ))}
-            </svg>
-
-            {/* Hover Tooltip */}
-            {hoveredIdx !== null && (
-              <div style={{
-                position: 'absolute',
-                left: `${40 + hoveredIdx * 70}px`,
-                top: '10px',
-                backgroundColor: '#ffffff',
-                padding: '8px 12px',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                fontSize: '11px',
-                border: '1px solid var(--border-color)',
-                zIndex: 10
-              }}>
-                <span style={{ fontWeight: 700, display: 'block', marginBottom: '4px' }}>{days[hoveredIdx]}, 2026</span>
-                <span style={{ color: '#6366f1', display: 'block', fontWeight: 600 }}>Students: {Math.round(25000 - studentsCoordsY[hoveredIdx] * 70)}</span>
-                <span style={{ color: 'var(--secondary-color)', display: 'block', fontWeight: 600 }}>Revenue: ${Math.round(250000 - revenueCoordsY[hoveredIdx] * 700)}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Donut Chart */}
-        <div className="smart-card" style={{ flex: '1 1 250px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Students by Country</h3>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
-            <div style={{ position: 'relative', width: '110px', height: '110px' }}>
-              <svg viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)', width: '100%', height: '100%' }}>
-                {countryStats.map((seg, idx) => (
-                  <circle
-                    key={idx}
-                    cx="60"
-                    cy="60"
-                    r="50"
-                    fill="transparent"
-                    stroke={seg.color}
-                    strokeWidth="10"
-                    strokeDasharray={seg.strokeDash}
-                    strokeDashoffset={seg.strokeOffset}
-                    strokeLinecap="round"
-                  />
-                ))}
-              </svg>
-              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>0</span>
-                <span style={{ fontSize: '8px', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Enrolled</span>
-              </div>
-            </div>
-
-            {/* Legends list */}
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px' }}>
-              {countryStats.map((seg, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: seg.color }}></span>
-                    <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>{seg.label}</span>
-                  </div>
-                  <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{seg.percent}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <BarChart2 size={24} style={{ color: '#fff' }} />
         </div>
       </div>
 
-      {/* SECTION 3: Recent Registrations & Top Courses */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-        
-        {/* Recent Registrations */}
-        <div className="smart-card" style={{ flex: '1.2 1 400px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Recent Registrations</h3>
-            <button onClick={() => setActiveTab('students')} style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {registrations.map((user, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: idx !== registrations.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <img 
-                    src={user.avatar} 
-                    alt={user.name} 
-                    style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                  <div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{user.name}</h4>
-                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{user.email}</span>
-                  </div>
+      {/* ── 4 Stat Cards in 2×2 grid ────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+        {metricCards.map((m, i) => {
+          const Icon = m.icon;
+          return (
+            <div key={i} style={{ ...card, padding: '14px', gap: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: m.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon size={16} style={{ color: m.color }} />
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{
-                    fontSize: '10px',
-                    fontWeight: 700,
-                    padding: '3px 8px',
-                    borderRadius: '10px',
-                    backgroundColor: user.role === 'Teacher' ? 'rgba(249,115,22,0.1)' : 'rgba(58,32,72,0.06)',
-                    color: user.role === 'Teacher' ? '#f97316' : '#3A2048',
-                    display: 'inline-block',
-                    marginBottom: '2px'
-                  }}>{user.role}</span>
-                  <p style={{ fontSize: '9px', color: 'var(--text-muted)', margin: 0 }}>{user.time}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Top Courses */}
-        <div className="smart-card" style={{ flex: '1 1 350px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Top Courses</h3>
-            <button onClick={() => setActiveTab('courses')} style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {topCourses.map((course, idx) => (
-              <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderBottom: idx !== topCourses.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <img 
-                    src={course.avatar} 
-                    alt={course.title} 
-                    style={{ width: '38px', height: '38px', borderRadius: '8px', objectFit: 'cover' }}
-                  />
-                  <div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{course.title}</h4>
-                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>Enrollments: {course.enrollments}</span>
-                  </div>
-                </div>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{course.price}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* SECTION 4: Revenue Overview & Platform Activity */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-        
-        {/* Revenue Overview (Bar Chart) */}
-        <div className="smart-card" style={{ flex: '1.2 1 400px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Revenue Overview</h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>{totalRevenue}</span>
-                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  0%
+                <span style={{ fontSize: '9.5px', fontWeight: 800, color: '#10b981', background: 'rgba(16,185,129,0.1)', padding: '2px 6px', borderRadius: '6px' }}>
+                  {m.change}
                 </span>
               </div>
-            </div>
-            <button style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View Report</button>
-          </div>
-
-          {/* Vertical Bar Chart SVG */}
-          <div style={{ flex: 1, minHeight: '120px', display: 'flex', alignItems: 'flex-end', paddingTop: '10px' }}>
-            <svg viewBox="0 0 450 120" width="100%" height="100%">
-              {/* Grid lines */}
-              <line x1="0" y1="30" x2="450" y2="30" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="3 3" />
-              <line x1="0" y1="70" x2="450" y2="70" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="3 3" />
-              <line x1="0" y1="110" x2="450" y2="110" stroke="var(--border-color)" strokeWidth="1" />
-
-              {/* Bars */}
-              {[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].map((h, idx) => (
-                <rect 
-                  key={idx}
-                  x={12 + idx * 18}
-                  y={110 - h}
-                  width="10"
-                  height={h}
-                  fill="rgba(58, 32, 72, 0.75)"
-                  rx="3"
-                  style={{ transition: 'height 0.3s ease' }}
-                />
-              ))}
-
-              {/* Labels */}
-              <text x="12" y="119" fill="var(--text-muted)" fontSize="8" fontWeight="600">May 1</text>
-              <text x="210" y="119" fill="var(--text-muted)" fontSize="8" fontWeight="600" textAnchor="middle">May 16</text>
-              <text x="410" y="119" fill="var(--text-muted)" fontSize="8" fontWeight="600" textAnchor="middle">May 31</text>
-            </svg>
-          </div>
-        </div>
-
-        {/* Platform Activity Logs */}
-        <div className="smart-card" style={{ flex: '1 1 350px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Platform Activity</h3>
-            <button style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {activities.map((act, idx) => (
-              <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                <div style={{ 
-                  width: '28px', 
-                  height: '28px', 
-                  borderRadius: '50%', 
-                  backgroundColor: act.bg, 
-                  color: act.color, 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  marginTop: '2px'
-                }}>
-                  <Activity size={13} />
-                </div>
-                
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ textAlign: 'left' }}>
-                    <h4 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>{act.text}</h4>
-                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{act.meta}</span>
-                  </div>
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)', flexShrink: 0, marginLeft: '12px' }}>{act.time}</span>
-                </div>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>{m.value}</div>
+                <div style={{ fontSize: '10px', color: 'var(--text-secondary)', marginTop: '2px' }}>{m.label}</div>
               </div>
-            ))}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Revenue Chart ────────────────────────────────────────── */}
+      <div style={card}>
+        <div style={sectionLabel}>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Revenue Overview</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '1px' }}>Last 12 months</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>${(totalRevenue / 1000).toFixed(1)}k</div>
+            <div style={{ fontSize: '9px', color: '#10b981', fontWeight: 700 }}>↑ 18% vs last yr</div>
           </div>
         </div>
+
+        {/* SVG Bar Sparkline */}
+        <div style={{ height: '80px', display: 'flex', alignItems: 'flex-end', gap: '4px' }}>
+          {barData.map((v, i) => (
+            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+              <div
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                style={{
+                  width: '100%',
+                  height: `${(v / maxBar) * 64}px`,
+                  background: i === hoveredIdx ? 'var(--primary-color)' : i === barData.length - 1 ? '#CABA61' : 'rgba(58,32,72,0.18)',
+                  borderRadius: '4px 4px 0 0',
+                  transition: 'background 0.2s',
+                  cursor: 'pointer',
+                  minHeight: '4px',
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8px', color: 'var(--text-muted)', fontWeight: 600 }}>
+          {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
+            <span key={m}>{m}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Enrollment Trend Line ───────────────────────────────── */}
+      <div style={card}>
+        <div style={sectionLabel}>
+          <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Enrollment Trend</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: '#10b981', fontWeight: 700 }}>
+            <ArrowUpRight size={12} /> +24 this week
+          </div>
+        </div>
+        <svg viewBox={`0 0 ${chartW} ${chartH + 10}`} width="100%" height="80" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          {/* Fill */}
+          <polygon
+            points={`0,${chartH} ${pts} ${chartW},${chartH}`}
+            fill="url(#lineGrad)"
+          />
+          {/* Line */}
+          <polyline points={pts} fill="none" stroke="#6366f1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {/* Dots */}
+          {linePoints.map((v, i) => {
+            const x = (i / (linePoints.length - 1)) * chartW;
+            const y = chartH - ((v - lineMin) / (lineMax - lineMin)) * (chartH - 10) - 5;
+            return <circle key={i} cx={x} cy={y} r="3" fill="#6366f1" stroke="#fff" strokeWidth="1.5" />;
+          })}
+        </svg>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '8px', color: 'var(--text-muted)', fontWeight: 600 }}>
+          {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(m => (
+            <span key={m}>{m}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Top Courses ──────────────────────────────────────────── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={sectionLabel}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Top Courses</span>
+          <button style={seeAllBtn} onClick={() => setActiveTab('courses')}>See All</button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {topCourses.map((c, i) => (
+            <div key={c.id} style={{ ...card, flexDirection: 'row', alignItems: 'center', gap: '12px', padding: '12px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '8px', overflow: 'hidden', flexShrink: 0, background: '#3A2048', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {c.thumbnail
+                  ? <img src={c.thumbnail} alt={c.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <BookOpen size={16} style={{ color: 'rgba(255,255,255,0.7)' }} />
+                }
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 1px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.title}</h4>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{c.enrollments} enrolled</span>
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--primary-color)', flexShrink: 0 }}>${c.price}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Recent Activity ──────────────────────────────────────── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={sectionLabel}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Recent Activity</span>
+          <button style={seeAllBtn}>See All</button>
+        </div>
+        <div style={card}>
+          {activities.map((act, i) => {
+            const Icon = act.icon;
+            return (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', paddingBottom: i < activities.length - 1 ? '12px' : 0, borderBottom: i < activities.length - 1 ? '1px solid #ede9f4' : 'none' }}>
+                <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: act.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                  <Icon size={13} style={{ color: act.color }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{act.text}</div>
+                  <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{act.meta}</div>
+                </div>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', flexShrink: 0 }}>{act.time}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Quick Stats Row ──────────────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', paddingBottom: '8px' }}>
+        {[
+          { label: 'Avg Rating', value: '4.8', sub: 'Across all courses', icon: Star, color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+          { label: 'Live Today', value: classes ? classes.filter(c => c.isLive).length.toString() : '0', sub: 'Active classes', icon: Video, color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+        ].map((s, i) => {
+          const Icon = s.icon;
+          return (
+            <div key={i} style={{ ...card, padding: '14px', gap: '6px' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon size={15} style={{ color: s.color }} />
+              </div>
+              <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{s.label}</div>
+              <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{s.sub}</div>
+            </div>
+          );
+        })}
       </div>
 
     </div>

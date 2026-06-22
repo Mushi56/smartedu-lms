@@ -1,449 +1,303 @@
 import React from 'react';
-import { Flame, Clock, BookOpen, Award, FileText, Play, CheckCircle, Calendar, Star, MessageSquare, Folder, Heart, ChevronRight } from 'lucide-react';
+import {
+  Flame, Clock, BookOpen, Award, FileText, Play,
+  CheckCircle, Calendar, Star, ChevronRight, TrendingUp
+} from 'lucide-react';
+
+const card = {
+  background: '#fff',
+  borderRadius: '16px',
+  border: '1px solid #ede9f4',
+  padding: '16px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+};
+
+const sectionLabel = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '2px',
+};
+
+const seeAllBtn = {
+  fontSize: '11px',
+  fontWeight: 700,
+  color: 'var(--primary-color)',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  padding: 0,
+};
 
 export default function Dashboard({ courses, classes, streak, overallProgress, setActiveTab, onSelectCourse }) {
-  // Calculate stats dynamically from actual course and class list data
   const completedLessons = courses ? courses.reduce((sum, c) => sum + Math.round((c.progress / 100) * (c.chaptersCount || 10)), 0) : 12;
-  const inProgressLessons = courses ? courses.filter(c => c.progress > 0 && c.progress < 100).length : 2;
+  const inProgress = courses ? courses.filter(c => c.progress > 0 && c.progress < 100).length : 2;
   const totalChapters = courses ? courses.reduce((sum, c) => sum + (c.chaptersCount || 10), 0) : 30;
-  const remainingLessons = Math.max(0, totalChapters - completedLessons);
+  const remaining = Math.max(0, totalChapters - completedLessons);
 
-  const scheduleList = classes && classes.length > 0
-    ? classes.slice(0, 3).map(c => ({
-        id: c.id,
-        title: c.title,
-        type: c.isLive ? 'Live Class' : 'Scheduled Class',
-        time: `${c.time} ${c.ampm.toUpperCase()}`
-      }))
-    : [
-        { id: 's1', title: 'SAT Math Live Practice', type: 'Live Class', time: '06:00 PM' },
-        { id: 's2', title: 'IELTS Speaking Workshop', type: 'Scheduled Class', time: '08:00 PM' }
-      ];
-
-  const recentResources = [
-    { id: 1, name: 'SAT Math Formula Sheet', type: 'PDF', size: '2.4 MB' },
-    { id: 2, name: 'IELTS Writing Samples', type: 'PDF', size: '1.8 MB' },
-    { id: 3, name: 'GRE Quant Formula Sheet', type: 'PDF', size: '1.2 MB' }
-  ];
+  const nextClass = classes && classes.length > 0 ? classes[0] : null;
 
   const achievements = [
-    { label: "Courses Enrolled", count: courses ? courses.length : 0, color: "#eab308", bg: "rgba(234, 179, 8, 0.1)" },
-    { label: "Lessons Completed", count: completedLessons, color: "#f97316", bg: "rgba(249, 115, 22, 0.1)" },
-    { label: "Assignments Done", count: courses ? courses.filter(c => c.progress > 15).length + 1 : 3, color: "#a855f7", bg: "rgba(168, 85, 247, 0.1)" },
-    { label: "Certificates Earned", count: courses ? courses.filter(c => c.progress === 100).length : 0, color: "#CABA61", bg: "rgba(202, 186, 97, 0.1)" }
+    { label: 'Enrolled', count: courses ? courses.length : 0, color: '#eab308', bg: 'rgba(234,179,8,0.1)' },
+    { label: 'Completed', count: completedLessons, color: '#f97316', bg: 'rgba(249,115,22,0.1)' },
+    { label: 'Assignments', count: courses ? courses.filter(c => c.progress > 15).length + 1 : 3, color: '#a855f7', bg: 'rgba(168,85,247,0.1)' },
+    { label: 'Certificates', count: courses ? courses.filter(c => c.progress === 100).length : 0, color: '#CABA61', bg: 'rgba(202,186,97,0.1)' },
+  ];
+
+  const resources = [
+    { id: 1, name: 'SAT Math Formula Sheet', type: 'PDF', size: '2.4 MB' },
+    { id: 2, name: 'IELTS Writing Samples', type: 'PDF', size: '1.8 MB' },
+    { id: 3, name: 'GRE Quant Sheet', type: 'PDF', size: '1.2 MB' },
+  ];
+
+  const streakDays = [
+    { d: 'M', h: 40 }, { d: 'T', h: 60 }, { d: 'W', h: 30 },
+    { d: 'T', h: 75 }, { d: 'F', h: 50 }, { d: 'S', h: 90 }, { d: 'S', h: 65 },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'left' }} className="animate-fade-in">
-      
-      {/* ROW 1: Progress & Live Class */}
-      <div className="dash-row-1" style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-        
-        {/* Overall Progress Card */}
-        <div className="dash-progress-card" style={{
-          flex: '1.8 1 500px',
-          background: 'linear-gradient(135deg, #3A2048 0%, #1e0b29 100%)',
-          color: '#ffffff',
-          borderRadius: '20px',
-          padding: '24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          boxShadow: '0 8px 30px rgba(58, 32, 72, 0.15)',
-          minHeight: '160px'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            {/* Custom circular SVG progress indicator */}
-            <div style={{ width: '100px', height: '100px', flexShrink: 0 }}>
-              <svg width="100" height="100" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" stroke="rgba(255, 255, 255, 0.1)" strokeWidth="7" fill="none" />
-                <circle cx="50" cy="50" r="40" stroke="var(--secondary-color)" strokeWidth="7" fill="none"
-                  strokeDasharray="251" strokeDashoffset={251 - (251 * overallProgress) / 100}
-                  strokeLinecap="round" transform="rotate(-90 50 50)" style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
-                <text x="50" y="46" textAnchor="middle" dominantBaseline="middle" fill="#ffffff" fontSize="18" fontWeight="800">{overallProgress}%</text>
-                <text x="50" y="64" textAnchor="middle" dominantBaseline="middle" fill="rgba(255, 255, 255, 0.6)" fontSize="9" fontWeight="600">Keep going!</text>
-              </svg>
-            </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }} className="animate-fade-in">
 
-            {/* Progress breakdown stats */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div className="dash-stats-row" style={{ display: 'flex', gap: '40px' }}>
-                <div>
-                  <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', display: 'block' }}>Completed Lessons</span>
-                  <span style={{ fontSize: '16px', fontWeight: 700 }}>{completedLessons}</span>
-                </div>
-                <div>
-                  <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', display: 'block' }}>In Progress</span>
-                  <span style={{ fontSize: '16px', fontWeight: 700 }}>{inProgressLessons}</span>
-                </div>
-                <div>
-                  <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', display: 'block' }}>Remaining Lessons</span>
-                  <span style={{ fontSize: '16px', fontWeight: 700 }}>{remainingLessons}</span>
-                </div>
-              </div>
-              <button 
-                onClick={() => setActiveTab('progress')}
-                style={{
-                  alignSelf: 'flex-start',
-                  marginTop: '8px',
-                  padding: '6px 16px',
-                  borderRadius: '20px',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  color: '#ffffff',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  backgroundColor: 'transparent'
-                }}
-                className="hover-bg-app click-press"
-              >
-                View Progress
-              </button>
-            </div>
-          </div>
-          
-          <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--secondary-color)', alignSelf: 'flex-start', textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Overall Progress
-          </div>
+      {/* ── Overall Progress Banner ─────────────────────────────── */}
+      <div style={{
+        background: 'linear-gradient(135deg, #3A2048 0%, #1e0b29 100%)',
+        borderRadius: '18px',
+        padding: '18px',
+        color: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '16px',
+      }}>
+        {/* Circular SVG */}
+        <div style={{ flexShrink: 0, width: '80px', height: '80px' }}>
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="32" stroke="rgba(255,255,255,0.12)" strokeWidth="6" fill="none" />
+            <circle cx="40" cy="40" r="32" stroke="var(--secondary-color)" strokeWidth="6" fill="none"
+              strokeDasharray="201" strokeDashoffset={201 - (201 * (overallProgress || 0)) / 100}
+              strokeLinecap="round" transform="rotate(-90 40 40)"
+              style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
+            <text x="40" y="37" textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize="14" fontWeight="800">{overallProgress || 0}%</text>
+            <text x="40" y="51" textAnchor="middle" dominantBaseline="middle" fill="rgba(255,255,255,0.55)" fontSize="7" fontWeight="600">Progress</text>
+          </svg>
         </div>
 
-        {/* Next Live Class Card */}
-        <div className="smart-card" style={{
-          flex: '1.2 1 300px',
-          padding: '24px',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          minHeight: '160px',
-          position: 'relative'
-        }}>
-          {/* Live Tag */}
-          <span style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            backgroundColor: 'rgba(43, 168, 74, 0.1)',
-            color: '#2BA84A',
-            fontSize: '10px',
-            fontWeight: 700,
-            padding: '4px 10px',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#2BA84A' }}></span>
-            Live
-          </span>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div style={{ paddingRight: '40px' }}>
-              <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Next Live Class</span>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '4px 0 2px 0', color: 'var(--text-primary)' }}>
-                {classes && classes.length > 0 ? classes[0].title : 'No Upcoming Classes'}
-              </h3>
-              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>
-                {classes && classes.length > 0 ? `Instructor: ${classes[0].teacher}` : 'Enroll in a course to see live classes'}
-              </p>
-            </div>
-            
-            <div style={{ width: '46px', height: '46px', borderRadius: '8px', background: 'rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Calendar size={20} color="var(--text-muted)" />
-            </div>
+        {/* Stats */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            {[
+              { label: 'Done', val: completedLessons },
+              { label: 'Active', val: inProgress },
+              { label: 'Left', val: remaining },
+            ].map(s => (
+              <div key={s.label}>
+                <div style={{ fontSize: '16px', fontWeight: 800, lineHeight: 1 }}>{s.val}</div>
+                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.55)', fontWeight: 600 }}>{s.label}</div>
+              </div>
+            ))}
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '14px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Clock size={14} />
-              {classes && classes.length > 0 ? `${classes[0].time} ${classes[0].ampm.toUpperCase()}` : '--:--'}
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Clock size={14} />
-              {classes && classes.length > 0 ? '60 mins' : '-- min'}
-            </span>
-          </div>
-
-          <button 
-            onClick={() => onSelectCourse(classes && classes.length > 0 ? classes[0].courseId : 'course-1')}
-            style={{
-              width: '100%',
-              padding: '10px',
-              backgroundColor: 'var(--secondary-color)',
-              color: '#1e1b4b',
-              borderRadius: '8px',
-              fontWeight: 700,
-              fontSize: '12px'
-            }}
-            className="click-press"
+          <button
+            onClick={() => setActiveTab('progress')}
+            style={{ alignSelf: 'flex-start', padding: '5px 14px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.25)', background: 'transparent', color: '#fff', fontSize: '10px', fontWeight: 700, cursor: 'pointer' }}
           >
-            Join Class
+            View Progress →
           </button>
         </div>
       </div>
 
-      {/* ROW 2: My Courses Grid */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>My Courses</h3>
-          <button onClick={() => setActiveTab('courses')} style={{ fontSize: '12px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
-        </div>
+      {/* ── Achievements 2×2 Grid ───────────────────────────────── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+        {achievements.map((a, i) => (
+          <div key={i} style={{ ...card, flexDirection: 'row', alignItems: 'center', gap: '10px', padding: '12px' }}>
+            <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: a.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Award size={16} style={{ color: a.color }} />
+            </div>
+            <div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>{a.count}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 500 }}>{a.label}</div>
+            </div>
+          </div>
+        ))}
+      </div>
 
-        <div className="dash-courses-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
-          {courses.slice(0, 4).map((course, idx) => {
-            const avatars = [
-              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
-              "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
-              "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
-              "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"
-            ];
-            return (
-              <div 
+      {/* ── Next Live Class ─────────────────────────────────────── */}
+      <div style={card}>
+        <div style={sectionLabel}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Next Live Class</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '9px', fontWeight: 700, color: '#2BA84A', background: 'rgba(43,168,74,0.1)', padding: '3px 8px', borderRadius: '10px' }}>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#2BA84A' }} />
+            Live
+          </span>
+        </div>
+        {nextClass ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>{nextClass.title}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Clock size={12} /> {nextClass.time} {nextClass.ampm?.toUpperCase()}
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Clock size={12} /> 60 min
+              </span>
+            </div>
+            <button
+              onClick={() => onSelectCourse(nextClass.courseId || 'course-1')}
+              style={{ width: '100%', padding: '10px', background: 'var(--secondary-color)', color: '#1e1b4b', border: 'none', borderRadius: '10px', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}
+              className="click-press"
+            >
+              Join Class
+            </button>
+          </div>
+        ) : (
+          <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>No upcoming classes. Enroll in a course to see live classes.</p>
+        )}
+      </div>
+
+      {/* ── My Courses ─────────────────────────────────────────── */}
+      {courses && courses.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={sectionLabel}>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>My Courses</span>
+            <button style={seeAllBtn} onClick={() => setActiveTab('courses')}>See All</button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {courses.slice(0, 3).map((course, idx) => (
+              <div
                 key={course.id}
                 onClick={() => onSelectCourse(course.id)}
-                className="smart-card click-press"
-                style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '240px', cursor: 'pointer' }}
+                style={{ ...card, flexDirection: 'row', alignItems: 'center', gap: '12px', padding: '12px', cursor: 'pointer' }}
+                className="click-press"
               >
-                {/* Image block */}
-                <div style={{ position: 'relative', height: '120px', width: '100%', overflow: 'hidden', background: '#3A2048' }}>
-                  <img 
-                    src={avatars[idx % avatars.length]} 
-                    alt={course.teacher} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                  <div style={{ position: 'absolute', bottom: '8px', right: '8px', padding: '3px 8px', borderRadius: '4px', background: 'rgba(0,0,0,0.6)', color: '#ffffff', fontSize: '10px', fontWeight: 600 }}>
-                    {course.chaptersCount} Lessons
-                  </div>
+                <div style={{ width: '52px', height: '52px', borderRadius: '10px', overflow: 'hidden', flexShrink: 0, background: '#3A2048' }}>
+                  {course.thumbnail
+                    ? <img src={course.thumbnail} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BookOpen size={18} style={{ color: 'rgba(255,255,255,0.6)' }} /></div>
+                  }
                 </div>
-
-                {/* Details block */}
-                <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 2px 0', lineHeight: 1.3 }}>{course.title}</h4>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '8px' }}>{course.teacher}</span>
-                  
-                  {/* Progress bar */}
-                  <div style={{ marginTop: 'auto' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
-                      <span>Progress</span>
-                      <span>{course.progress}%</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 2px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {course.title}
+                  </h4>
+                  <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{course.teacher}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '5px' }}>
+                    <div style={{ flex: 1, height: '4px', background: '#ede9f4', borderRadius: '2px', overflow: 'hidden' }}>
+                      <div style={{ width: `${course.progress}%`, height: '100%', background: 'var(--secondary-color)', borderRadius: '2px' }} />
                     </div>
-                    <div style={{ width: '100%', height: '6px', borderRadius: '3px', backgroundColor: 'var(--border-color)', overflow: 'hidden' }}>
-                      <div style={{ width: `${course.progress}%`, height: '100%', backgroundColor: 'var(--secondary-color)', borderRadius: '3px' }}></div>
-                    </div>
+                    <span style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-muted)', flexShrink: 0 }}>{course.progress}%</span>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ROW 3: Upcoming Schedule & Recent Resources */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-        
-        {/* Upcoming Schedule */}
-        <div className="smart-card" style={{ flex: '1 1 350px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Upcoming Schedule</h3>
-            <button onClick={() => setActiveTab('schedule')} style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View Calendar</button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {scheduleList.map((item) => (
-              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgba(58, 32, 72, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Calendar size={16} style={{ color: 'var(--primary-color)' }} />
-                  </div>
-                  <div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{item.title}</h4>
-                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{item.type}</span>
-                  </div>
-                </div>
-                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>{item.time}</span>
+                <Play size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
               </div>
             ))}
           </div>
         </div>
+      )}
 
-        {/* Recent Resources */}
-        <div className="smart-card" style={{ flex: '1 1 350px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Recent Resources</h3>
-            <button onClick={() => setActiveTab('resources')} style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {recentResources.map((res) => (
-              <div key={res.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgba(239, 68, 68, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <FileText size={16} style={{ color: '#ef4444' }} />
-                  </div>
-                  <div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{res.name}</h4>
-                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{res.type} &bull; {res.size}</span>
-                  </div>
-                </div>
-                <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
-              </div>
-            ))}
-          </div>
+      {/* ── Continue Watching ──────────────────────────────────── */}
+      <div style={card}>
+        <div style={sectionLabel}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Continue Watching</span>
+          <button style={seeAllBtn} onClick={() => setActiveTab('courses')}>See All</button>
         </div>
-      </div>
-
-      {/* ROW 4: Achievements & Study Streak */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-        
-        {/* Achievements Grid */}
-        <div className="smart-card" style={{ flex: '1.2 1 400px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Achievements</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
-            {achievements.map((item, idx) => (
-              <div key={idx} style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '6px', backgroundColor: 'var(--bg-app)' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Award size={16} style={{ color: item.color }} />
-                </div>
-                <span style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)' }}>{item.count}</span>
-                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500 }}>{item.label}</span>
-              </div>
-            ))}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '70px', height: '44px', borderRadius: '8px', background: '#3A2048', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
+            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=150&q=80" alt="thumb" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} />
+            <Play size={14} fill="#fff" stroke="none" style={{ position: 'absolute', color: '#fff' }} />
           </div>
-        </div>
-
-        {/* Study Streak Card */}
-        <div className="smart-card" style={{ flex: '1 1 300px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Study Streak</h3>
-              <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: '4px 0 0 0' }}>Keep up the great work!</p>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#f97316', fontWeight: 700, fontSize: '14px' }}>
-              <Flame size={18} fill="#f97316" stroke="#f97316" />
-              14 Days
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 1px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              Quadratic Equations – Problem Solving
+            </h4>
+            <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>SAT Math Mastery</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+              <div style={{ flex: 1, height: '3px', background: '#ede9f4', borderRadius: '2px', overflow: 'hidden' }}>
+                <div style={{ width: '60%', height: '100%', background: 'var(--secondary-color)' }} />
+              </div>
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600, flexShrink: 0 }}>60%</span>
             </div>
           </div>
+          <button
+            onClick={() => onSelectCourse && onSelectCourse('course-1')}
+            style={{ flexShrink: 0, padding: '6px 12px', borderRadius: '8px', background: 'var(--primary-glow)', color: 'var(--primary-color)', border: 'none', fontSize: '10px', fontWeight: 700, cursor: 'pointer' }}
+            className="click-press"
+          >
+            Resume
+          </button>
+        </div>
+      </div>
 
-          {/* Weekly streak representation */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '90px', marginTop: '12px' }}>
-            {[
-              { day: 'M', height: 40 },
-              { day: 'T', height: 60 },
-              { day: 'W', height: 30 },
-              { day: 'T', height: 75 },
-              { day: 'F', height: 50 },
-              { day: 'S', height: 90 },
-              { day: 'S', height: 65 }
-            ].map((item, idx) => (
-              <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', flex: 1 }}>
-                <div style={{
-                  width: '12px',
-                  height: `${item.height}px`,
-                  backgroundColor: idx === 5 ? 'var(--secondary-color)' : 'rgba(202, 186, 97, 0.3)',
-                  borderRadius: '4px',
-                  transition: 'height 0.3s ease'
-                }}></div>
-                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 600 }}>{item.day}</span>
+      {/* ── Study Streak ──────────────────────────────────────── */}
+      <div style={card}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Study Streak</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Keep up the great work!</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#f97316', fontWeight: 800, fontSize: '14px' }}>
+            <Flame size={16} fill="#f97316" stroke="#f97316" />
+            14 Days
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '70px' }}>
+          {streakDays.map((item, i) => (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', flex: 1 }}>
+              <div style={{
+                width: '10px',
+                height: `${Math.round(item.h * 0.7)}px`,
+                background: i === 5 ? 'var(--secondary-color)' : 'rgba(202,186,97,0.25)',
+                borderRadius: '3px',
+                transition: 'height 0.3s ease'
+              }} />
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600 }}>{item.d}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Upcoming Schedule ─────────────────────────────────── */}
+      {classes && classes.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={sectionLabel}>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Upcoming Schedule</span>
+            <button style={seeAllBtn} onClick={() => setActiveTab('schedule')}>View Calendar</button>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {classes.slice(0, 3).map(item => (
+              <div key={item.id} style={{ ...card, flexDirection: 'row', alignItems: 'center', gap: '10px', padding: '12px' }}>
+                <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: 'rgba(58,32,72,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Calendar size={15} style={{ color: 'var(--primary-color)' }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.title}</h4>
+                  <span style={{ fontSize: '9px', color: 'var(--text-secondary)' }}>{item.isLive ? 'Live Class' : 'Scheduled'}</span>
+                </div>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 700, flexShrink: 0 }}>{item.time} {item.ampm?.toUpperCase()}</span>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* ROW 5: Continue Watching & Your Mentors */}
-      <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-        
-        {/* Continue Watching */}
-        <div className="smart-card" style={{ flex: '1.2 1 400px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Continue Watching</h3>
-            <button onClick={() => setActiveTab('courses')} style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
-          </div>
-
-          <div style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-app)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
-              {/* Fake Video Thumbnail */}
-              <div style={{ width: '80px', height: '50px', borderRadius: '6px', background: '#3A2048', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
-                <img 
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" 
-                  alt="Video cover" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5 }}
-                />
-                <Play size={16} style={{ color: '#ffffff', position: 'absolute' }} fill="#ffffff" />
+      {/* ── Recent Resources ─────────────────────────────────── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={sectionLabel}>
+          <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Recent Resources</span>
+          <button style={seeAllBtn} onClick={() => setActiveTab('resources')}>See All</button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {resources.map(res => (
+            <div key={res.id} style={{ ...card, flexDirection: 'row', alignItems: 'center', gap: '10px', padding: '12px' }}>
+              <div style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(239,68,68,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <FileText size={15} style={{ color: '#ef4444' }} />
               </div>
-              
               <div style={{ flex: 1, minWidth: 0 }}>
-                <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', margin: 0, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>Quadratic Equations - Problem Solving</h4>
-                <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>SAT Math Mastery</span>
-                
-                {/* Progress bar */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
-                  <div style={{ flex: 1, height: '4px', borderRadius: '2px', backgroundColor: 'var(--border-color)', overflow: 'hidden' }}>
-                    <div style={{ width: '60%', height: '100%', backgroundColor: 'var(--secondary-color)' }}></div>
-                  </div>
-                  <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-secondary)' }}>60%</span>
-                </div>
+                <h4 style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{res.name}</h4>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{res.type} · {res.size}</span>
               </div>
+              <ChevronRight size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
             </div>
-
-            <button 
-              onClick={() => onSelectCourse('course-1')}
-              style={{
-                marginLeft: '16px',
-                padding: '6px 14px',
-                borderRadius: '6px',
-                backgroundColor: 'rgba(58, 32, 72, 0.08)',
-                color: 'var(--primary-color)',
-                fontSize: '11px',
-                fontWeight: 700
-              }}
-              className="click-press"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-
-        {/* Your Mentors */}
-        <div className="smart-card" style={{ flex: '1 1 300px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Your Mentors</h3>
-            <button style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
-          </div>
-
-          <div style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-app)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <img 
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" 
-                alt="Dr. Ahmed Al-Hassan" 
-                style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
-              />
-              <div>
-                <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Dr. Ahmed Al-Hassan</h4>
-                <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>SAT &amp; ACT Expert</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
-                  <Star size={10} fill="#f59e0b" stroke="none" />
-                  <span style={{ fontSize: '10px', fontWeight: 700, color: '#f59e0b' }}>4.9</span>
-                  <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>(210)</span>
-                </div>
-              </div>
-            </div>
-
-            <button 
-              style={{
-                padding: '6px 12px',
-                borderRadius: '6px',
-                border: '1.5px solid var(--primary-color)',
-                color: 'var(--primary-color)',
-                fontSize: '11px',
-                fontWeight: 700,
-                backgroundColor: 'transparent'
-              }}
-              className="click-press"
-            >
-              Message
-            </button>
-          </div>
+          ))}
         </div>
       </div>
 
