@@ -80,7 +80,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
   // Render Student view
   if (!isAdmin) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#faf9fc', margin: '-16px -16px calc(-76px - var(--safe-bottom)) -16px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#faf9fc', margin: '-16px -16px 0 -16px' }}>
         
         {/* Purple Welcome Header */}
         <div className="custom-home-purple-bg">
@@ -389,7 +389,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
 
   // Render Admin view
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#faf9fc', margin: '-16px -16px calc(-76px - var(--safe-bottom)) -16px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#faf9fc', margin: '-16px -16px 0 -16px' }}>
       
       {/* Purple Welcome Header */}
       <div className="custom-home-purple-bg">

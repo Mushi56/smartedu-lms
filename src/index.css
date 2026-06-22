@@ -76,13 +76,16 @@ body {
   justify-content: center;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: radial-gradient(circle at center, #1b0f22 0%, #0c0710 100%);
+  overflow: hidden;
 }
 
 .device-frame {
   position: relative;
-  width: 410px;
-  height: 840px;
+  width: min(410px, 95vw);
+  height: min(840px, 92vh);
+  height: min(840px, 92dvh);
   background: #1e1124;
   border: 12px solid #2b1a33;
   border-radius: 48px;
@@ -90,6 +93,7 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 /* Phone Status Bar indicator simulator */
@@ -120,16 +124,22 @@ body {
   pointer-events: none;
 }
 
-/* Hide Device Frame on Native Mobile */
-@media (max-width: 480px) {
+/* Hide Device Frame on Native Mobile / Tablets in Portrait */
+@media (max-width: 767px) {
   .desktop-wrapper {
     background: none;
+    height: 100vh;
+    height: 100dvh;
   }
   .device-frame {
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
     border: none;
     border-radius: 0;
+    box-shadow: none;
   }
   .device-status-bar {
     padding-top: var(--safe-top);
@@ -593,7 +603,8 @@ body {
   }
 }
 
-/* Tablet & Laptop Layout (width >= 768px) */
+/* Tablet & Laptop Layout (width >= 768px) - DISABLED to enforce mobile app UI everywhere */
+/*
 @media (min-width: 768px) {
   .simulator-only {
     display: none !important;
@@ -609,12 +620,10 @@ body {
     border-radius: 0 !important;
     box-shadow: none !important;
   }
-  /* Removed duplicate app-layout-container and app-main-layout */
   .mobile-content-container {
     padding: 24px !important;
   }
   
-  /* App Drawer persistent sidebar styling */
   .app-drawer {
     position: static !important;
     transform: none !important;
@@ -632,7 +641,6 @@ body {
     display: none !important;
   }
   
-  /* Hiding mobile controls */
   .header-hamburger {
     display: none !important;
   }
@@ -640,7 +648,6 @@ body {
     display: none !important;
   }
   
-  /* Responsive components helper grids */
   .form-row-2col {
     display: grid;
     grid-template-columns: 1fr 1fr !important;
@@ -682,7 +689,6 @@ body {
     align-items: start;
   }
   
-  /* Messages Page side-by-side view */
   .messages-layout {
     display: flex !important;
     flex-direction: row !important;
@@ -706,6 +712,7 @@ body {
     display: none !important;
   }
 }
+*/
 
 /* Custom UI Redesign Classes - Aubergine Theme */
 .custom-home-purple-bg {
