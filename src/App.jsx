@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Home as HomeIcon, Compass, Cpu, CheckSquare, User, 
-  Bell, LogOut, X, Sun, Moon, Sparkles, MessageSquare, Menu
+  Bell, LogOut, X, Sun, Moon, Sparkles, MessageSquare, Menu,
+  Users, ShoppingBag, BookOpen
 } from 'lucide-react';
 import MobileDeviceFrame from './components/MobileDeviceFrame';
 import { getMobileDB, saveMobileDB } from './data/mobileData';
@@ -195,9 +196,12 @@ export default function App() {
         return (
           <Home 
             db={db}
+            user={user}
+            currentPortal={currentPortal}
             onSelectCourse={handleSelectCourse}
             onSelectLiveClass={handleSelectLiveClass}
             onSelectTab={setActiveTab}
+            onOpenDrawer={() => setDrawerOpen(true)}
           />
         );
       case 'explore':
@@ -481,80 +485,82 @@ export default function App() {
 
             <div className="app-main-layout">
               {/* Top Toolbar / Status Bar Area */}
-              <header style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 16px',
-                backgroundColor: 'var(--bg-card)',
-                borderBottom: '1px solid var(--border-color)',
-                height: '52px',
-                zIndex: 90
-              }}>
-                {/* Profile overview indicator with hamburger menu trigger */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <button
-                    onClick={() => setDrawerOpen(true)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', padding: '4px', display: 'flex', alignItems: 'center' }}
-                    className="click-press header-hamburger"
-                    title="Open Navigation Menu"
-                  >
-                    <Menu size={20} />
-                  </button>
-                  <img 
-                    src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
-                    alt="Avatar" 
-                    style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                  <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                    {user?.name || 'Omar'}
-                  </span>
-                </div>
+              {activeTab !== 'home' && (
+                <header style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px 16px',
+                  backgroundColor: 'var(--bg-card)',
+                  borderBottom: '1px solid var(--border-color)',
+                  height: '52px',
+                  zIndex: 90
+                }}>
+                  {/* Profile overview indicator with hamburger menu trigger */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button
+                      onClick={() => setDrawerOpen(true)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', padding: '4px', display: 'flex', alignItems: 'center' }}
+                      className="click-press header-hamburger"
+                      title="Open Navigation Menu"
+                    >
+                      <Menu size={20} />
+                    </button>
+                    <img 
+                      src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
+                      alt="Avatar" 
+                      style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
+                    />
+                    <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                      {user?.name || 'Omar'}
+                    </span>
+                  </div>
 
-                {/* Alert & Logout actions */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {/* Notification bell */}
-                  <button 
-                    onClick={() => {
-                      setNotificationsOpen(true);
-                      markAllNotificationsRead();
-                    }}
-                    className="click-press"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', color: 'var(--text-primary)' }}
-                  >
-                    <Bell size={18} />
-                    {unreadCount > 0 && (
-                      <span style={{
-                        position: 'absolute',
-                        top: '-4px',
-                        right: '-4px',
-                        background: 'var(--accent-red)',
-                        color: '#fff',
-                        fontSize: '8px',
-                        fontWeight: 800,
-                        borderRadius: '50%',
-                        width: '14px',
-                        height: '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        {unreadCount}
-                      </span>
-                    )}
-                  </button>
+                  {/* Alert & Logout actions */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {/* Notification bell */}
+                    <button 
+                      onClick={() => {
+                        setNotificationsOpen(true);
+                        markAllNotificationsRead();
+                      }}
+                      className="click-press"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', color: 'var(--text-primary)' }}
+                    >
+                      <Bell size={18} />
+                      {unreadCount > 0 && (
+                        <span style={{
+                          position: 'absolute',
+                          top: '-4px',
+                          right: '-4px',
+                          background: 'var(--accent-red)',
+                          color: '#fff',
+                          fontSize: '8px',
+                          fontWeight: 800,
+                          borderRadius: '50%',
+                          width: '14px',
+                          height: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          {unreadCount}
+                        </span>
+                      )}
+                    </button>
 
-                  {/* Logout trigger */}
-                  <button
-                    onClick={handleLogout}
-                    className="click-press"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
-                    title="Sign Out"
-                  >
-                    <LogOut size={16} />
-                  </button>
-                </div>
-              </header>
+                    {/* Logout trigger */}
+                    <button
+                      onClick={handleLogout}
+                      className="click-press"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                      title="Sign Out"
+                    >
+                      <LogOut size={16} />
+                    </button>
+                  </div>
+                </header>
+              )}
 
               {/* Core scrollable panel views */}
               <main className="mobile-content-container">
@@ -563,68 +569,134 @@ export default function App() {
 
               {/* Bottom Nav Bar */}
               <nav className="bottom-nav">
-                <button
-                  onClick={() => {
-                    setActiveTab('home');
-                  }}
-                  className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
-                >
-                  <div className="nav-icon-wrapper">
-                    <HomeIcon size={18} />
-                  </div>
-                  <span>Home</span>
-                </button>
+                {currentPortal === 'admin' ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setActiveTab('home');
+                      }}
+                      className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <HomeIcon size={18} />
+                      </div>
+                      <span>Home</span>
+                    </button>
 
-                <button
-                  onClick={() => {
-                    setActiveTab('explore');
-                    setExploreViewState('list'); // reset internal state
-                  }}
-                  className={`nav-item ${activeTab === 'explore' ? 'active' : ''}`}
-                >
-                  <div className="nav-icon-wrapper">
-                    <Compass size={18} />
-                  </div>
-                  <span>Discover</span>
-                </button>
+                    <button
+                      onClick={() => {
+                        setActiveTab('courses');
+                      }}
+                      className={`nav-item ${activeTab === 'courses' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <BookOpen size={18} />
+                      </div>
+                      <span>Courses</span>
+                    </button>
 
-                <button
-                  onClick={() => {
-                    setActiveTab('ai');
-                  }}
-                  className={`nav-item ${activeTab === 'ai' ? 'active' : ''}`}
-                >
-                  <div className="nav-icon-wrapper">
-                    <Cpu size={18} />
-                    <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: 'var(--secondary-color)', width: '6px', height: '6px', borderRadius: '50%' }} />
-                  </div>
-                  <span>AI Tutor</span>
-                </button>
+                    <button
+                      onClick={() => {
+                        setActiveTab('users');
+                      }}
+                      className={`nav-item ${activeTab === 'users' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <Users size={18} />
+                      </div>
+                      <span>Students</span>
+                    </button>
 
-                <button
-                  onClick={() => {
-                    setActiveTab('tasks');
-                  }}
-                  className={`nav-item ${activeTab === 'tasks' ? 'active' : ''}`}
-                >
-                  <div className="nav-icon-wrapper">
-                    <CheckSquare size={18} />
-                  </div>
-                  <span>Tasks</span>
-                </button>
+                    <button
+                      onClick={() => {
+                        setActiveTab('orders');
+                      }}
+                      className={`nav-item ${activeTab === 'orders' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <ShoppingBag size={18} />
+                      </div>
+                      <span>Orders</span>
+                    </button>
 
-                <button
-                  onClick={() => {
-                    setActiveTab('profile');
-                    setCurrentCourse(null); // Reset cert viewer
-                  }}
-                  className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
-                >
-                  <div className="nav-icon-wrapper">
-                    <User size={18} />
-                  </div>
-                  <span>Profile</span>
-                </button>
+                    <button
+                      onClick={() => {
+                        setDrawerOpen(true);
+                      }}
+                      className="nav-item"
+                    >
+                      <div className="nav-icon-wrapper">
+                        <Menu size={18} />
+                      </div>
+                      <span>More</span>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setActiveTab('home');
+                      }}
+                      className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <HomeIcon size={18} />
+                      </div>
+                      <span>Home</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('explore');
+                        setExploreViewState('list'); // reset internal state
+                      }}
+                      className={`nav-item ${activeTab === 'explore' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <Compass size={18} />
+                      </div>
+                      <span>Discover</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('ai');
+                      }}
+                      className={`nav-item ${activeTab === 'ai' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <Cpu size={18} />
+                        <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: 'var(--secondary-color)', width: '6px', height: '6px', borderRadius: '50%' }} />
+                      </div>
+                      <span>AI Tutor</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('tasks');
+                      }}
+                      className={`nav-item ${activeTab === 'tasks' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <CheckSquare size={18} />
+                      </div>
+                      <span>Tasks</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setActiveTab('profile');
+                        setCurrentCourse(null); // Reset cert viewer
+                      }}
+                      className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <User size={18} />
+                      </div>
+                      <span>Profile</span>
+                    </button>
+                  </>
+                )}
               </nav>
             </div>
           </div>
