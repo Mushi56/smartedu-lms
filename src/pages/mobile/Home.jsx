@@ -236,34 +236,43 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                 onClick={() => onSelectCourse(activeCourse)}
                 className="custom-home-card click-press"
                 style={{ 
-                  flexDirection: 'row', 
-                  alignItems: 'center', 
-                  gap: '12px', 
-                  padding: '12px',
+                  flexDirection: 'column', 
+                  gap: '10px', 
+                  padding: '0',
+                  overflow: 'hidden',
                   cursor: 'pointer'
                 }}
               >
-                <img 
-                  src={activeCourse.thumbnail} 
-                  alt={activeCourse.title} 
-                  style={{ width: '56px', height: '56px', borderRadius: '10px', objectFit: 'cover' }}
-                />
-                
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left' }}>
-                  <h4 style={{ fontSize: '12.5px', fontWeight: 800, color: '#1e0926', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
-                    {activeCourse.title}
-                  </h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ flex: 1, height: '4px', backgroundColor: '#f0ecf4', borderRadius: '2px', overflow: 'hidden' }}>
-                      <div style={{ width: `${activeCourse.progress}%`, height: '100%', backgroundColor: '#caba61' }} />
+                {/* 16:9 Thumbnail */}
+                <div style={{ width: '100%', aspectRatio: '16/9', position: 'relative', flexShrink: 0 }}>
+                  <img 
+                    src={activeCourse.thumbnail} 
+                    alt={activeCourse.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                  {/* Play overlay */}
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Play size={16} fill="#311442" stroke="none" />
                     </div>
-                    <span style={{ fontSize: '9px', fontWeight: 700, color: '#8c7f94', whiteSpace: 'nowrap' }}>
-                      {activeCourse.progress}% Complete
-                    </span>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                {/* Info & Continue Button */}
+                <div style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left', minWidth: 0 }}>
+                    <h4 style={{ fontSize: '12.5px', fontWeight: 800, color: '#1e0926', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {activeCourse.title}
+                    </h4>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ flex: 1, height: '4px', backgroundColor: '#f0ecf4', borderRadius: '2px', overflow: 'hidden' }}>
+                        <div style={{ width: `${activeCourse.progress}%`, height: '100%', backgroundColor: '#caba61', borderRadius: '2px' }} />
+                      </div>
+                      <span style={{ fontSize: '9px', fontWeight: 700, color: '#8c7f94', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                        {activeCourse.progress}%
+                      </span>
+                    </div>
+                  </div>
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
@@ -271,20 +280,19 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                     }}
                     className="click-press"
                     style={{
+                      flexShrink: 0,
                       background: '#311442',
                       color: '#ffffff',
                       border: 'none',
-                      padding: '6px 14px',
+                      padding: '7px 16px',
                       borderRadius: '20px',
                       fontSize: '10.5px',
                       fontWeight: 700,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap'
                     }}
                   >
                     Continue
-                  </button>
-                  <button style={{ background: 'none', border: 'none', color: '#a095a8', cursor: 'pointer' }}>
-                    <MoreVertical size={14} />
                   </button>
                 </div>
               </div>
@@ -433,8 +441,8 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
           </div>
         </div>
 
-        {/* Metrics Row (Overlapping header, horizontal scroll) */}
-        <div className="hide-scrollbar" style={{ display: 'flex', gap: '12px', overflowX: 'auto', margin: '0 -16px -30px -16px', padding: '0 16px', zIndex: 20 }}>
+        {/* Metrics Grid (2x2 - all 4 cards visible, no scroll needed) */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', margin: '0 0 -30px 0', zIndex: 20 }}>
           {adminMetrics.map((metric, idx) => {
             const IconComponent = metric.icon;
             return (
@@ -442,20 +450,20 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                 key={idx} 
                 className="custom-home-card" 
                 style={{ 
-                  width: '130px', 
-                  flexShrink: 0, 
                   padding: '12px',
                   boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
                   textAlign: 'left'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '9px', fontWeight: 650, color: '#8c7f94', whiteSpace: 'nowrap' }}>{metric.title}</span>
-                  <IconComponent size={14} style={{ color: '#a095a8' }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '8.5px', fontWeight: 700, color: '#8c7f94' }}>{metric.title}</span>
+                  <div style={{ width: '24px', height: '24px', borderRadius: '6px', backgroundColor: `${metric.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IconComponent size={13} style={{ color: metric.color }} />
+                  </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{ fontSize: '15px', fontWeight: 800, color: '#1e0926' }}>{metric.value}</span>
-                  <span style={{ fontSize: '9px', fontWeight: 800, color: '#10b981' }}>{metric.change}</span>
+                  <span style={{ fontSize: '14px', fontWeight: 800, color: '#1e0926', lineHeight: 1.1 }}>{metric.value}</span>
+                  <span style={{ fontSize: '8.5px', fontWeight: 800, color: '#10b981' }}>{metric.change}</span>
                 </div>
               </div>
             );
