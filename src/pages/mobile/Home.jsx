@@ -450,14 +450,15 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                 key={idx} 
                 className="custom-home-card" 
                 style={{ 
-                  padding: '10px 8px',
+                  padding: '10px 6px',
                   boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
-                  textAlign: 'left',
-                  gap: '6px'
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  gap: '4px'
                 }}
               >
-                <div style={{ width: '22px', height: '22px', borderRadius: '6px', backgroundColor: `${metric.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
-                  <IconComponent size={12} style={{ color: metric.color }} />
+                <div style={{ width: '26px', height: '26px', borderRadius: '8px', backgroundColor: `${metric.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
+                  <IconComponent size={13} style={{ color: metric.color }} />
                 </div>
                 <span style={{ fontSize: '11px', fontWeight: 800, color: '#1e0926', lineHeight: 1.1, display: 'block' }}>{metric.value}</span>
                 <span style={{ fontSize: '7px', fontWeight: 700, color: '#8c7f94', lineHeight: 1.2, display: 'block' }}>{metric.title}</span>
