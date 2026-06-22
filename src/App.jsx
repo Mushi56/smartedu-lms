@@ -38,6 +38,7 @@ import ClassScheduler from './pages/admin/ClassScheduler';
 import QuizManager from './pages/admin/QuizManager';
 import CategoryTagManager from './pages/admin/CategoryTagManager';
 import Analytics from './pages/admin/Analytics';
+import TeacherManager from './pages/admin/TeacherManager';
 import Settings from './pages/admin/Settings';
 
 export default function App() {
@@ -371,24 +372,7 @@ export default function App() {
       case 'users':
       case 'teachers':
         return (
-          <div className="smart-card" style={{ padding: '20px', textAlign: 'left' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>{activeTab === 'users' ? 'Users Management' : 'Teachers Management'}</h2>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Manage the system accounts, update privileges and check user profiles.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
-              {students.map((std) => (
-                <div key={std.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <img src={std.avatar} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} alt="" />
-                    <div>
-                      <h4 style={{ fontSize: '13px', fontWeight: 600 }}>{std.name}</h4>
-                      <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{std.email}</span>
-                    </div>
-                  </div>
-                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary-color)' }}>{std.role}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <TeacherManager />
         );
       case 'categories':
       case 'tags':
