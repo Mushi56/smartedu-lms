@@ -142,7 +142,7 @@ export default function Assignments({ assignments, setAssignments, setOverallPro
           </div>
 
           {/* Workspace Submission area */}
-          <div style={{ display: 'grid', gridTemplateColumns: activeTab === 'Graded' || aiFeedback ? '1fr 1fr' : '1fr', gap: '20px' }}>
+          <div className="assignments-workspace-grid" style={{ display: 'grid', gap: '20px' }}>
             {/* Editor panel */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
               <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>Write your answer below (Supports Python, Javascript, or Pseudocode):</label>

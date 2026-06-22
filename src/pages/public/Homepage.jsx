@@ -3,8 +3,8 @@ import {
   Star, GraduationCap, Award, BookOpen, Clock, Users, ArrowRight,
   CheckCircle, Video, ChevronLeft, ChevronRight, Globe, Download,
   Calendar, Bookmark, PlayCircle, FileText, Mic, Laptop, Lightbulb,
-  Trophy, MessageSquare, TrendingUp, Target, Zap, BarChart2,
-  Search, ChevronDown, Play
+  Trophy, MessageSquare, TrendingUp, Target, Zap, BarChart2, Search,
+  ChevronDown, Lock
 } from 'lucide-react';
 
 /* ═══════════════════════════════════════════════════════════════
@@ -110,212 +110,323 @@ export default function Homepage({ onGetStarted }) {
   return (
     <div style={{ fontFamily: "'Montserrat', sans-serif", color: '#1e1b4b', overflowX: 'hidden' }}>
 
+
+
       {/* ══════════════════════════════════════════════════
-          HERO SECTION (Light Theme Mockup)
+          HERO SECTION
       ═══════════════════════════════════════════════════ */}
       <section style={{
-        background: 'radial-gradient(circle at center, rgba(124,58,237,0.03) 0%, rgba(255,255,255,1) 70%)',
-        backgroundColor: '#fbfaff',
-        minHeight: 'calc(100vh - 76px)',
-        padding: 'var(--hero-padding, 80px 5% 100px)',
-        position: 'relative',
-        overflow: 'hidden',
+        background: 'linear-gradient(160deg, #faf8f3 0%, #f5f0e8 30%, #f0eaf5 60%, #ede5f5 100%)',
+        minHeight: '100vh',
+        height: '100vh',
         display: 'flex',
-        alignItems: 'center'
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: '0 5% 28px',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
-        {/* Subtle Background Grid Pattern */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundImage: 'linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px)',
-          backgroundSize: '40px 40px', zIndex: 0
-        }} />
-        {/* Purple/Gold corner glows */}
-        <div style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 60%)', bottom: '-200px', left: '-200px', pointerEvents: 'none', zIndex: 0 }} />
-        <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.1) 0%, transparent 60%)', top: '-100px', right: '-100px', pointerEvents: 'none', zIndex: 0 }} />
+        {/* Subtle decorative radial glow */}
+        <div style={{ position: 'absolute', width: '700px', height: '700px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.08) 0%, transparent 70%)', top: '-200px', left: '-100px', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(202,186,97,0.06) 0%, transparent 60%)', top: '10%', right: '30%', pointerEvents: 'none' }} />
 
-        <div className="home-hero-grid" style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center', width: '100%', position: 'relative', zIndex: 1 }}>
-          
-          {/* Left Column: Text & Search Form */}
-          <div style={{ textAlign: 'left', paddingRight: '20px' }}>
+        {/* Decorative stars */}
+        <div style={{ position: 'absolute', top: '15%', right: '28%', color: '#CABA61', fontSize: '24px', opacity: 0.5, pointerEvents: 'none' }}>✦</div>
+        <div style={{ position: 'absolute', bottom: '30%', right: '10%', color: '#CABA61', fontSize: '14px', opacity: 0.35, pointerEvents: 'none' }}>✦</div>
+
+        <div className="home-hero-grid" style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: '52% 48%', gap: '24px', alignItems: 'center', width: '100%', flex: 1, paddingTop: '76px' }}>
+          {/* ─── LEFT SIDE ─── */}
+          <div style={{ textAlign: 'left', zIndex: 1, paddingTop: '10px' }}>
+
             {/* Badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', background: 'rgba(124,58,237,0.1)', borderRadius: '24px', color: '#7c3aed', fontSize: '13px', fontWeight: 600, marginBottom: '24px' }}>
-              <GraduationCap size={16} />
-              <span>Your Success, Our Mission</span>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 14px',
+              borderRadius: '30px',
+              background: '#3A2048',
+              marginBottom: '12px',
+              boxShadow: '0 4px 12px rgba(58, 32, 72, 0.15)'
+            }}>
+              <span style={{ fontSize: '13px', color: '#CABA61' }}>✨</span>
+              <span style={{ fontSize: '12px', fontWeight: 600, color: '#ffffff', letterSpacing: '0.3px' }}>Your Success. Our Mission.</span>
             </div>
 
-            {/* Typography */}
-            <h1 style={{ fontSize: 'clamp(42px, 5vw, 68px)', fontWeight: 800, color: '#2a1b54', lineHeight: 1.1, marginBottom: '24px', letterSpacing: '-1px', fontFamily: "'Playfair Display', Georgia, serif" }}>
+            {/* Main Heading */}
+            <h1 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, color: '#3A2048', lineHeight: 1.05, marginBottom: '12px', letterSpacing: '-1px' }}>
               Pass the Exam<br />
-              <span style={{ color: '#d4af37' }}>That Matters Most</span>
+              <span style={{ color: '#CABA61', fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: 'italic', fontWeight: 400, letterSpacing: '0px' }}>That Matters Most</span>
             </h1>
 
-            <p style={{ fontSize: '16px', color: '#64748b', lineHeight: 1.6, marginBottom: '40px', maxWidth: '460px', fontWeight: 500 }}>
-              Access expert-led courses, live classes, and exam resources designed to help you pass with confidence.
+            {/* Subtitle */}
+            <p style={{ fontSize: 'clamp(13px, 1.3vw, 15px)', color: '#64748b', lineHeight: 1.5, marginBottom: '18px', maxWidth: '460px' }}>
+              Structured learning paths, expert instructors, and premium resources — all in one place. Prepare smarter, stay focused, and achieve your goals.
             </p>
 
-            {/* Buttons */}
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '48px' }}>
-              <button onClick={onGetStarted} className="click-press" style={{ padding: '14px 28px', background: 'linear-gradient(to right, #d4af37, #b8860b)', color: '#ffffff', borderRadius: '8px', fontWeight: 600, fontSize: '15px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 8px 24px rgba(212,175,55,0.3)', transition: 'transform 0.2s' }}>
-                <span>Explore Courses</span><ArrowRight size={18} />
+            {/* CTA Buttons */}
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '0' }}>
+              <button onClick={onGetStarted} className="click-press" style={{ padding: '12px 24px', background: 'linear-gradient(135deg, #E3C158 0%, #D4AF37 100%)', color: '#ffffff', borderRadius: '12px', fontWeight: 600, fontSize: '14px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 8px 24px rgba(227, 193, 88, 0.3)', transition: 'all 0.2s' }}>
+                <span>Explore Learning Paths</span><ArrowRight size={16} />
               </button>
-              <button className="click-press" style={{ padding: '14px 28px', background: '#ffffff', color: '#7c3aed', borderRadius: '8px', fontWeight: 600, fontSize: '15px', border: '1px solid rgba(124,58,237,0.2)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)', transition: 'all 0.2s' }}>
-                <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Play size={10} fill="#7c3aed" style={{ marginLeft: '2px' }} />
-                </div>
-                <span>How It Works</span>
-              </button>
-            </div>
-
-            {/* Floating Search Bar */}
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '16px 24px', boxShadow: '0 20px 40px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.03)', maxWidth: '580px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '16px', alignItems: 'center' }}>
-                {/* Column 1 */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', borderRight: '1px solid #f1f5f9', paddingRight: '16px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <GraduationCap size={16} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>I'm looking for</div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>Exams <ChevronDown size={14} color="#94a3b8"/></div>
-                  </div>
-                </div>
-                {/* Column 2 */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', borderRight: '1px solid #f1f5f9', paddingRight: '16px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <BookOpen size={16} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Category</div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>All Categories <ChevronDown size={14} color="#94a3b8"/></div>
-                  </div>
-                </div>
-                {/* Column 3 */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <BarChart2 size={16} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Level</div>
-                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>All Levels <ChevronDown size={14} color="#94a3b8"/></div>
-                  </div>
-                </div>
-                {/* Search Button */}
-                <button style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', cursor: 'pointer', boxShadow: '0 8px 16px rgba(212,175,55,0.25)' }}>
-                  <Search size={20} />
-                </button>
-              </div>
-              <div style={{ fontSize: '11px', color: '#94a3b8', textAlign: 'center', marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <span style={{ color: '#d4af37' }}>🔆</span> Find the right exam, teacher, or course for your goals
-              </div>
             </div>
           </div>
 
-          {/* Right Column: Central Circle & Floating Elements */}
-          <div style={{ position: 'relative', width: '100%', height: '600px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            
-            {/* The Central Circle Placeholder */}
+          {/* ─── RIGHT SIDE: Orbital Circle with Feature Cards ─── */}
+          <div className="hero-illustration" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px', zIndex: 1 }}>
+
+            {/* Outer glow ring (dashed/dotted style) */}
             <div style={{
-              position: 'relative',
-              width: '450px', height: '450px',
+              position: 'absolute',
+              width: '380px',
+              height: '380px',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(124,58,237,0.05) 0%, rgba(124,58,237,0.15) 100%)',
-              border: '12px solid #ffffff',
-              boxShadow: '0 0 0 2px rgba(124,58,237,0.1), inset 0 0 50px rgba(124,58,237,0.2)',
-              display: 'flex', justifyContent: 'center', alignItems: 'center',
-              zIndex: 1
+              border: '1.5px solid rgba(202,186,97,0.4)',
+              background: 'transparent',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
+            }} />
+            <div style={{
+              position: 'absolute',
+              width: '400px',
+              height: '400px',
+              borderRadius: '50%',
+              border: '1px dashed rgba(186,170,220,0.3)',
+              background: 'transparent',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
+            }} />
+
+            {/* Inner circle (placeholder for model image) */}
+            <div style={{
+              position: 'absolute',
+              width: '260px',
+              height: '260px',
+              borderRadius: '50%',
+              border: '4px solid rgba(255,255,255,0.6)',
+              boxShadow: '0 20px 60px rgba(58,32,72,0.1)',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              overflow: 'hidden',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 0
             }}>
-              {/* Outer Glowing Ring */}
-              <div style={{ position: 'absolute', top: '-24px', left: '-24px', right: '-24px', bottom: '-24px', borderRadius: '50%', border: '2px solid transparent', background: 'linear-gradient(135deg, rgba(124,58,237,0.4), rgba(212,175,55,0.4)) border-box', WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'destination-out', maskComposite: 'exclude', zIndex: -1 }} />
-              
-              {/* Image goes here later */}
-              <div style={{ color: 'rgba(124,58,237,0.3)', fontSize: '14px', fontWeight: 600 }}>Model Image Here</div>
+              <img src="/hero-image.png" alt="Hero" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
 
-            {/* Floating Card: Course Progress (Top Left) */}
-            <div style={{ position: 'absolute', top: '80px', left: '-20px', background: '#ffffff', padding: '16px 20px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', gap: '16px', zIndex: 10 }}>
-              <div style={{ position: 'relative', width: '48px', height: '48px' }}>
-                <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%' }}>
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" strokeWidth="3" />
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#7c3aed" strokeWidth="3" strokeDasharray="75, 100" />
-                </svg>
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 800, color: '#1e293b' }}>75%</div>
-              </div>
-              <div>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e293b', marginBottom: '2px' }}>Course Progress</div>
-                <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600 }}>48 / 64 Lessons</div>
-                <div style={{ width: '100%', height: '4px', background: '#f1f5f9', borderRadius: '2px', marginTop: '6px' }}>
-                  <div style={{ width: '75%', height: '100%', background: '#7c3aed', borderRadius: '2px' }} />
-                </div>
-              </div>
-            </div>
+            {/* Small accent dots on the orbit */}
+            <div style={{ position: 'absolute', width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', top: '15%', left: '50%', boxShadow: '0 0 10px rgba(16,185,129,0.5)' }} />
+            <div style={{ position: 'absolute', width: '6px', height: '6px', borderRadius: '50%', background: '#7c3aed', top: '48%', left: '10%', boxShadow: '0 0 10px rgba(124,58,237,0.5)' }} />
+            <div style={{ position: 'absolute', width: '8px', height: '8px', borderRadius: '50%', background: '#0ea5e9', bottom: '22%', right: '15%', boxShadow: '0 0 10px rgba(14,165,233,0.5)' }} />
+            <div style={{ position: 'absolute', width: '6px', height: '6px', borderRadius: '50%', background: '#CABA61', top: '25%', right: '12%', boxShadow: '0 0 10px rgba(202,186,97,0.5)' }} />
 
-            {/* Floating Card: Success Rate (Bottom Left) */}
-            <div style={{ position: 'absolute', bottom: '120px', left: '-10px', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'flex-start', gap: '12px', zIndex: 10 }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Award size={20} />
+            {/* ── Feature Card: Structured Learning Paths (Top Center) ── */}
+            <div style={{
+              position: 'absolute',
+              top: '10%',
+              left: '25%',
+              background: 'rgba(255, 255, 255, 0.4)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              boxShadow: '0 12px 30px rgba(58,32,72,0.08)',
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+              maxWidth: '220px',
+              border: '1px solid rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              zIndex: 2
+            }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: '#e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <BookOpen size={16} color="#0284c7" />
               </div>
               <div>
-                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Success Rate</div>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b' }}>94%</div>
-                <div style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 600 }}>Students Passed</div>
-                {/* Mini wave chart */}
-                <svg width="80" height="20" viewBox="0 0 80 20" style={{ marginTop: '4px' }}>
-                  <path d="M0 15 Q 10 5, 20 15 T 40 15 T 60 10 T 80 15 L 80 20 L 0 20 Z" fill="rgba(124,58,237,0.1)" />
-                  <path d="M0 15 Q 10 5, 20 15 T 40 15 T 60 10 T 80 15" fill="none" stroke="#7c3aed" strokeWidth="2" />
-                </svg>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e1b4b', lineHeight: 1.3, marginBottom: '2px' }}>Structured<br/>Learning Paths</div>
+                <div style={{ fontSize: '9px', color: '#64748b', lineHeight: 1.4 }}>Step-by-step guidance<br/>from basics to mastery.</div>
               </div>
             </div>
 
-            {/* Floating Card: Live Classes (Top Right) */}
-            <div style={{ position: 'absolute', top: '100px', right: '-10px', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'flex-start', gap: '12px', zIndex: 10 }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Video size={20} />
+            {/* ── Feature Card: Arabic & English Support (Left) ── */}
+            <div style={{
+              position: 'absolute',
+              top: '38%',
+              left: '0%',
+              background: 'rgba(255, 255, 255, 0.4)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              boxShadow: '0 12px 30px rgba(58,32,72,0.08)',
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+              maxWidth: '200px',
+              border: '1px solid rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              zIndex: 2
+            }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <MessageSquare size={16} color="#16a34a" />
               </div>
               <div>
-                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Live Classes</div>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b' }}>128</div>
-                <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 600 }}>This Week</div>
-                <svg width="80" height="20" viewBox="0 0 80 20" style={{ marginTop: '4px' }}>
-                  <path d="M0 15 Q 10 20, 20 10 T 40 15 T 60 5 T 80 10" fill="none" stroke="#d4af37" strokeWidth="2" />
-                </svg>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e1b4b', lineHeight: 1.3, marginBottom: '2px' }}>Arabic &<br/>English Support</div>
+                <div style={{ fontSize: '9px', color: '#64748b', lineHeight: 1.4 }}>Learn in the language<br/>you're most comfortable in.</div>
               </div>
             </div>
 
-            {/* Floating Card: Featured Teacher (Middle Right) */}
-            <div style={{ position: 'absolute', top: '50%', right: '-40px', transform: 'translateY(-50%)', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 10 }}>
-              <div style={{ position: 'relative' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'linear-gradient(135deg, #d4af37, #b8860b)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Users size={24} />
-                </div>
-                <div style={{ position: 'absolute', bottom: '-4px', right: '-4px', width: '20px', height: '20px', borderRadius: '50%', background: '#d4af37', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>
-                  <Star size={10} fill="#fff" color="#fff" />
-                </div>
+            {/* ── Feature Card: Expert Instructor Marketplace (Bottom Left) ── */}
+            <div style={{
+              position: 'absolute',
+              bottom: '15%',
+              left: '10%',
+              background: 'rgba(255, 255, 255, 0.4)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              boxShadow: '0 12px 30px rgba(58,32,72,0.08)',
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+              maxWidth: '220px',
+              border: '1px solid rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              zIndex: 2
+            }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Users size={16} color="#d97706" />
               </div>
               <div>
-                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Featured Teacher</div>
-                <div style={{ fontSize: '13px', fontWeight: 800, color: '#1e293b' }}>Dr. A. Rahman</div>
-                <div style={{ fontSize: '10px', color: '#d4af37', fontWeight: 600, marginBottom: '4px' }}>10+ Years Experience</div>
-                <StarRating rating={5} size={10} />
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e1b4b', lineHeight: 1.3, marginBottom: '2px' }}>Expert Instructor<br/>Marketplace</div>
+                <div style={{ fontSize: '9px', color: '#64748b', lineHeight: 1.4 }}>Learn from verified experts<br/>who've been there.</div>
               </div>
             </div>
 
-            {/* Floating Card: Students Enrolled (Bottom Right) */}
-            <div style={{ position: 'absolute', bottom: '60px', right: '0px', background: '#ffffff', padding: '16px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'flex-start', gap: '12px', zIndex: 10 }}>
-              <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(124,58,237,0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Users size={20} />
+            {/* ── Feature Card: Goal-Based Preparation (Right Top) ── */}
+            <div style={{
+              position: 'absolute',
+              top: '30%',
+              right: '-5%',
+              background: 'rgba(255, 255, 255, 0.4)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              boxShadow: '0 12px 30px rgba(58,32,72,0.08)',
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+              maxWidth: '200px',
+              border: '1px solid rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              zIndex: 2
+            }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: '#f3e8ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Target size={16} color="#9333ea" />
               </div>
               <div>
-                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 600 }}>Students Enrolled</div>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: '#1e293b' }}>12.5K+</div>
-                <div style={{ fontSize: '10px', color: '#7c3aed', fontWeight: 600 }}>Active Learners</div>
-                <svg width="80" height="20" viewBox="0 0 80 20" style={{ marginTop: '4px' }}>
-                  <path d="M0 10 Q 10 20, 20 10 T 40 10 T 60 15 T 80 5" fill="none" stroke="#7c3aed" strokeWidth="2" />
-                </svg>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e1b4b', lineHeight: 1.3, marginBottom: '2px' }}>Goal-Based<br/>Preparation</div>
+                <div style={{ fontSize: '9px', color: '#64748b', lineHeight: 1.4 }}>Focus on your goals<br/>with personalized<br/>study plans.</div>
+              </div>
+            </div>
+
+            {/* ── Feature Card: Premium Study Resources (Right Bottom) ── */}
+            <div style={{
+              position: 'absolute',
+              bottom: '22%',
+              right: '0%',
+              background: 'rgba(255, 255, 255, 0.4)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              boxShadow: '0 12px 30px rgba(58,32,72,0.08)',
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center',
+              maxWidth: '200px',
+              border: '1px solid rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              zIndex: 2
+            }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: '#ecfeff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <FileText size={16} color="#0891b2" />
+              </div>
+              <div>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e1b4b', lineHeight: 1.3, marginBottom: '2px' }}>Premium Study<br/>Resources</div>
+                <div style={{ fontSize: '9px', color: '#64748b', lineHeight: 1.4 }}>High-quality materials<br/>to boost your preparation.</div>
               </div>
             </div>
 
           </div>
         </div>
+
+        {/* ── BOTTOM SEARCH BAR ── */}
+        <div style={{
+          maxWidth: '1080px',
+          margin: '0 auto',
+          width: '100%',
+          background: '#ffffff',
+          borderRadius: '18px',
+          padding: '16px 24px',
+          boxShadow: '0 16px 48px rgba(58,32,72,0.08)',
+          border: '1px solid rgba(255,255,255,0.5)',
+          position: 'relative',
+          zIndex: 2,
+          backdropFilter: 'blur(20px)'
+        }}>
+          <div className="hero-search-bar-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '16px', alignItems: 'flex-end' }}>
+            {/* Goal */}
+            <div style={{ borderRight: '1px solid #f1f5f9', paddingRight: '16px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#3A2048', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', paddingLeft: '4px' }}>Goal</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', background: '#faf5ff', cursor: 'pointer' }}>
+                <Target size={16} color="#9333ea" />
+                <span style={{ fontSize: '13px', color: '#64748b', flex: 1, fontWeight: 500 }}>What's your goal?</span>
+              </div>
+            </div>
+            {/* Exam Type */}
+            <div style={{ borderRight: '1px solid #f1f5f9', paddingRight: '16px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#3A2048', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', paddingLeft: '4px' }}>Exam Type</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', background: '#fef3c7', cursor: 'pointer' }}>
+                <FileText size={16} color="#d97706" />
+                <span style={{ fontSize: '13px', color: '#64748b', flex: 1, fontWeight: 500 }}>Select exam type</span>
+              </div>
+            </div>
+            {/* Language */}
+            <div style={{ paddingRight: '16px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 800, color: '#3A2048', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px', paddingLeft: '4px' }}>Language</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', background: '#ecfeff', cursor: 'pointer' }}>
+                <Globe size={16} color="#0891b2" />
+                <span style={{ fontSize: '13px', color: '#64748b', flex: 1, fontWeight: 500 }}>Choose language</span>
+              </div>
+            </div>
+            {/* Search Button */}
+            <button onClick={onGetStarted} className="click-press" style={{
+              padding: '12px 28px',
+              background: 'linear-gradient(135deg, #E3C158 0%, #D4AF37 100%)',
+              color: '#ffffff',
+              borderRadius: '14px',
+              fontWeight: 700,
+              fontSize: '14px',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 8px 24px rgba(227, 193, 88, 0.4)',
+              height: '100%',
+              minHeight: '46px'
+            }}>
+              Explore Learning Paths <Search size={16} />
+            </button>
+          </div>
+
+        </div>
+
       </section>
 
       {/* ══════════════════════════════════════════════════

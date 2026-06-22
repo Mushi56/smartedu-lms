@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Send, Search, MoreVertical, Phone, VideoIcon, Smile } from 'lucide-react';
+import { Send, Search, MoreVertical, Phone, VideoIcon, Smile, ArrowLeft, MessageSquare } from 'lucide-react';
 
 const conversations = [
   {
@@ -45,17 +44,19 @@ const conversations = [
 ];
 
 export default function Messages() {
-  const [activeConvo, setActiveConvo] = useState(conversations[0]);
+  const [selectedConvoId, setSelectedConvoId] = useState(null);
   const [newMessage, setNewMessage] = useState('');
   const [localMessages, setLocalMessages] = useState({});
   const [searchFilter, setSearchFilter] = useState('');
 
+  const activeConvo = conversations.find(c => c.id === selectedConvoId);
+
   const getMessages = (convo) => {
-    return [...convo.messages, ...(localMessages[convo.id] || [])];
+    return convo ? [...convo.messages, ...(localMessages[convo.id] || [])] : [];
   };
 
   const handleSend = () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !activeConvo) return;
     const msg = {
       id: Date.now(),
       from: 'me',
@@ -74,14 +75,14 @@ export default function Messages() {
   );
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0', height: 'calc(100vh - 140px)' }} className="animate-fade-in">
-      <div className="smart-card messages-container" style={{ display: 'flex', flex: 1, padding: 0, overflow: 'hidden', minHeight: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0', height: '100%' }} className="animate-fade-in">
+      <div className="smart-card messages-layout" style={{ display: 'flex', flex: 1, padding: 0, overflow: 'hidden', minHeight: 0 }}>
         
-        {/* Conversations Sidebar */}
-        <div style={{
-          width: '280px', minWidth: '280px', borderRight: '1px solid var(--border-color)',
-          display: 'flex', flexDirection: 'column', overflow: 'hidden'
-        }} className="messages-sidebar">
+        {/* Conversations List */}
+        <div 
+          className={`messages-sidebar-panel ${selectedConvoId !== null ? 'mobile-hide' : ''}`}
+          style={{ width: '100%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        >
           <div style={{ padding: '16px', borderBottom: '1px solid var(--border-color)' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 700, margin: '0 0 12px 0', textAlign: 'left' }}>Messages</h3>
             <div style={{ position: 'relative' }}>
@@ -100,12 +101,12 @@ export default function Messages() {
             {filteredConvos.map((convo) => (
               <button
                 key={convo.id}
-                onClick={() => setActiveConvo(convo)}
+                onClick={() => setSelectedConvoId(convo.id)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px',
                   width: '100%', textAlign: 'left', cursor: 'pointer',
-                  backgroundColor: activeConvo.id === convo.id ? 'rgba(58, 32, 72, 0.04)' : 'transparent',
-                  borderLeft: activeConvo.id === convo.id ? '3px solid var(--primary-color)' : '3px solid transparent',
+                  backgroundColor: convo.id === selectedConvoId ? 'var(--bg-app)' : 'transparent',
+                  borderLeft: convo.id === selectedConvoId ? '3px solid var(--primary-color)' : '3px solid transparent',
                   borderTop: 'none', borderBottom: '1px solid var(--border-color)', borderRight: 'none',
                   transition: 'all 0.15s'
                 }}
@@ -123,60 +124,82 @@ export default function Messages() {
           </div>
         </div>
 
-        {/* Chat Area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-          {/* Chat Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: '1px solid var(--border-color)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <img src={activeConvo.avatar} alt={activeConvo.name} style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover' }} />
-              <div style={{ textAlign: 'left' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{activeConvo.name}</h4>
-                <span style={{ fontSize: '11px', color: activeConvo.online ? '#2BA84A' : 'var(--text-muted)' }}>{activeConvo.lastSeen}</span>
-              </div>
-            </div>
+        {/* Chat Area / Empty State */}
+        {selectedConvoId === null ? (
+          <div 
+            className="messages-chat-panel mobile-hide" 
+            style={{ width: '100%', display: 'flex', flexDirection: 'column', minWidth: 0, alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-app)', padding: '24px', color: 'var(--text-muted)' }}
+          >
+            <MessageSquare size={48} style={{ opacity: 0.3, marginBottom: '16px' }} />
+            <h4 style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 4px 0', color: 'var(--text-primary)' }}>Select a Conversation</h4>
+            <p style={{ fontSize: '12px', margin: 0, textAlign: 'center' }}>Choose a mentor or instructor from the left list to start messaging.</p>
           </div>
-
-          {/* Messages Body */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {getMessages(activeConvo).map((msg) => (
-              <div key={msg.id} style={{ display: 'flex', justifyContent: msg.from === 'me' ? 'flex-end' : 'flex-start' }}>
-                <div style={{
-                  maxWidth: '70%', padding: '10px 14px', borderRadius: '14px',
-                  backgroundColor: msg.from === 'me' ? '#3A2048' : 'var(--bg-app)',
-                  color: msg.from === 'me' ? '#ffffff' : 'var(--text-primary)',
-                  border: msg.from === 'me' ? 'none' : '1px solid var(--border-color)',
-                  textAlign: 'left'
-                }}>
-                  <p style={{ fontSize: '13px', margin: 0, lineHeight: 1.5 }}>{msg.text}</p>
-                  <span style={{ fontSize: '9px', color: msg.from === 'me' ? 'rgba(255,255,255,0.5)' : 'var(--text-muted)', display: 'block', marginTop: '4px', textAlign: 'right' }}>{msg.time}</span>
+        ) : (
+          <div 
+            className="messages-chat-panel" 
+            style={{ width: '100%', display: 'flex', flexDirection: 'column', minWidth: 0 }}
+          >
+            {/* Chat Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--bg-card)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <button
+                  onClick={() => setSelectedConvoId(null)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', padding: '4px' }}
+                  className="click-press"
+                  title="Back to Messages"
+                >
+                  <ArrowLeft size={20} />
+                </button>
+                <img src={activeConvo.avatar} alt={activeConvo.name} style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover' }} />
+                <div style={{ textAlign: 'left' }}>
+                  <h4 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>{activeConvo.name}</h4>
+                  <span style={{ fontSize: '10px', color: activeConvo.online ? '#2BA84A' : 'var(--text-muted)' }}>{activeConvo.lastSeen}</span>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* Message Input */}
-          <div style={{ padding: '14px 20px', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <input
-              type="text"
-              placeholder="Type a message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              style={{ flex: 1, padding: '10px 14px', borderRadius: '24px', border: '1px solid var(--border-color)', fontSize: '13px' }}
-            />
-            <button
-              onClick={handleSend}
-              className="click-press"
-              style={{
-                width: '40px', height: '40px', borderRadius: '50%', backgroundColor: '#3A2048',
-                color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: 'none', cursor: 'pointer', flexShrink: 0
-              }}
-            >
-              <Send size={16} />
-            </button>
+            {/* Messages Body */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: 'var(--bg-card)' }}>
+              {getMessages(activeConvo).map((msg) => (
+                <div key={msg.id} style={{ display: 'flex', justifyContent: msg.from === 'me' ? 'flex-end' : 'flex-start' }}>
+                  <div style={{
+                    maxWidth: '85%', padding: '10px 14px', borderRadius: '14px',
+                    backgroundColor: msg.from === 'me' ? '#3A2048' : 'var(--bg-app)',
+                    color: msg.from === 'me' ? '#ffffff' : 'var(--text-primary)',
+                    border: msg.from === 'me' ? 'none' : '1px solid var(--border-color)',
+                    textAlign: 'left'
+                  }}>
+                    <p style={{ fontSize: '12.5px', margin: 0, lineHeight: 1.4 }}>{msg.text}</p>
+                    <span style={{ fontSize: '9px', color: msg.from === 'me' ? 'rgba(255,255,255,0.5)' : 'var(--text-muted)', display: 'block', marginTop: '4px', textAlign: 'right' }}>{msg.time}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Message Input */}
+            <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'var(--bg-card)' }}>
+              <input
+                type="text"
+                placeholder="Type a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                style={{ flex: 1, padding: '10px 14px', borderRadius: '24px', border: '1px solid var(--border-color)', fontSize: '12.5px', outline: 'none' }}
+              />
+              <button
+                onClick={handleSend}
+                className="click-press"
+                style={{
+                  width: '38px', height: '38px', borderRadius: '50%', backgroundColor: '#3A2048',
+                  color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: 'none', cursor: 'pointer', flexShrink: 0
+                }}
+              >
+                <Send size={15} />
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

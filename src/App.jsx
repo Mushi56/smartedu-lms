@@ -1,656 +1,698 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
-import AiPanel from './components/AiPanel';
-import { getDB, saveDB } from './data/mockData';
-import { useAuth } from './contexts/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
+import { 
+  Home as HomeIcon, Compass, Cpu, CheckSquare, User, 
+  Bell, LogOut, X, Sun, Moon, Sparkles, MessageSquare, Menu
+} from 'lucide-react';
+import MobileDeviceFrame from './components/MobileDeviceFrame';
+import { getMobileDB, saveMobileDB } from './data/mobileData';
 
-// Student Page Imports
+// Mobile Screens
+import Onboarding from './pages/mobile/Onboarding';
+import Auth from './pages/mobile/Auth';
+import Home from './pages/mobile/Home';
+import Explore from './pages/mobile/Explore';
+import AiTutor from './pages/mobile/AiTutor';
+import Tasks from './pages/mobile/Tasks';
+import Profile from './pages/mobile/Profile';
+
+// App Drawer Component
+import AppDrawer from './components/AppDrawer';
+
+// Student Portal Views
 import StudentDashboard from './pages/student/Dashboard';
 import MyCourses from './pages/student/MyCourses';
-import CourseDetail from './pages/student/CourseDetail';
-import VideoPlayer from './pages/student/VideoPlayer';
-import StudentQuizzes from './pages/student/Quizzes';
-import StudentAssignments from './pages/student/Assignments';
-import StudentSchedule from './pages/student/Schedule';
-import StudentProgress from './pages/student/Progress';
-import StudentProfile from './pages/student/Profile';
-import StudentResources from './pages/student/Resources';
-import StudentMessages from './pages/student/Messages';
-import StudentPayments from './pages/student/Payments';
-import StudentFavorites from './pages/student/Favorites';
-import StudentNotes from './pages/student/Notes';
+import Schedule from './pages/student/Schedule';
+import Assignments from './pages/student/Assignments';
+import Resources from './pages/student/Resources';
+import Messages from './pages/student/Messages';
+import Progress from './pages/student/Progress';
+import Payments from './pages/student/Payments';
+import Favorites from './pages/student/Favorites';
+import BecomeInstructor from './pages/student/BecomeInstructor';
 
-// Admin Page Imports
+// Admin Portal Views
 import AdminDashboard from './pages/admin/Dashboard';
 import CourseManager from './pages/admin/CourseManager';
 import ClassScheduler from './pages/admin/ClassScheduler';
-import AdminQuizManager from './pages/admin/QuizManager';
-import AdminAnalytics from './pages/admin/Analytics';
-import AdminSettings from './pages/admin/Settings';
-
-// Public Page Imports
-import PublicLayout from './layouts/PublicLayout';
-import Homepage from './pages/public/Homepage';
-import Login from './pages/public/Login';
-import AccessDenied from './pages/public/AccessDenied';
-
-import './App.css';
+import QuizManager from './pages/admin/QuizManager';
+import CategoryTagManager from './pages/admin/CategoryTagManager';
+import Analytics from './pages/admin/Analytics';
+import Settings from './pages/admin/Settings';
 
 export default function App() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth();
+  const [onboardingComplete, setOnboardingComplete] = useState(() => {
+    return localStorage.getItem('suriatech_mobile_onboarded') === 'true';
+  });
+  
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('suriatech_mobile_authenticated') === 'true';
+  });
 
-  // Extract path info
-  const pathParts = location.pathname.split('/');
-  const rawPortal = pathParts[1] || 'public'; // 'student', 'admin', 'super-admin'
-  const currentPortal = (rawPortal === 'super-admin' || rawPortal === 'admin') ? 'admin' : 'student';
-  const activeTab = pathParts[2] || 'dashboard';
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('suriatech_mobile_user');
+    return saved ? JSON.parse(saved) : null;
+  });
 
-  const setActiveTab = (tabId) => {
-    navigate(`/${rawPortal}/${tabId}`);
-  };
-
-  const setCurrentPortal = (portal) => {
-    navigate(`/${portal}/dashboard`);
-  };
-
-  // 1. Navigation & Search States
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('home');
   const [theme, setTheme] = useState('light');
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  
+  // App Drawer & Portal State
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentPortal, setCurrentPortal] = useState(() => {
+    const saved = localStorage.getItem('suriatech_mobile_user');
+    if (saved) {
+      const u = JSON.parse(saved);
+      return u.role === 'admin' || u.role === 'super-admin' ? 'admin' : 'student';
+    }
+    return 'student';
+  });
 
-  // 2. Course Selection Navigation States
-  const [selectedCourseId, setSelectedCourseId] = useState(null);
-  const [selectedLessonId, setSelectedLessonId] = useState(null);
-  const [viewState, setViewState] = useState('list'); // 'list', 'detail', 'player'
+  // Mock states for quizzes, assignments, and students
+  const [quizzes, setQuizzes] = useState([
+    {
+      topic: 'Recursion Basics',
+      questions: [
+        {
+          question: `What is the base case in a recursive function?`,
+          options: [
+            "The condition that terminates the recursive loop",
+            "The main block of code executing recursive calls",
+            "The initial function parameter value",
+            "The memory address of the recursion stack"
+          ],
+          answer: 0,
+          explanation: "The base case is the essential condition in a recursive function that stops further recursive calls, preventing infinite loops and stack overflow."
+        }
+      ]
+    }
+  ]);
 
-  // 3. Central Reactive Database Persistence State
-  const [db, setDb] = useState(() => getDB());
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('smartedu_api_key') || '');
+  const [assignments, setAssignments] = useState([
+    {
+      id: 'a1',
+      title: 'Assignment 1: Singly Linked List Reversal',
+      course: 'Python for Beginners & Data Science',
+      dueDate: 'June 30, 2026',
+      status: 'Pending',
+      problemDescription: 'Implement a function reverse_linked_list(head) that reverses a singly linked list in-place with O(1) auxiliary space complexity.',
+      aiNotes: 'Hint: Keep track of three pointers: prev, curr, and next.',
+      grade: null,
+      aiFeedback: null
+    },
+    {
+      id: 'a2',
+      title: 'Assignment 2: SAT Quadratic Assessment',
+      course: 'SAT Math Mastery Accelerator',
+      dueDate: 'July 05, 2026',
+      status: 'Graded',
+      problemDescription: 'Solve ax^2 + bx + c = 0 for various parameter settings, validating real roots and outputs.',
+      aiNotes: 'Excellent work. Time complexity checks passed.',
+      grade: 'A (96%)',
+      aiFeedback: 'Your solution is correct.'
+    }
+  ]);
 
-  // Synchronize dynamic updates back into the persistent localStorage database
+  const [students, setStudents] = useState([
+    { id: 's1', name: 'Aisha Al-Otaibi', email: 'aisha@example.com', role: 'Student', time: '5 mins ago', avatar: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&q=80&w=100' },
+    { id: 's2', name: 'Khalid Mansoor', email: 'khalid@example.com', role: 'Student', time: '1 hour ago', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100' },
+    { id: 's3', name: 'Dr. Vivek Sharma', email: 'vivek@example.com', role: 'Teacher', time: '3 hours ago', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100' }
+  ]);
+  
+  // Mobile Reactive Database
+  const [db, setDb] = useState(() => getMobileDB());
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('suriatech_mobile_apikey') || '');
+
+  // Sub-navigation state for Explore tab
+  const [currentCourse, setCurrentCourse] = useState(null);
+  const [exploreViewState, setExploreViewState] = useState('list'); // 'list', 'detail', 'player'
+  
+  // Custom notifications modal
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  // Sync DB state to LocalStorage
   useEffect(() => {
-    saveDB(db);
+    saveMobileDB(db);
   }, [db]);
 
-  // Synchronize developer credentials
+  // Sync theme
   useEffect(() => {
-    localStorage.setItem('smartedu_api_key', apiKey);
-  }, [apiKey]);
-
-  // Theme Sync on Initial Load
-  useEffect(() => {
-    const activeTheme = localStorage.getItem('smartedu_theme') || 'light';
-    setTheme(activeTheme);
-    document.documentElement.setAttribute('data-theme', activeTheme);
+    const savedTheme = localStorage.getItem('suriatech_mobile_theme') || 'light';
+    setTheme(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
   const handleSetTheme = (nextTheme) => {
     setTheme(nextTheme);
-    localStorage.setItem('smartedu_theme', nextTheme);
+    localStorage.setItem('suriatech_mobile_theme', nextTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
   };
 
-  // State modifiers
-  const setCourses = (updatedCourses) => {
-    setDb(prev => ({ ...prev, courses: updatedCourses }));
+  const handleLoginSuccess = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+    setCurrentPortal(userData.role === 'admin' || userData.role === 'super-admin' ? 'admin' : 'student');
+    localStorage.setItem('suriatech_mobile_authenticated', 'true');
+    localStorage.setItem('suriatech_mobile_user', JSON.stringify(userData));
   };
 
-  const setClasses = (updatedClasses) => {
-    setDb(prev => ({ ...prev, classes: updatedClasses }));
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setUser(null);
+    setCurrentPortal('student');
+    localStorage.removeItem('suriatech_mobile_authenticated');
+    localStorage.removeItem('suriatech_mobile_user');
+    setActiveTab('home');
+    setDrawerOpen(false);
   };
 
-  const setStudents = (updatedStudents) => {
-    setDb(prev => ({ ...prev, students: updatedStudents }));
+  const handleCompleteOnboarding = () => {
+    setOnboardingComplete(true);
+    localStorage.setItem('suriatech_mobile_onboarded', 'true');
   };
 
-  const setQuizzes = (updatedQuizzes) => {
-    setDb(prev => ({ ...prev, quizzes: updatedQuizzes }));
+  const handleSelectCourse = (course) => {
+    setCurrentCourse(course);
+    setExploreViewState('detail');
+    setActiveTab('explore');
   };
 
-  const setAssignments = (updatedAssignments) => {
-    setDb(prev => ({ ...prev, assignments: updatedAssignments }));
-  };
-
-  const setOverallProgress = (progressVal) => {
-    const nextVal = typeof progressVal === 'function' ? progressVal(db.overallProgress) : progressVal;
-    setDb(prev => ({ ...prev, overallProgress: nextVal }));
+  const handleSelectLiveClass = (liveClass) => {
+    alert(`Connecting to Live Stream webinar for: ${liveClass.title}\nHost: ${liveClass.teacher}\nStatus: Launching stream viewer.`);
   };
 
   const markAllNotificationsRead = () => {
-    const updated = db.notifications.map(n => ({ ...n, read: true }));
-    setDb(prev => ({ ...prev, notifications: updated }));
-  };
-
-  // Actions routing
-  const handleSelectCourseFromCard = (courseId) => {
-    setSelectedCourseId(courseId);
-    setViewState('detail');
-    setActiveTab('courses'); // Redirect navigation target to courses in sidebar
-  };
-
-  const handleStartLesson = (courseId, lessonId) => {
-    setSelectedCourseId(courseId);
-    setSelectedLessonId(lessonId);
-    setViewState('player');
-  };
-
-  const handleCompleteLesson = (courseId, lessonId) => {
-    // Boost progress of completed course
-    const updatedCourses = db.courses.map(c => {
-      if (c.id === courseId) {
-        const nextProgress = Math.min(100, c.progress + 15);
-        return { ...c, progress: nextProgress };
-      }
-      return c;
+    setDb(prev => {
+      const updated = prev.notifications.map(n => ({ ...n, read: true }));
+      return { ...prev, notifications: updated };
     });
-    setCourses(updatedCourses);
-
-    // Calculate next overall progress average
-    const totalProgSum = updatedCourses.reduce((acc, c) => acc + c.progress, 0);
-    const avgOverall = Math.round(totalProgSum / updatedCourses.length);
-    setOverallProgress(avgOverall);
   };
 
-  // RENDER DYNAMIC PAGES based on portal and activeTab state
-  const renderContent = () => {
-    // ---------------- STUDENT PORTAL ROUTER ----------------
-    if (currentPortal === 'student') {
-      switch (activeTab) {
-        case 'dashboard':
-          return (
-            <StudentDashboard 
-              courses={db.courses} 
-              classes={db.classes} 
-              streak={db.streak}
-              overallProgress={db.overallProgress}
-              setActiveTab={setActiveTab}
-              onSelectCourse={handleSelectCourseFromCard}
-            />
-          );
-        
-        case 'courses':
-          if (viewState === 'player' && selectedCourseId && selectedLessonId) {
-            return (
-              <VideoPlayer 
-                courseId={selectedCourseId}
-                initialLessonId={selectedLessonId}
-                courses={db.courses}
-                onBack={() => setViewState('detail')}
-                onCompleteLesson={handleCompleteLesson}
-              />
-            );
-          }
-          if (viewState === 'detail' && selectedCourseId) {
-            return (
-              <CourseDetail 
-                courseId={selectedCourseId}
-                courses={db.courses}
-                onBack={() => setViewState('list')}
-                onStartLesson={handleStartLesson}
-              />
-            );
-          }
-          return (
-            <MyCourses 
-              courses={db.courses} 
-              onSelectCourse={handleSelectCourseFromCard} 
-            />
-          );
-
-        case 'live-classes':
-        case 'schedule':
-          return (
-            <StudentSchedule 
-              classes={db.classes} 
-              onSelectCourse={handleSelectCourseFromCard} 
-            />
-          );
-
-        case 'assignments':
-          return (
-            <StudentAssignments 
-              assignments={db.assignments} 
-              setAssignments={setAssignments}
-              setOverallProgress={setOverallProgress}
-            />
-          );
-
-        case 'quizzes':
-          return (
-            <StudentQuizzes 
-              quizzes={db.quizzes} 
-              streak={db.streak}
-              overallProgress={db.overallProgress}
-              setOverallProgress={setOverallProgress}
-            />
-          );
-
-        case 'ai-tutor':
-          return (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', maxWidth: '680px', margin: '0 auto' }}>
-              <AiPanel 
-                streak={db.streak} 
-                overallProgress={db.overallProgress}
-                apiKey={apiKey}
-                onTriggerQuiz={() => setActiveTab('quizzes')}
-              />
-            </div>
-          );
-
-        case 'resources':
-          return <StudentResources />;
-
-        case 'notes':
-          return <StudentNotes />;
-
-        case 'progress':
-        case 'certificates':
-          return (
-            <StudentProgress 
-              courses={db.courses} 
-              streak={db.streak}
-              overallProgress={db.overallProgress}
-            />
-          );
-
-        case 'messages':
-          return <StudentMessages />;
-
-        case 'payments':
-          return <StudentPayments />;
-
-        case 'favorites':
-          return <StudentFavorites courses={db.courses} onSelectCourse={handleSelectCourseFromCard} />;
-
-        case 'settings':
-          return (
-            <StudentProfile 
-              apiKey={apiKey} 
-              setApiKey={setApiKey} 
-            />
-          );
-
-        default:
-          return <div>Page Coming Soon</div>;
-      }
-    }
-
-    // ---------------- ADMIN PORTAL ROUTER ----------------
-    if (currentPortal === 'admin') {
-      switch (activeTab) {
-        case 'dashboard':
-          return (
-            <AdminDashboard 
-              courses={db.courses} 
-              classes={db.classes} 
-              students={db.students} 
-              setActiveTab={setActiveTab}
-            />
-          );
-
-        case 'courses':
-          return (
-            <CourseManager 
-              courses={db.courses} 
-              setCourses={setCourses} 
-              initialView="list"
-            />
-          );
-
-        case 'add-course':
-          return (
-            <CourseManager 
-              courses={db.courses} 
-              setCourses={setCourses} 
-              initialView="create"
-            />
-          );
-
-        case 'live-classes':
-          return (
-            <ClassScheduler 
-              classes={db.classes} 
-              setClasses={setClasses} 
-              courses={db.courses}
-            />
-          );
-
-        case 'users':
-        case 'students':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Student Directory</h3>
-              <div className="smart-table-wrapper" style={{ marginTop: '20px' }}>
-                <table className="smart-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Class</th>
-                      <th>Enrolled On</th>
-                      <th>Amount</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {db.students.map(s => (
-                      <tr key={s.id}>
-                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{s.name}</td>
-                        <td>{s.email}</td>
-                        <td>{s.course}</td>
-                        <td>{s.enrolledOn}</td>
-                        <td style={{ fontWeight: 600 }}>{s.amount}</td>
-                        <td><span className="status-pill success">{s.status}</span></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          );
-
-        case 'teachers':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Teacher Faculty Directory</h3>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
-                <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong style={{ fontSize: '14px', display: 'block' }}>Dr. Ahmed Al-Hassan</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Senior SAT & Test Prep Instructor</span>
-                  </div>
-                  <span className="status-pill success">Active</span>
-                </li>
-                <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong style={{ fontSize: '14px', display: 'block' }}>Ms. Sarah Johnson</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>IELTS Speaking & Writing Coach</span>
-                  </div>
-                  <span className="status-pill success">Active</span>
-                </li>
-                <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong style={{ fontSize: '14px', display: 'block' }}>Ms. Lisa Park</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>TOEFL iBT & Academic English Expert</span>
-                  </div>
-                  <span className="status-pill success">Active</span>
-                </li>
-                <li style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <strong style={{ fontSize: '14px', display: 'block' }}>Dr. Michael Chen</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>GRE Quantitative Reasoning Specialist</span>
-                  </div>
-                  <span className="status-pill success">Active</span>
-                </li>
-              </ul>
-            </div>
-          );
-
-        case 'exams':
-        case 'quizzes':
-          return (
-            <AdminQuizManager 
-              quizzes={db.quizzes} 
-              setQuizzes={setQuizzes} 
-            />
-          );
-
-        case 'orders':
-        case 'enrollments':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Orders & Payments</h3>
-              <div className="smart-table-wrapper" style={{ marginTop: '20px' }}>
-                <table className="smart-table">
-                  <thead>
-                    <tr>
-                      <th>Student</th>
-                      <th>Course</th>
-                      <th>Amount</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {db.students.map(s => (
-                      <tr key={s.id}>
-                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{s.name}</td>
-                        <td>{s.course}</td>
-                        <td style={{ fontWeight: 600 }}>{s.amount}</td>
-                        <td>{s.enrolledOn}</td>
-                        <td><span className="status-pill success">{s.status}</span></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          );
-
-        case 'reports':
-        case 'analytics':
-          return <AdminAnalytics />;
-
-        case 'reviews':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Course Reviews</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
-                {db.students.slice(0, 3).map((s, i) => (
-                  <div key={s.id} style={{ padding: '16px', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                      <strong style={{ fontSize: '13px' }}>{s.name}</strong>
-                      <span style={{ fontSize: '12px', color: '#f59e0b', fontWeight: 700 }}>{'⭐'.repeat(4 + (i % 2))} {4 + (i % 2)}.0</span>
-                    </div>
-                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>
-                      {s.course} — Excellent course content and well-structured lessons. The instructor explains concepts very clearly.
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-
-        case 'coupons':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Coupons & Discounts</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
-                {[
-                  { code: 'WELCOME25', discount: '25% Off', desc: 'First-time student discount', expires: 'Jun 30, 2026', status: 'Active' },
-                  { code: 'SUMMER2026', discount: '15% Off', desc: 'Summer enrollment special', expires: 'Aug 31, 2026', status: 'Active' },
-                  { code: 'BUNDLE10', discount: '10% Off', desc: 'Course bundle discount', expires: 'Dec 31, 2026', status: 'Active' },
-                ].map((c) => (
-                  <div key={c.code} style={{ padding: '16px', border: '1px dashed var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                        <code style={{ fontSize: '14px', fontWeight: 700, color: 'var(--primary-color)', backgroundColor: 'rgba(58,32,72,0.06)', padding: '4px 10px', borderRadius: '6px' }}>{c.code}</code>
-                        <span style={{ fontSize: '13px', fontWeight: 700, color: '#2BA84A' }}>{c.discount}</span>
-                      </div>
-                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{c.desc} • Expires: {c.expires}</span>
-                    </div>
-                    <span className="status-pill success">{c.status}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-
-        case 'resources':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Platform Resources</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>Manage downloadable course materials and study resources.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {['SAT Math Formula Sheet', 'IELTS Writing Samples', 'GRE Quant Formula Sheet', 'TOEFL Vocabulary List'].map((name, i) => (
-                  <div key={i} style={{ padding: '12px 16px', border: '1px solid var(--border-color)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '13px', fontWeight: 600 }}>{name}</span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>PDF</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-
-        case 'assignments':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Assignment Management</h3>
-              <div className="smart-table-wrapper" style={{ marginTop: '16px' }}>
-                <table className="smart-table">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Course</th>
-                      <th>Due Date</th>
-                      <th>Submissions</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {db.assignments.map(a => (
-                      <tr key={a.id}>
-                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{a.title}</td>
-                        <td>{a.course}</td>
-                        <td>{a.dueDate}</td>
-                        <td>{a.status === 'Graded' ? '5/5' : '3/5'}</td>
-                        <td><span className={`status-pill ${a.status === 'Graded' ? 'success' : 'warning'}`}>{a.status === 'Graded' ? 'Graded' : 'Open'}</span></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          );
-
-        case 'announcements':
-          return (
-            <div className="smart-card text-left" style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '12px' }}>Announcements Center</h3>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>Broadcast platform-wide updates or schedule alerts.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {db.notifications.map(n => (
-                  <div key={n.id} style={{ padding: '14px 16px', border: '1px solid var(--border-color)', borderRadius: '8px', backgroundColor: n.read ? 'transparent' : 'rgba(58,32,72,0.02)' }}>
-                    <p style={{ fontSize: '13px', margin: 0, color: 'var(--text-primary)', fontWeight: n.read ? 400 : 600 }}>{n.text}</p>
-                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>{n.time}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-
-        case 'settings':
-          return (
-            <AdminSettings 
-              apiKey={apiKey} 
-              setApiKey={setApiKey} 
-            />
-          );
-
-        default:
-          return <div>Administrative Page Coming Soon</div>;
-      }
-    }
-  };
-
-  const renderPortalContainer = () => {
-    return (
-      <div className="app-container">
-        {/* 1. Left Navigation Sidebar Adaptable to portals roles */}
-        <Sidebar 
-          currentPortal={rawPortal}
-          setCurrentPortal={setCurrentPortal}
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          mobileSidebarOpen={mobileSidebarOpen}
-          setMobileSidebarOpen={setMobileSidebarOpen}
-          theme={theme}
-          setTheme={handleSetTheme}
-        />
-
-        {/* 2. Main content viewport layout */}
-        <div className="main-layout">
-          <Navbar 
-            currentPortal={rawPortal} 
-            setCurrentPortal={setCurrentPortal} 
-            setActiveTab={setActiveTab} 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            notifications={db.notifications}
-            markAllNotificationsRead={markAllNotificationsRead}
+  // Render current active tab viewport
+  const renderTabContent = () => {
+    switch (activeTab) {
+      // Mobile Tab Bar default views
+      case 'home':
+        return (
+          <Home 
+            db={db}
+            onSelectCourse={handleSelectCourse}
+            onSelectLiveClass={handleSelectLiveClass}
+            onSelectTab={setActiveTab}
+          />
+        );
+      case 'explore':
+        return (
+          <Explore 
+            db={db}
+            setDb={setDb}
+            currentCourse={currentCourse}
+            onCourseSelect={setCurrentCourse}
+            viewState={exploreViewState}
+            setViewState={setExploreViewState}
+          />
+        );
+      case 'ai':
+        return (
+          <AiTutor 
+            apiKey={apiKey}
+          />
+        );
+      case 'tasks':
+        return (
+          <Tasks 
+            db={db}
+            setDb={setDb}
+          />
+        );
+      case 'profile':
+        return (
+          <Profile 
+            db={db}
+            setDb={setDb}
+            apiKey={apiKey}
+            setApiKey={(key) => {
+              setApiKey(key);
+              localStorage.setItem('suriatech_mobile_apikey', key);
+            }}
             theme={theme}
             setTheme={handleSetTheme}
-            setMobileSidebarOpen={setMobileSidebarOpen}
           />
+        );
 
-          {/* Scrollable workspace */}
-          <main className="content-scrollable">
-            <div className="dashboard-main-content" style={{ width: '100%' }}>
-              {renderContent()}
+      // Student sidebar views
+      case 'dashboard':
+        return currentPortal === 'admin' ? (
+          <AdminDashboard 
+            courses={db.courses} 
+            classes={db.classes} 
+            students={students} 
+            setActiveTab={setActiveTab} 
+          />
+        ) : (
+          <StudentDashboard 
+            courses={db.courses} 
+            classes={db.classes} 
+            streak={db.streak} 
+            overallProgress={db.overallProgress} 
+            setActiveTab={setActiveTab} 
+            onSelectCourse={handleSelectCourse} 
+          />
+        );
+      case 'courses':
+        return currentPortal === 'admin' ? (
+          <CourseManager 
+            courses={db.courses} 
+            setDb={setDb} 
+          />
+        ) : (
+          <MyCourses 
+            courses={db.courses} 
+            onSelectCourse={handleSelectCourse} 
+          />
+        );
+      case 'live-classes':
+      case 'schedule-class':
+      case 'class-recordings':
+      case 'live-categories':
+      case 'live-settings':
+        return currentPortal === 'admin' ? (
+          <ClassScheduler 
+            classes={db.classes} 
+            setClasses={(newClasses) => {
+              setDb(prev => ({ ...prev, classes: typeof newClasses === 'function' ? newClasses(prev.classes) : newClasses }));
+            }} 
+            courses={db.courses} 
+            activeTab={activeTab} 
+            setActiveTab={setActiveTab} 
+          />
+        ) : (
+          <Schedule 
+            classes={db.classes} 
+            onSelectCourse={handleSelectCourse} 
+          />
+        );
+      case 'schedule':
+        return (
+          <Schedule 
+            classes={db.classes} 
+            onSelectCourse={handleSelectCourse} 
+          />
+        );
+      case 'assignments':
+        return (
+          <Assignments 
+            assignments={assignments} 
+            setAssignments={setAssignments} 
+            setOverallProgress={(newProgress) => {
+              setDb(prev => {
+                const nextVal = typeof newProgress === 'function' ? newProgress(prev.overallProgress) : newProgress;
+                return { ...prev, overallProgress: nextVal };
+              });
+            }} 
+          />
+        );
+      case 'resources':
+        return (
+          <Resources />
+        );
+      case 'messages':
+        return (
+          <Messages />
+        );
+      case 'progress':
+      case 'certificates':
+        return (
+          <Progress 
+            courses={db.courses} 
+            streak={db.streak} 
+            overallProgress={db.overallProgress} 
+          />
+        );
+      case 'payments':
+        return (
+          <Payments />
+        );
+      case 'favorites':
+        return (
+          <Favorites />
+        );
+      case 'become-instructor':
+        return (
+          <BecomeInstructor />
+        );
+      case 'settings':
+        return currentPortal === 'admin' ? (
+          <Settings 
+            apiKey={apiKey} 
+            setApiKey={(key) => {
+              setApiKey(key);
+              localStorage.setItem('suriatech_mobile_apikey', key);
+            }} 
+          />
+        ) : (
+          <Profile 
+            db={db}
+            setDb={setDb}
+            apiKey={apiKey}
+            setApiKey={(key) => {
+              setApiKey(key);
+              localStorage.setItem('suriatech_mobile_apikey', key);
+            }}
+            theme={theme}
+            setTheme={handleSetTheme}
+          />
+        );
+
+      // Admin specific sidebar views
+      case 'users':
+      case 'teachers':
+        return (
+          <div className="smart-card" style={{ padding: '20px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>{activeTab === 'users' ? 'Users Management' : 'Teachers Management'}</h2>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Manage the system accounts, update privileges and check user profiles.</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px' }}>
+              {students.map((std) => (
+                <div key={std.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <img src={std.avatar} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} alt="" />
+                    <div>
+                      <h4 style={{ fontSize: '13px', fontWeight: 600 }}>{std.name}</h4>
+                      <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{std.email}</span>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary-color)' }}>{std.role}</span>
+                </div>
+              ))}
             </div>
-          </main>
-        </div>
-      </div>
-    );
+          </div>
+        );
+      case 'categories':
+      case 'tags':
+      case 'levels':
+        return (
+          <CategoryTagManager />
+        );
+      case 'exams':
+        return (
+          <QuizManager 
+            quizzes={quizzes} 
+            setQuizzes={setQuizzes} 
+          />
+        );
+      case 'orders':
+        return (
+          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Orders & Payments History</h2>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Track sales transactions, refund requests, and invoice records.</p>
+            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
+              No orders registered this period.
+            </div>
+          </div>
+        );
+      case 'reports':
+        return (
+          <Analytics />
+        );
+      case 'reviews':
+        return (
+          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Reviews & Feedback</h2>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Moderate course reviews and student feedback ratings.</p>
+            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
+              No review moderation requests active.
+            </div>
+          </div>
+        );
+      case 'coupons':
+        return (
+          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Coupons & Promotions</h2>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Manage promotional discount codes, validity dates and discount values.</p>
+            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
+              No active promotion campaigns configured.
+            </div>
+          </div>
+        );
+      case 'announcements':
+        return (
+          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Announcements & Broadcasts</h2>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Broadcast announcements to specific student classes or teacher circles.</p>
+            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
+              No announcements active.
+            </div>
+          </div>
+        );
+
+      default:
+        return <div>Portal Coming Soon</div>;
+    }
   };
 
+  // Unread notifications counter
+  const unreadCount = db.notifications?.filter(n => !n.read).length || 0;
+
   return (
-    <Routes>
-      <Route path="/" element={
-        <PublicLayout 
-          onGetStarted={() => {
-            if (isAuthenticated && user) {
-              navigate(user.role === 'super-admin' ? '/super-admin/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard');
-            } else {
-              navigate('/login');
-            }
+    <MobileDeviceFrame>
+      <div className="mobile-app-viewport">
+        
+        {/* Onboarding Flow */}
+        {!onboardingComplete ? (
+          <Onboarding onComplete={handleCompleteOnboarding} />
+        ) : !isAuthenticated ? (
+          // Auth Gate Flow
+          <Auth onLoginSuccess={handleLoginSuccess} />
+        ) : (
+          // Main App Viewport
+          <div className="app-layout-container">
+            {/* App Drawer Component */}
+            <AppDrawer
+              isOpen={drawerOpen}
+              onClose={() => setDrawerOpen(false)}
+              user={user}
+              currentPortal={currentPortal}
+              setCurrentPortal={setCurrentPortal}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              theme={theme}
+              setTheme={handleSetTheme}
+              logout={handleLogout}
+            />
+
+            <div className="app-main-layout">
+              {/* Top Toolbar / Status Bar Area */}
+              <header style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 16px',
+                backgroundColor: 'var(--bg-card)',
+                borderBottom: '1px solid var(--border-color)',
+                height: '52px',
+                zIndex: 90
+              }}>
+                {/* Profile overview indicator with hamburger menu trigger */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button
+                    onClick={() => setDrawerOpen(true)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', padding: '4px', display: 'flex', alignItems: 'center' }}
+                    className="click-press header-hamburger"
+                    title="Open Navigation Menu"
+                  >
+                    <Menu size={20} />
+                  </button>
+                  <img 
+                    src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
+                    alt="Avatar" 
+                    style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
+                  />
+                  <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                    {user?.name || 'Omar'}
+                  </span>
+                </div>
+
+                {/* Alert & Logout actions */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {/* Notification bell */}
+                  <button 
+                    onClick={() => {
+                      setNotificationsOpen(true);
+                      markAllNotificationsRead();
+                    }}
+                    className="click-press"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', color: 'var(--text-primary)' }}
+                  >
+                    <Bell size={18} />
+                    {unreadCount > 0 && (
+                      <span style={{
+                        position: 'absolute',
+                        top: '-4px',
+                        right: '-4px',
+                        background: 'var(--accent-red)',
+                        color: '#fff',
+                        fontSize: '8px',
+                        fontWeight: 800,
+                        borderRadius: '50%',
+                        width: '14px',
+                        height: '14px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Logout trigger */}
+                  <button
+                    onClick={handleLogout}
+                    className="click-press"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                    title="Sign Out"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                </div>
+              </header>
+
+              {/* Core scrollable panel views */}
+              <main className="mobile-content-container">
+                {renderTabContent()}
+              </main>
+
+              {/* Bottom Nav Bar */}
+              <nav className="bottom-nav">
+                <button
+                  onClick={() => {
+                    setActiveTab('home');
+                  }}
+                  className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
+                >
+                  <div className="nav-icon-wrapper">
+                    <HomeIcon size={18} />
+                  </div>
+                  <span>Home</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('explore');
+                    setExploreViewState('list'); // reset internal state
+                  }}
+                  className={`nav-item ${activeTab === 'explore' ? 'active' : ''}`}
+                >
+                  <div className="nav-icon-wrapper">
+                    <Compass size={18} />
+                  </div>
+                  <span>Discover</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('ai');
+                  }}
+                  className={`nav-item ${activeTab === 'ai' ? 'active' : ''}`}
+                >
+                  <div className="nav-icon-wrapper">
+                    <Cpu size={18} />
+                    <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: 'var(--secondary-color)', width: '6px', height: '6px', borderRadius: '50%' }} />
+                  </div>
+                  <span>AI Tutor</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('tasks');
+                  }}
+                  className={`nav-item ${activeTab === 'tasks' ? 'active' : ''}`}
+                >
+                  <div className="nav-icon-wrapper">
+                    <CheckSquare size={18} />
+                  </div>
+                  <span>Tasks</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('profile');
+                    setCurrentCourse(null); // Reset cert viewer
+                  }}
+                  className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
+                >
+                  <div className="nav-icon-wrapper">
+                    <User size={18} />
+                  </div>
+                  <span>Profile</span>
+                </button>
+              </nav>
+            </div>
+          </div>
+        )}
+
+        {/* Sliding Bottom Sheet Notifications Drawer */}
+        {notificationsOpen && (
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center'
           }}
-          onGoAdmin={() => navigate('/admin/dashboard')}
-          onGoStudent={() => navigate('/student/dashboard')}
-        >
-          <Homepage onGetStarted={() => {
-            if (isAuthenticated && user) {
-              navigate(user.role === 'super-admin' ? '/super-admin/dashboard' : user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard');
-            } else {
-              navigate('/login');
-            }
-          }} />
-        </PublicLayout>
-      } />
+          className="animate-fade-in"
+          onClick={() => setNotificationsOpen(false)}
+          >
+            <div style={{
+              width: '100%',
+              backgroundColor: 'var(--bg-card)',
+              borderRadius: '24px 24px 0 0',
+              padding: '20px 16px calc(24px + var(--safe-bottom)) 16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              maxHeight: '70%',
+              textAlign: 'left'
+            }}
+            className="animate-slide-up"
+            onClick={e => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: 850, color: 'var(--text-primary)' }}>System Notifications</h3>
+                <button
+                  onClick={() => setNotificationsOpen(false)}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/access-denied" element={<AccessDenied />} />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', overflowY: 'auto' }} className="hide-scrollbar">
+                {db.notifications?.map((item) => (
+                  <div 
+                    key={item.id} 
+                    style={{ 
+                      padding: '12px', 
+                      borderRadius: '10px', 
+                      border: '1px solid var(--border-color)', 
+                      backgroundColor: 'var(--bg-app)' 
+                    }}
+                  >
+                    <p style={{ fontSize: '11.5px', color: 'var(--text-primary)', margin: 0, lineHeight: 1.4 }}>
+                      {item.text}
+                    </p>
+                    <span style={{ fontSize: '9px', color: 'var(--text-muted)', display: 'block', marginTop: '4px' }}>
+                      {item.time}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-      {/* Student Protected Portal */}
-      <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
-      <Route path="/student/:tab" element={
-        <ProtectedRoute allowedRoles={['student']}>
-          {renderPortalContainer()}
-        </ProtectedRoute>
-      } />
-
-      {/* Admin Protected Portal */}
-      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-      <Route path="/admin/:tab" element={
-        <ProtectedRoute allowedRoles={['admin']}>
-          {renderPortalContainer()}
-        </ProtectedRoute>
-      } />
-
-      {/* Super Admin Protected Portal */}
-      <Route path="/super-admin" element={<Navigate to="/super-admin/dashboard" replace />} />
-      <Route path="/super-admin/:tab" element={
-        <ProtectedRoute allowedRoles={['super-admin']}>
-          {renderPortalContainer()}
-        </ProtectedRoute>
-      } />
-
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+      </div>
+    </MobileDeviceFrame>
   );
 }

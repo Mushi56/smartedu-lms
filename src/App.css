@@ -2417,6 +2417,7 @@
   .pub-hamburger    { display: flex !important; }
   .pub-nav-links    { display: none !important; }
   .pub-get-started  { display: none !important; }
+  .pub-hero-nav-links { display: none !important; }
 
   /* Homepage grids → 2-col on mobile */
   .home-teachers-grid   { grid-template-columns: repeat(2, 1fr) !important; }
@@ -2430,7 +2431,10 @@
   .home-instructor-grid { grid-template-columns: 1fr !important; }
 
   /* Hide hero illustration on mobile */
-  .hero-illustration    { display: none; }
+  .hero-illustration    { display: none !important; }
+
+  /* Stack search bar on mobile */
+  .hero-search-bar-grid { grid-template-columns: 1fr !important; }
 
   .footer-grid          { grid-template-columns: 1fr 1fr !important; }
 }

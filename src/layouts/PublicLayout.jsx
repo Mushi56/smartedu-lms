@@ -84,55 +84,144 @@ export default function PublicLayout({ children, onGetStarted, onGoAdmin, onGoSt
         justifyContent: 'space-between',
         padding: '0 5%',
         zIndex: 1000,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        backgroundColor: '#ffffff',
-        boxShadow: isScrolled ? '0 10px 30px rgba(58, 32, 72, 0.08)' : '0 4px 20px rgba(0,0,0,0.03)',
-        borderBottom: '1px solid rgba(58, 32, 72, 0.05)',
+        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+        backgroundColor: isScrolled ? '#ffffff' : 'transparent',
+        boxShadow: isScrolled ? '0 10px 30px rgba(58, 32, 72, 0.08)' : 'none',
+        borderBottom: isScrolled ? '1px solid rgba(58, 32, 72, 0.05)' : 'none',
       }}>
 
         {/* --- DESKTOP LAYOUT --- */}
         {isDesktop ? (
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '20px' }}>
             
             {/* Left Brand */}
-            <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate('/')}>
-              <img src="/logo.svg" alt="SURIA TECH Logo" style={{ height: '44px', width: 'auto' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0, cursor: 'pointer' }} onClick={() => navigate('/')}>
+              <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'linear-gradient(135deg, #CABA61 0%, #e8d98a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>✦</div>
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#3A2048', letterSpacing: '0.5px', lineHeight: 1.1 }}>SURIA <span style={{ color: '#3A2048' }}>TECH</span></div>
+                <div style={{ fontSize: '8px', fontWeight: 600, color: '#94a3b8', letterSpacing: '2px', textTransform: 'uppercase' }}>Learn. Prepare. Succeed.</div>
+              </div>
             </div>
 
-            {/* Center Links */}
+            {/* Center Nav Links */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 700, color: '#4a148c', textDecoration: 'none', borderBottom: '2px solid #7c3aed', paddingBottom: '4px' }}>Home</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Courses</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Teachers</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Exams</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">Resources</a>
-              <a href="#" style={{ fontSize: '14px', fontWeight: 600, color: '#4b5563', textDecoration: 'none', transition: 'color 0.2s' }} className="hover-gold">About</a>
+              <div style={{ position: 'relative' }} ref={exploreRef}>
+                <a href="#" onClick={(e) => { e.preventDefault(); setShowExplore(!showExplore); }} style={{ fontSize: '14px', fontWeight: 600, color: '#3A2048', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  Explore <span style={{ fontSize: '10px', color: '#94a3b8' }}>▾</span>
+                </a>
+
+                {/* Explore Dropdown Panel */}
+                {showExplore && (
+                  <div className="smart-card glass-effect animate-scale-up" style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 12px)',
+                    left: 0,
+                    width: '320px',
+                    padding: '16px',
+                    borderRadius: '16px',
+                    boxShadow: '0 12px 30px rgba(58, 32, 72, 0.15)',
+                    border: '1px solid rgba(58, 32, 72, 0.08)',
+                    zIndex: 1010
+                  }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: 'rgba(58, 32, 72, 0.5)', textTransform: 'uppercase', marginBottom: '10px', letterSpacing: '0.5px' }}>
+                      Learning Pathways
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {categories.map((cat) => {
+                        const Icon = cat.icon;
+                        return (
+                          <button
+                            key={cat.id}
+                            onClick={() => handleCategoryClick(cat.id)}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '12px',
+                              padding: '10px 12px',
+                              backgroundColor: 'transparent',
+                              border: 'none',
+                              borderRadius: '8px',
+                              textAlign: 'left',
+                              cursor: 'pointer',
+                              width: '100%',
+                              transition: 'all 0.2s'
+                            }}
+                            className="hover-bg-app"
+                          >
+                            <div style={{
+                              width: '32px',
+                              height: '32px',
+                              borderRadius: '6px',
+                              backgroundColor: `${cat.color}10`,
+                              color: cat.color,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}>
+                              <Icon size={16} />
+                            </div>
+                            <div>
+                              <div style={{ fontSize: '13px', fontWeight: 700, color: '#3A2048' }}>{cat.title}</div>
+                              <div style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{cat.desc}</div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <a href="#" onClick={(e) => { e.preventDefault(); onGetStarted(); }} style={{ fontSize: '14px', fontWeight: 600, color: '#3A2048', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>Exams <span style={{ fontSize: '10px', color: '#94a3b8' }}>▾</span></a>
+              <a href="#" onClick={(e) => { e.preventDefault(); onGetStarted(); }} style={{ fontSize: '14px', fontWeight: 600, color: '#3A2048', textDecoration: 'none' }}>Instructors</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); onGetStarted(); }} style={{ fontSize: '14px', fontWeight: 600, color: '#3A2048', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>Resources <span style={{ fontSize: '10px', color: '#94a3b8' }}>▾</span></a>
+              <a href="#" onClick={(e) => { e.preventDefault(); onGetStarted(); }} style={{ fontSize: '14px', fontWeight: 600, color: '#3A2048', textDecoration: 'none' }}>Pricing</a>
             </div>
 
-            {/* Right Button */}
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <button
-                onClick={onGetStarted}
-                style={{
-                  padding: '12px 24px',
-                  background: 'linear-gradient(to right, #d4af37, #b8860b)',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  fontFamily: "'Montserrat', sans-serif"
-                }}
-                className="hover-opacity click-press"
-              >
-                Get Started <ArrowRight size={16} />
-              </button>
+            {/* Right: Language + Auth Actions */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexShrink: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: '#3A2048', cursor: 'pointer' }}>
+                <Globe size={16} /> EN <span style={{ fontSize: '10px', color: '#94a3b8' }}>▾</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <button
+                  onClick={handleLoginClick}
+                  style={{
+                    padding: '9px 22px',
+                    backgroundColor: '#3A2048',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '24px',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    fontFamily: "'Montserrat', sans-serif"
+                  }}
+                  className="click-press"
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={onGetStarted}
+                  style={{
+                    padding: '9px 22px',
+                    backgroundColor: 'transparent',
+                    color: '#3A2048',
+                    border: '1.5px solid #3A2048',
+                    borderRadius: '24px',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    fontFamily: "'Montserrat', sans-serif"
+                  }}
+                  className="click-press"
+                >
+                  Sign up
+                </button>
+              </div>
             </div>
+
           </div>
         ) : (
           /* --- MOBILE / TABLET LAYOUT --- */
@@ -367,8 +456,8 @@ export default function PublicLayout({ children, onGetStarted, onGoAdmin, onGoSt
         </div>
       </div>
 
-      {/* ── PAGE CONTENT ─────────────────────────────────── */}
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: '76px' }}>
+      {/* ── PAGE CONTENT ───────────────────────────────────── */}
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', marginTop: '0' }}>
         {children}
       </main>
 

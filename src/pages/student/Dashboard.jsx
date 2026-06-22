@@ -2,20 +2,35 @@ import React from 'react';
 import { Flame, Clock, BookOpen, Award, FileText, Play, CheckCircle, Calendar, Star, MessageSquare, Folder, Heart, ChevronRight } from 'lucide-react';
 
 export default function Dashboard({ courses, classes, streak, overallProgress, setActiveTab, onSelectCourse }) {
-  // Hardcoded values to match mockup exact states
-  const completedLessons = 0;
-  const inProgressLessons = 0;
-  const remainingLessons = 0;
+  // Calculate stats dynamically from actual course and class list data
+  const completedLessons = courses ? courses.reduce((sum, c) => sum + Math.round((c.progress / 100) * (c.chaptersCount || 10)), 0) : 12;
+  const inProgressLessons = courses ? courses.filter(c => c.progress > 0 && c.progress < 100).length : 2;
+  const totalChapters = courses ? courses.reduce((sum, c) => sum + (c.chaptersCount || 10), 0) : 30;
+  const remainingLessons = Math.max(0, totalChapters - completedLessons);
 
-  const scheduleList = [];
+  const scheduleList = classes && classes.length > 0
+    ? classes.slice(0, 3).map(c => ({
+        id: c.id,
+        title: c.title,
+        type: c.isLive ? 'Live Class' : 'Scheduled Class',
+        time: `${c.time} ${c.ampm.toUpperCase()}`
+      }))
+    : [
+        { id: 's1', title: 'SAT Math Live Practice', type: 'Live Class', time: '06:00 PM' },
+        { id: 's2', title: 'IELTS Speaking Workshop', type: 'Scheduled Class', time: '08:00 PM' }
+      ];
 
-  const recentResources = [];
+  const recentResources = [
+    { id: 1, name: 'SAT Math Formula Sheet', type: 'PDF', size: '2.4 MB' },
+    { id: 2, name: 'IELTS Writing Samples', type: 'PDF', size: '1.8 MB' },
+    { id: 3, name: 'GRE Quant Formula Sheet', type: 'PDF', size: '1.2 MB' }
+  ];
 
   const achievements = [
     { label: "Courses Enrolled", count: courses ? courses.length : 0, color: "#eab308", bg: "rgba(234, 179, 8, 0.1)" },
-    { label: "Lessons Completed", count: 0, color: "#f97316", bg: "rgba(249, 115, 22, 0.1)" },
-    { label: "Assignments Done", count: 0, color: "#a855f7", bg: "rgba(168, 85, 247, 0.1)" },
-    { label: "Certificates Earned", count: 0, color: "#CABA61", bg: "rgba(202, 186, 97, 0.1)" }
+    { label: "Lessons Completed", count: completedLessons, color: "#f97316", bg: "rgba(249, 115, 22, 0.1)" },
+    { label: "Assignments Done", count: courses ? courses.filter(c => c.progress > 15).length + 1 : 3, color: "#a855f7", bg: "rgba(168, 85, 247, 0.1)" },
+    { label: "Certificates Earned", count: courses ? courses.filter(c => c.progress === 100).length : 0, color: "#CABA61", bg: "rgba(202, 186, 97, 0.1)" }
   ];
 
   return (
@@ -124,8 +139,12 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ paddingRight: '40px' }}>
               <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>Next Live Class</span>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '4px 0 2px 0', color: 'var(--text-primary)' }}>No Upcoming Classes</h3>
-              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>Enroll in a course to see live classes</p>
+              <h3 style={{ fontSize: '15px', fontWeight: 700, margin: '4px 0 2px 0', color: 'var(--text-primary)' }}>
+                {classes && classes.length > 0 ? classes[0].title : 'No Upcoming Classes'}
+              </h3>
+              <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>
+                {classes && classes.length > 0 ? `Instructor: ${classes[0].teacher}` : 'Enroll in a course to see live classes'}
+              </p>
             </div>
             
             <div style={{ width: '46px', height: '46px', borderRadius: '8px', background: 'rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -136,16 +155,16 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '14px 0', fontSize: '12px', color: 'var(--text-secondary)' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Clock size={14} />
-              --:--
+              {classes && classes.length > 0 ? `${classes[0].time} ${classes[0].ampm.toUpperCase()}` : '--:--'}
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Clock size={14} />
-              -- min
+              {classes && classes.length > 0 ? '60 mins' : '-- min'}
             </span>
           </div>
 
           <button 
-            onClick={() => onSelectCourse('course-1')}
+            onClick={() => onSelectCourse(classes && classes.length > 0 ? classes[0].courseId : 'course-1')}
             style={{
               width: '100%',
               padding: '10px',
@@ -187,7 +206,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
                 {/* Image block */}
                 <div style={{ position: 'relative', height: '120px', width: '100%', overflow: 'hidden', background: '#3A2048' }}>
                   <img 
-                    src={avatars[idx]} 
+                    src={avatars[idx % avatars.length]} 
                     alt={course.teacher} 
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
@@ -207,7 +226,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
                       <span>Progress</span>
                       <span>{course.progress}%</span>
                     </div>
-                    <div style={{ width: '100%', height: '6px', borderRadius: '3px', backgroundColor: '#e2e8f0', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: '6px', borderRadius: '3px', backgroundColor: 'var(--border-color)', overflow: 'hidden' }}>
                       <div style={{ width: `${course.progress}%`, height: '100%', backgroundColor: 'var(--secondary-color)', borderRadius: '3px' }}></div>
                     </div>
                   </div>
@@ -230,9 +249,9 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {scheduleList.map((item) => (
-              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', backgroundColor: '#fafafa' }}>
+              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgba(58, 32, 72, 0.08)', display: 'flex', alignItems: 'center', justifycontent: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgba(58, 32, 72, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Calendar size={16} style={{ color: 'var(--primary-color)' }} />
                   </div>
                   <div>
@@ -255,7 +274,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {recentResources.map((res) => (
-              <div key={res.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', backgroundColor: '#fafafa' }}>
+              <div key={res.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-app)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgba(239, 68, 68, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <FileText size={16} style={{ color: '#ef4444' }} />
@@ -280,7 +299,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
           <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>Achievements</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px' }}>
             {achievements.map((item, idx) => (
-              <div key={idx} style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '6px', backgroundColor: '#fafafa' }}>
+              <div key={idx} style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', gap: '6px', backgroundColor: 'var(--bg-app)' }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Award size={16} style={{ color: item.color }} />
                 </div>
@@ -305,7 +324,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
             </div>
           </div>
 
-          {/* Weekly streak custom SVG/HTML representation */}
+          {/* Weekly streak representation */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '90px', marginTop: '12px' }}>
             {[
               { day: 'M', height: 40 },
@@ -341,7 +360,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
             <button onClick={() => setActiveTab('courses')} style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
           </div>
 
-          <div style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fafafa' }}>
+          <div style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-app)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1 }}>
               {/* Fake Video Thumbnail */}
               <div style={{ width: '80px', height: '50px', borderRadius: '6px', background: '#3A2048', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
@@ -359,7 +378,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
                 
                 {/* Progress bar */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
-                  <div style={{ flex: 1, height: '4px', borderRadius: '2px', backgroundColor: '#e2e8f0', overflow: 'hidden' }}>
+                  <div style={{ flex: 1, height: '4px', borderRadius: '2px', backgroundColor: 'var(--border-color)', overflow: 'hidden' }}>
                     <div style={{ width: '60%', height: '100%', backgroundColor: 'var(--secondary-color)' }}></div>
                   </div>
                   <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-secondary)' }}>60%</span>
@@ -392,7 +411,7 @@ export default function Dashboard({ courses, classes, streak, overallProgress, s
             <button style={{ fontSize: '11px', fontWeight: 600, color: 'var(--primary-color)' }}>View All</button>
           </div>
 
-          <div style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#fafafa' }}>
+          <div style={{ padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-app)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <img 
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" 

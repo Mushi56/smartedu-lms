@@ -69,15 +69,19 @@ export default function Schedule({ classes, onSelectCourse }) {
                   }}
                 >
                   <span className="calendar-day-num">{cell.dayNum}</span>
-                  <div className="calendar-events-container">
+                  <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', marginTop: '4px', flexWrap: 'wrap' }}>
                     {cellClasses.map(c => (
                       <span 
                         key={c.id} 
-                        className="calendar-event-dot"
-                        title={c.title}
-                      >
-                        {c.time} {c.title.split(' - ')[1] || c.title.split(' ')[0]}
-                      </span>
+                        style={{
+                          width: '6px',
+                          height: '6px',
+                          borderRadius: '50%',
+                          backgroundColor: c.isLive ? '#7c3aed' : 'var(--text-muted)',
+                          display: 'inline-block'
+                        }}
+                        title={`${c.time}: ${c.title}`}
+                      />
                     ))}
                   </div>
                 </div>

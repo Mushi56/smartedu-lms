@@ -282,7 +282,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
 
   // ─── ADD NEW COURSE WORKSPACE (STEPS 1 - 5) ──────────────────────────────────
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'left', background: '#FAF9FB', minHeight: '100vh', margin: '-24px', padding: '24px' }}>
+    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'left', background: '#FAF9FB', minHeight: '100%', margin: '-24px', padding: '24px' }}>
       
       {/* 1. Header Toolbar with Title and Actions */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '16px' }}>
@@ -414,7 +414,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
 
       {/* ── STEP 1 VIEW: COURSE DETAILS ────────────────────────────────────── */}
       {activeStep === 1 && (
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '20px', alignItems: 'start' }} className="responsive-hero-grid">
+        <div className="course-manager-grid" style={{ display: 'grid', gap: '20px', alignItems: 'start' }}>
           
           {/* LEFT FORM COLUMN (Basic Information & Outcome list) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -425,7 +425,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
                 <span>Basic Information</span>
               </h3>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '14px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                 <div className="form-group">
                   <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Course Title *</label>
                   <input 
@@ -446,7 +446,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                 <div className="form-group">
                   <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Category *</label>
                   <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} style={{ fontSize: '13px' }}>
@@ -545,7 +545,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
                 <span>Course Details</span>
               </h3>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                 <div className="form-group">
                   <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Language *</label>
                   <select value={form.language} onChange={e => setForm(f => ({ ...f, language: e.target.value }))} style={{ fontSize: '13px' }}>
@@ -674,31 +674,123 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
             {/* Course Thumbnail Upload Box */}
             <div className="smart-card" style={{ padding: '24px', background: '#ffffff', display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <h3 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Course Thumbnail *</h3>
-              
-              <div style={{ position: 'relative', width: '100%', height: '130px', borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
-                <img src={form.thumbnail} alt="Thumbnail Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <button style={{ position: 'absolute', top: '10px', right: '10px', width: '28px', height: '28px', borderRadius: '6px', background: 'rgba(255,255,255,0.9)', color: 'var(--text-primary)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                  <Edit3 size={12} />
-                </button>
+
+              {/* Live Preview — shows placeholder when no URL is set */}
+              <div style={{
+                position: 'relative',
+                width: '100%',
+                height: '140px',
+                borderRadius: '10px',
+                overflow: 'hidden',
+                border: '1.5px solid var(--border-color)',
+                background: '#f8f7fb',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                {form.thumbnail ? (
+                  <>
+                    <img
+                      src={form.thumbnail}
+                      alt="Thumbnail Preview"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                    />
+                    {/* Shown if image fails to load */}
+                    <div style={{ display: 'none', flexDirection: 'column', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', position: 'absolute', inset: 0, justifyContent: 'center' }}>
+                      <Image size={28} style={{ color: 'var(--border-color)' }} />
+                      <span style={{ fontSize: '10px' }}>Image could not be loaded</span>
+                    </div>
+                    {/* Clear button */}
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, thumbnail: '' }))}
+                      title="Remove image"
+                      style={{
+                        position: 'absolute', top: '8px', right: '8px',
+                        width: '26px', height: '26px', borderRadius: '50%',
+                        background: 'rgba(239,68,68,0.85)', color: '#fff',
+                        border: 'none', display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', cursor: 'pointer',
+                        boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                      }}
+                    >
+                      <X size={12} strokeWidth={3} />
+                    </button>
+                  </>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', color: 'var(--text-muted)' }}>
+                    <Image size={32} style={{ color: 'var(--border-color)' }} />
+                    <span style={{ fontSize: '11px', fontWeight: 600 }}>No thumbnail selected</span>
+                    <span style={{ fontSize: '9px' }}>Paste a URL or upload an image below</span>
+                  </div>
+                )}
               </div>
 
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Recommended size: 1280x720px (16:9)</span>
-
-              {/* Dotted Upload row of preview media */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
-                <div style={{ height: '36px', borderRadius: '4px', overflow: 'hidden' }}>
-                  <img src={form.thumbnail} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div style={{ height: '36px', borderRadius: '4px', overflow: 'hidden' }}>
-                  <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=100&q=80" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div style={{ height: '36px', borderRadius: '4px', overflow: 'hidden' }}>
-                  <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=100&q=80" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                </div>
-                <div style={{ height: '36px', border: '1px dotted var(--primary-color)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px', fontSize: '14px', cursor: 'pointer', fontWeight: 800 }}>
-                  +
+              {/* URL Input field */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)' }}>Paste Image URL</label>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    placeholder="https://example.com/image.jpg"
+                    value={form.thumbnail}
+                    onChange={e => setForm(f => ({ ...f, thumbnail: e.target.value }))}
+                    style={{ fontSize: '11px', flex: 1, padding: '8px 12px' }}
+                  />
+                  {form.thumbnail && (
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, thumbnail: '' }))}
+                      style={{
+                        padding: '8px 10px', borderRadius: '8px',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        background: 'rgba(239,68,68,0.06)', color: '#ef4444',
+                        fontSize: '11px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap'
+                      }}
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
               </div>
+
+              {/* OR divider */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: 600 }}>OR</span>
+                <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+              </div>
+
+              {/* Upload from device */}
+              <label style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                padding: '10px 16px', borderRadius: '8px',
+                border: '1.5px dashed var(--primary-color)',
+                background: 'rgba(58, 32, 72, 0.02)', color: 'var(--primary-color)',
+                fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                transition: 'background 0.2s'
+              }}>
+                <Upload size={14} />
+                <span>Upload from device</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => setForm(f => ({ ...f, thumbnail: ev.target.result }));
+                    reader.readAsDataURL(file);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+
+              <span style={{ fontSize: '9px', color: 'var(--text-muted)', textAlign: 'center' }}>
+                Recommended: 1280×720px (16:9) · JPG, PNG, WebP
+              </span>
             </div>
           </div>
 
@@ -896,7 +988,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
 
       {/* ── STEP 2 VIEW: CURRICULUM WORKSPACE ───────────────────────────────── */}
       {activeStep === 2 && (
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', alignItems: 'start' }}>
+        <div className="course-manager-grid" style={{ display: 'grid', gap: '24px', alignItems: 'start' }}>
           {/* Module Editor */}
           <div className="smart-card" style={{ padding: '24px', background: '#ffffff', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px' }}>
@@ -981,7 +1073,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
 
       {/* ── STEP 3: PRICING & SETTINGS ───────────────────────────────────────── */}
       {activeStep === 3 && (
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', alignItems: 'start' }}>
+        <div className="course-manager-grid" style={{ display: 'grid', gap: '24px', alignItems: 'start' }}>
           {/* Left: Pricing + Access Settings */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
@@ -1023,7 +1115,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
               </div>
 
               {form.priceType === 'Paid' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
                   <div className="form-group">
                     <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Regular Price *</label>
                     <div style={{ position: 'relative' }}>
@@ -1117,7 +1209,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
               ))}
 
               {/* Visibility & Enrollment Limit */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                 <div className="form-group">
                   <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>Course Visibility</label>
                   <select value={form.visibility} onChange={e => setForm(f => ({ ...f, visibility: e.target.value }))} style={{ fontSize: '13px' }}>
@@ -1188,7 +1280,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
 
       {/* ── STEP 4: MEDIA & RESOURCES ────────────────────────────────────────── */}
       {activeStep === 4 && (
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', alignItems: 'start' }}>
+        <div className="course-manager-grid" style={{ display: 'grid', gap: '24px', alignItems: 'start' }}>
           {/* Main upload column */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
@@ -1204,7 +1296,7 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '16px' }}>
                 {/* Preview */}
                 <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-color)', aspectRatio: '16/9' }}>
                   <img src={form.thumbnail} alt="Thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -1372,13 +1464,13 @@ export default function CourseManager({ courses, setCourses, initialView = 'list
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', alignItems: 'start' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', alignItems: 'start' }}>
             {/* Left: Course summary */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
               {/* Course Preview Card */}
               <div className="smart-card" style={{ padding: '0', background: '#ffffff', overflow: 'hidden' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
                   <div style={{ position: 'relative', height: '160px' }}>
                     <img src={form.thumbnail} alt="Course Thumb" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
