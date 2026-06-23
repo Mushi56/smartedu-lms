@@ -49,7 +49,10 @@ export default function AppDrawer({
       icon: BookOpen,
       submenu: [
         { id: 'courses', name: 'All Courses' },
-        { id: 'categories', name: 'Categories' }
+        { id: 'add-course', name: 'Add New Course' },
+        { id: 'categories', name: 'Categories' },
+        { id: 'tags', name: 'Tags' },
+        { id: 'levels', name: 'Levels' }
       ]
     },
     { 

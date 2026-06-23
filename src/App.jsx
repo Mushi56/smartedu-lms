@@ -374,9 +374,25 @@ export default function App() {
         return (
           <TeacherManager db={db} setDb={setDb} />
         );
+      case 'add-course':
+        return (
+          <CourseManager 
+            courses={db.courses} 
+            setDb={setDb} 
+            initialView="create"
+          />
+        );
       case 'categories':
         return (
-          <CategoryTagManager />
+          <CategoryTagManager defaultSection="categories" />
+        );
+      case 'tags':
+        return (
+          <CategoryTagManager defaultSection="tags" />
+        );
+      case 'levels':
+        return (
+          <CategoryTagManager defaultSection="levels" />
         );
       case 'exams':
         return (

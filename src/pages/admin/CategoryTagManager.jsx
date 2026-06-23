@@ -23,8 +23,8 @@ const labelStyle = {
   color: 'var(--text-secondary)', display: 'block', marginBottom: '5px'
 };
 
-export default function CategoryTagManager() {
-  const [activeSection, setActiveSection] = useState('categories');
+export default function CategoryTagManager({ defaultSection = 'categories' }) {
+  const [activeSection, setActiveSection] = useState(defaultSection);
 
   // ── Data State ─────────────────────────────────────────────────
   const [categories, setCategories] = useState(() => {
