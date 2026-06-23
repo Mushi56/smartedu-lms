@@ -40,6 +40,10 @@ import CategoryTagManager from './pages/admin/CategoryTagManager';
 import Analytics from './pages/admin/Analytics';
 import TeacherManager from './pages/admin/TeacherManager';
 import Settings from './pages/admin/Settings';
+import OrdersPayments from './pages/admin/OrdersPayments';
+import ReviewsPage from './pages/admin/ReviewsPage';
+import CouponsPage from './pages/admin/CouponsPage';
+import AnnouncementsPage from './pages/admin/AnnouncementsPage';
 
 export default function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(() => {
@@ -402,49 +406,15 @@ export default function App() {
           />
         );
       case 'orders':
-        return (
-          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Orders & Payments History</h2>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Track sales transactions, refund requests, and invoice records.</p>
-            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
-              No orders registered this period.
-            </div>
-          </div>
-        );
+        return <OrdersPayments />;
       case 'reports':
-        return (
-          <Analytics />
-        );
+        return <Analytics />;
       case 'reviews':
-        return (
-          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Reviews & Feedback</h2>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Moderate course reviews and student feedback ratings.</p>
-            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
-              No review moderation requests active.
-            </div>
-          </div>
-        );
+        return <ReviewsPage />;
       case 'coupons':
-        return (
-          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Coupons & Promotions</h2>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Manage promotional discount codes, validity dates and discount values.</p>
-            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
-              No active promotion campaigns configured.
-            </div>
-          </div>
-        );
+        return <CouponsPage />;
       case 'announcements':
-        return (
-          <div className="smart-card" style={{ padding: '24px', textAlign: 'left' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Announcements & Broadcasts</h2>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Broadcast announcements to specific student classes or teacher circles.</p>
-            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', border: '1.5px dashed var(--border-color)', borderRadius: '12px', marginTop: '20px' }}>
-              No announcements active.
-            </div>
-          </div>
-        );
+        return <AnnouncementsPage />;
 
       default:
         return <div>Portal Coming Soon</div>;
