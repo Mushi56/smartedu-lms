@@ -29,7 +29,6 @@ export default function AppDrawer({
     { id: 'live-classes', name: 'Live Classes', icon: Video },
     { id: 'schedule', name: 'Schedule', icon: Calendar },
     { id: 'assignments', name: 'Assignments', icon: FileText },
-    { id: 'exams', name: 'Exams & Quizzes', icon: CheckSquare },
     { id: 'resources', name: 'My Resources', icon: Notebook },
     { id: 'messages', name: 'Messages', icon: MessageCircle },
     { id: 'progress', name: 'My Progress', icon: TrendingUp },

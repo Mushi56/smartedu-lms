@@ -1,702 +1,471 @@
 import React, { useState } from 'react';
-import { 
-  Video, Plus, Download, Calendar as CalendarIcon, Clock, Users, BarChart2, Star, MoreVertical, 
-  Search, ArrowLeft, ArrowRight, Check, Globe, HelpCircle, CheckCircle, AlertCircle, 
-  MessageSquare, FileText, Share2, Shield, CalendarDays, RefreshCw, Layers, Edit3, Trash2, Mail, ExternalLink,
-  ChevronLeft, ChevronRight, Sliders, PlayCircle, ToggleLeft, ToggleRight, CheckSquare, FileSpreadsheet, Eye, User
+import {
+  Video, Plus, Calendar as CalendarIcon, Clock, Users, BarChart2, Star,
+  Search, Check, Globe, CheckCircle, AlertCircle,
+  PlayCircle, Eye, ChevronRight, Layers, Edit3, Trash2, X
 } from 'lucide-react';
 
+const cardStyle = {
+  background: '#fff', borderRadius: '16px',
+  border: '1px solid #ede9f4', padding: '16px',
+  display: 'flex', flexDirection: 'column', gap: '12px'
+};
+
+const inputStyle = {
+  width: '100%', padding: '10px 12px', fontSize: '13px',
+  border: '1px solid #ede9f4', borderRadius: '10px',
+  background: '#faf9fc', color: 'var(--text-primary)',
+  outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box'
+};
+
+const labelStyle = {
+  fontSize: '10px', fontWeight: 700,
+  color: 'var(--text-secondary)', display: 'block', marginBottom: '5px'
+};
+
 export default function ClassScheduler({ classes, setClasses, courses, activeTab, setActiveTab }) {
-  // Wizard flow state (1 to 4)
   const [wizardStep, setWizardStep] = useState(1);
-  
-  // Filtering & Search
-  const [dashboardTab, setDashboardTab] = useState('All Classes');
-  const [categoryFilter, setCategoryFilter] = useState('All Categories');
-  const [teacherFilter, setTeacherFilter] = useState('All Teachers');
+  const [dashboardTab, setDashboardTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Wizard state values
-  const [selectedCourseId, setSelectedCourseId] = useState(courses[0]?.id || 'course-1');
-  const [classTitle, setClassTitle] = useState('SAT Math Mastery - Advanced Problem Solving');
+
+  // Wizard Form States
+  const [classTitle, setClassTitle] = useState('');
   const [teacherName, setTeacherName] = useState('Dr. Ahmed Al-Hassan');
   const [classCategory, setClassCategory] = useState('Scholarship Exams');
-  const [classLevel, setClassLevel] = useState('Advanced Level');
+  const [classLevel, setClassLevel] = useState('Advanced');
   const [classLanguage, setClassLanguage] = useState('English');
-  const [classDescription, setClassDescription] = useState('Master critical SAT Math sections and advanced question types with Dr. Ahmed Al-Hassan.');
-  const [classThumbnail, setClassThumbnail] = useState('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=300');
-  
-  // Date & Time
-  const [classDate, setClassDate] = useState('May 24, 2025');
+  const [classDescription, setClassDescription] = useState('');
+  const [classDate, setClassDate] = useState('');
   const [startTime, setStartTime] = useState('06:00 PM');
   const [endTime, setEndTime] = useState('07:30 PM');
-  const [classTimezone, setClassTimezone] = useState('(GMT +03:00) Riyadh');
-  const [repeatOption, setRepeatOption] = useState('Do not repeat');
-  
-  // Settings
-  const [classAccess, setClassAccess] = useState('Enrolled Students Only');
   const [recordClass, setRecordClass] = useState(true);
   const [enableChat, setEnableChat] = useState(true);
-  const [enableQa, setEnableQa] = useState(true);
-  const [waitingRoom, setWaitingRoom] = useState(true);
-  const [termsAgreed, setTermsAgreed] = useState(false);
 
-  // Mock list for live classes list details
-  const [mockClassesList, setMockClassesList] = useState([
-    {
-      id: 'mock-1',
-      title: 'SAT Math Mastery Live Session',
-      teacher: 'Dr. Ahmed Al-Hassan',
-      teacherAvatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100',
-      rating: '4.9',
-      reviews: 210,
-      course: 'SAT Math Mastery',
-      category: 'Scholarship Exams',
-      categoryBg: 'rgba(124, 58, 237, 0.08)',
-      categoryColor: '#7c3aed',
-      date: 'May 24, 2025',
-      time: '06:00 PM - 07:30 PM',
-      timezone: '(GMT +3)',
-      participants: 245,
-      maxParticipants: 300,
-      status: 'Live Now',
-      thumbnail: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=300'
-    },
-    {
-      id: 'mock-2',
-      title: 'IELTS Speaking Practice',
-      teacher: 'Ms. Sarah Johnson',
-      teacherAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=100',
-      rating: '4.8',
-      reviews: 180,
-      course: 'IELTS Speaking Success',
-      category: 'Language Tests',
-      categoryBg: 'rgba(59, 130, 246, 0.08)',
-      categoryColor: '#3b82f6',
-      date: 'May 24, 2025',
-      time: '08:00 PM - 09:00 PM',
-      timezone: '(GMT +3)',
-      participants: 178,
-      maxParticipants: 250,
-      status: 'Upcoming',
-      thumbnail: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=300'
-    },
-    {
-      id: 'mock-3',
-      title: 'TOEFL iBT Writing Workshop',
-      teacher: 'Ms. Lisa Park',
-      teacherAvatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=100',
-      rating: '4.9',
-      reviews: 156,
-      course: 'TOEFL iBT Complete Guide',
-      category: 'Language Tests',
-      categoryBg: 'rgba(59, 130, 246, 0.08)',
-      categoryColor: '#3b82f6',
-      date: 'May 25, 2025',
-      time: '07:00 PM - 08:30 PM',
-      timezone: '(GMT +3)',
-      participants: 210,
-      maxParticipants: 250,
-      status: 'Upcoming',
-      thumbnail: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=300'
-    },
-    {
-      id: 'mock-4',
-      title: 'GRE Quantitative Strategies',
-      teacher: 'Dr. Michael Chen',
-      teacherAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100',
-      rating: '4.8',
-      reviews: 142,
-      course: 'GRE Quantitative Reasoning',
-      category: 'Graduate Exams',
-      categoryBg: 'rgba(245, 158, 11, 0.08)',
-      categoryColor: '#f59e0b',
-      date: 'May 26, 2025',
-      time: '06:00 PM - 07:30 PM',
-      timezone: '(GMT +3)',
-      participants: 156,
-      maxParticipants: 200,
-      status: 'Upcoming',
-      thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&q=80&w=300'
-    },
-    {
-      id: 'mock-5',
-      title: 'Essay Writing Excellence',
-      teacher: 'Mr. James Wilson',
-      teacherAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100',
-      rating: '4.7',
-      reviews: 120,
-      course: 'Essay Writing Excellence',
-      category: 'Academic Success',
-      categoryBg: 'rgba(16, 185, 129, 0.08)',
-      categoryColor: '#10b981',
-      date: 'May 22, 2025',
-      time: '06:00 PM - 07:30 PM',
-      timezone: '(GMT +3)',
-      participants: 198,
-      maxParticipants: 200,
-      status: 'Completed',
-      thumbnail: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=300'
-    }
+  // Dummy class data
+  const [mockClasses] = useState([
+    { id: 'mc-1', title: 'SAT Math Mastery Live', teacher: 'Dr. Ahmed Al-Hassan', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=100&q=80', rating: 4.9, reviews: 210, category: 'Scholarship', date: 'Jun 24', time: '6:00 PM - 7:30 PM', participants: 245, max: 300, status: 'Live Now', color: '#7c3aed', thumbnail: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=300&q=80' },
+    { id: 'mc-2', title: 'IELTS Speaking Practice', teacher: 'Ms. Sarah Johnson', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&q=80', rating: 4.8, reviews: 180, category: 'Language', date: 'Jun 24', time: '8:00 PM - 9:00 PM', participants: 178, max: 250, status: 'Upcoming', color: '#3b82f6', thumbnail: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80' },
+    { id: 'mc-3', title: 'TOEFL Writing Workshop', teacher: 'Ms. Lisa Park', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=100&q=80', rating: 4.9, reviews: 156, category: 'Language', date: 'Jun 25', time: '7:00 PM - 8:30 PM', participants: 210, max: 250, status: 'Upcoming', color: '#3b82f6', thumbnail: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=300&q=80' },
+    { id: 'mc-4', title: 'GRE Quantitative Strategies', teacher: 'Dr. Michael Chen', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80', rating: 4.8, reviews: 142, category: 'Graduate', date: 'Jun 26', time: '6:00 PM - 7:30 PM', participants: 156, max: 200, status: 'Upcoming', color: '#f59e0b', thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=300&q=80' },
+    { id: 'mc-5', title: 'Essay Writing Excellence', teacher: 'Mr. James Wilson', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80', rating: 4.7, reviews: 120, category: 'Academic', date: 'Jun 22', time: '6:00 PM - 7:30 PM', participants: 198, max: 200, status: 'Completed', color: '#10b981', thumbnail: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=300&q=80' },
+    { id: 'mc-6', title: 'Arabic Language Basics', teacher: 'Ms. Fatima Al-Zahra', avatar: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=100&q=80', rating: 4.9, reviews: 98, category: 'Language', date: 'Jun 21', time: '7:00 PM - 8:00 PM', participants: 132, max: 150, status: 'Completed', color: '#8b5cf6', thumbnail: 'https://images.unsplash.com/photo-1566418705663-e39d33b82143?auto=format&fit=crop&w=300&q=80' },
   ]);
 
-  const handlePublishClass = () => {
-    if (!termsAgreed) {
-      alert("Please confirm the terms before scheduling.");
-      return;
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'Live Now': return { bg: 'rgba(239,68,68,0.08)', color: '#ef4444', dot: '#ef4444' };
+      case 'Upcoming': return { bg: 'rgba(59,130,246,0.08)', color: '#3b82f6', dot: '#3b82f6' };
+      case 'Completed': return { bg: 'rgba(16,185,129,0.08)', color: '#10b981', dot: '#10b981' };
+      default: return { bg: '#f5f3f9', color: 'var(--text-muted)', dot: '#94a3b8' };
     }
+  };
 
-    const newClassId = `class-${Date.now()}`;
-    const newClassItem = {
-      id: newClassId,
-      title: classTitle,
-      teacher: teacherName,
-      teacherAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100',
-      rating: '5.0',
-      reviews: 0,
-      course: courses.find(c => c.id === selectedCourseId)?.title || classTitle,
-      category: classCategory,
-      categoryBg: 'rgba(124, 58, 237, 0.08)',
-      categoryColor: '#7c3aed',
-      date: classDate,
-      time: `${startTime} - ${endTime}`,
-      timezone: classTimezone.split(' ')[0],
-      participants: 0,
-      maxParticipants: 100,
-      status: 'Upcoming',
-      thumbnail: classThumbnail
+  const filteredClasses = mockClasses.filter(c => {
+    if (dashboardTab === 'Live' && c.status !== 'Live Now') return false;
+    if (dashboardTab === 'Upcoming' && c.status !== 'Upcoming') return false;
+    if (dashboardTab === 'Completed' && c.status !== 'Completed') return false;
+    if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    return true;
+  });
+
+  const handlePublish = () => {
+    if (!classTitle.trim()) return;
+    const newClass = {
+      id: `class-${Date.now()}`, title: classTitle, teacher: teacherName,
+      courseId: 'course-1', time: startTime.split(' ')[0],
+      ampm: startTime.split(' ')[1]?.toLowerCase() || 'pm',
+      date: '2026-06-24', dateLabel: 'Upcoming', isLive: false
     };
-
-    setMockClassesList([newClassItem, ...mockClassesList]);
-    
-    if (setClasses && classes) {
-      const dbCompatibleItem = {
-        id: newClassId,
-        title: classTitle,
-        teacher: teacherName,
-        courseId: selectedCourseId,
-        time: startTime.split(' ')[0],
-        ampm: startTime.split(' ')[1]?.toLowerCase() || 'pm',
-        date: '2026-06-12', 
-        dateLabel: 'Upcoming',
-        isLive: false
-      };
-      setClasses([dbCompatibleItem, ...classes]);
-    }
-
+    if (setClasses && classes) setClasses([newClass, ...classes]);
     setActiveTab('live-classes');
     setWizardStep(1);
+    setClassTitle(''); setClassDescription('');
   };
 
-  // --- 1. Wizard View ---
-  const renderWizardView = () => {
-    const steps = [
-      { num: 1, label: 'Class Information' },
-      { num: 2, label: 'Date & Time' },
-      { num: 3, label: 'Class Settings' },
-      { num: 4, label: 'Review & Confirm' }
-    ];
-
+  // ── Schedule Wizard ──────────────────────────────────────────
+  if (activeTab === 'schedule-class') {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'left' }} className="animate-fade-in">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button 
-            onClick={() => {
-              setActiveTab('live-classes');
-              setWizardStep(1);
-            }}
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              border: '1.5px solid var(--border-color)',
-              background: 'var(--bg-card)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--text-primary)',
-              cursor: 'pointer'
-            }} 
-            className="click-press"
-          >
-            <ArrowLeft size={16} />
-          </button>
-          <div>
-            <h1 style={{ fontSize: '22px', fontWeight: 850, color: 'var(--text-primary)', margin: 0 }}>Schedule a New Live Class</h1>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '4px 0 0' }}>Step {wizardStep} of 4: {steps[wizardStep - 1].label}</p>
-          </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }} className="animate-fade-in">
+        <div>
+          <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>Schedule a Class</h2>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>Create a new live session for your students</p>
         </div>
 
-        {/* Stepper Header */}
-        <div className="smart-card" style={{ padding: '16px 20px', borderRadius: '12px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', gap: '8px', flexWrap: 'wrap' }}>
-            {steps.map((st, i) => {
-              const isCompleted = st.num < wizardStep;
-              const isActive = st.num === wizardStep;
-              return (
-                <div key={st.num} style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: i === steps.length - 1 ? 'initial' : 1 }}>
-                  <div style={{
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    backgroundColor: isCompleted ? 'var(--primary-color)' : isActive ? 'transparent' : 'transparent',
-                    color: isCompleted ? '#ffffff' : isActive ? 'var(--primary-color)' : 'var(--text-muted)',
-                    border: isCompleted ? 'none' : isActive ? '2px solid var(--primary-color)' : '2px solid var(--border-color)',
-                    flexShrink: 0
-                  }}>
-                    {isCompleted ? <Check size={14} /> : st.num}
-                  </div>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', display: 'block' }}>{st.label}</span>
-                  {i < steps.length - 1 && (
-                    <div style={{ flex: 1, height: '2px', background: isCompleted ? 'var(--primary-color)' : 'var(--border-color)', minWidth: '10px' }} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Form Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' }} className="responsive-grid-1col">
-          {/* Form Side */}
-          <div className="smart-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {wizardStep === 1 && (
-              <>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700 }}>Associated Course</label>
-                  <select value={selectedCourseId} onChange={e => setSelectedCourseId(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }}>
-                    {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
-                  </select>
-                </div>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700 }}>Class Title</label>
-                  <input type="text" value={classTitle} onChange={e => setClassTitle(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }} />
-                </div>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700 }}>Assign Teacher</label>
-                  <input type="text" value={teacherName} onChange={e => setTeacherName(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }} />
-                </div>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700 }}>Class Category</label>
-                  <select value={classCategory} onChange={e => setClassCategory(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }}>
-                    <option>Scholarship Exams</option>
-                    <option>Language Tests</option>
-                    <option>Academic Success</option>
-                  </select>
-                </div>
-              </>
-            )}
-
-            {wizardStep === 2 && (
-              <>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700 }}>Class Date</label>
-                  <input type="text" value={classDate} onChange={e => setClassDate(e.target.value)} placeholder="e.g. May 24, 2025" style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }} />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '12px', fontWeight: 700 }}>Start Time</label>
-                    <input type="text" value={startTime} onChange={e => setStartTime(e.target.value)} placeholder="e.g. 06:00 PM" style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }} />
-                  </div>
-                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <label style={{ fontSize: '12px', fontWeight: 700 }}>End Time</label>
-                    <input type="text" value={endTime} onChange={e => setEndTime(e.target.value)} placeholder="e.g. 07:30 PM" style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }} />
-                  </div>
-                </div>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700 }}>Timezone</label>
-                  <input type="text" value={classTimezone} onChange={e => setClassTimezone(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }} />
-                </div>
-              </>
-            )}
-
-            {wizardStep === 3 && (
-              <>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700 }}>Who can access this class?</label>
-                  <select value={classAccess} onChange={e => setClassAccess(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }}>
-                    <option>Enrolled Students Only</option>
-                    <option>Public (Anyone with link)</option>
-                  </select>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '8px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={recordClass} onChange={e => setRecordClass(e.target.checked)} />
-                    <span>Automatically record live class</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={enableChat} onChange={e => setEnableChat(e.target.checked)} />
-                    <span>Enable live class chat box</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={enableQa} onChange={e => setEnableQa(e.target.checked)} />
-                    <span>Enable Q&A Panel</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={waitingRoom} onChange={e => setWaitingRoom(e.target.checked)} />
-                    <span>Enable student waiting room</span>
-                  </label>
-                </div>
-              </>
-            )}
-
-            {wizardStep === 4 && (
-              <>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <h3 style={{ fontSize: '14px', fontWeight: 800, margin: '0 0 8px' }}>Summary & Reviews</h3>
-                  <div style={{ fontSize: '13px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <div><strong>Title:</strong> {classTitle}</div>
-                    <div><strong>Teacher:</strong> {teacherName}</div>
-                    <div><strong>Schedule:</strong> {classDate} at {startTime} - {endTime}</div>
-                    <div><strong>Access:</strong> {classAccess}</div>
-                    <div><strong>Recording:</strong> {recordClass ? 'Enabled' : 'Disabled'}</div>
-                  </div>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', cursor: 'pointer', marginTop: '16px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
-                    <input type="checkbox" checked={termsAgreed} onChange={e => setTermsAgreed(e.target.checked)} />
-                    <span>I confirm the above details are correct.</span>
-                  </label>
-                </div>
-              </>
-            )}
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginTop: '12px' }}>
-              {wizardStep > 1 ? (
-                <button onClick={() => setWizardStep(prev => prev - 1)} className="btn-secondary click-press" style={{ padding: '8px 16px', borderRadius: '6px' }}>Back</button>
-              ) : <div />}
-              
-              {wizardStep < 4 ? (
-                <button onClick={() => setWizardStep(prev => prev + 1)} className="btn-primary click-press" style={{ padding: '8px 16px', borderRadius: '6px', background: 'linear-gradient(135deg, var(--primary-color), #4f46e5)', color: '#ffffff', border: 'none' }}>Next Step</button>
-              ) : (
-                <button onClick={handlePublishClass} className="btn-primary click-press" style={{ padding: '8px 20px', borderRadius: '6px', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#ffffff', border: 'none', fontWeight: 700 }}>Publish Class</button>
-              )}
-            </div>
-          </div>
-
-          {/* Quick Tips Info Side */}
-          <div className="smart-card" style={{ padding: '20px', borderLeft: '4px solid var(--primary-color)' }}>
-            <h4 style={{ fontSize: '13px', fontWeight: 800, margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Lightbulb size={16} style={{ color: 'var(--primary-color)' }} />
-              <span>Step Guidelines</span>
-            </h4>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4, margin: '0 0 10px' }}>
-              {wizardStep === 1 && "Link this class to a course in the active catalog so enrolled students automatically get notification warnings."}
-              {wizardStep === 2 && "Double check timezone offsets to ensure global users connect at the correct local hour."}
-              {wizardStep === 3 && "We recommend keeping recordings and chat enabled to secure interactive learning transcripts."}
-              {wizardStep === 4 && "Confirm details. Publishing immediately issues app reminders to all enrolled student circles."}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // --- 2. Dashboard View ---
-  const renderDashboardView = () => {
-    const stats = [
-      { label: 'Total Live Classes', value: '248', rate: '12.4%', icon: CalendarDays, color: '#7c3aed' },
-      { label: 'Upcoming Classes', value: '32', rate: '15.8%', icon: Video, color: '#10b981' },
-      { label: 'Total Participants', value: '14.6K', rate: '18.3%', icon: Users, color: '#3b82f6' }
-    ];
-
-    const filteredClasses = mockClassesList.filter(c => {
-      if (dashboardTab === 'Upcoming' && c.status !== 'Upcoming') return false;
-      if (dashboardTab === 'Live Now' && c.status !== 'Live Now') return false;
-      if (dashboardTab === 'Completed' && c.status !== 'Completed') return false;
-      if (categoryFilter !== 'All Categories' && c.category !== categoryFilter) return false;
-      if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      return true;
-    });
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', textAlign: 'left' }} className="animate-fade-in">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <h1 style={{ fontSize: '24px', fontWeight: 850, color: 'var(--text-primary)', margin: 0 }}>Live Classes</h1>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '4px 0 0' }}>Manage, schedule, and oversee all live classes on the platform.</p>
-          </div>
-          <button 
-            onClick={() => setActiveTab('schedule-class')}
-            style={{
-              padding: '10px 20px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, var(--primary-color), #4f46e5)',
-              color: '#ffffff',
-              fontSize: '13px',
-              fontWeight: 700,
-              border: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              cursor: 'pointer'
-            }} 
-            className="click-press"
-          >
-            <Plus size={16} />
-            <span>Schedule New Class</span>
-          </button>
-        </div>
-
-        {/* Stats Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-          {stats.map((st, i) => {
-            const Icon = st.icon;
+        {/* Progress Steps */}
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {['Details', 'Schedule', 'Settings'].map((label, i) => {
+            const step = i + 1;
+            const isActive = wizardStep === step;
+            const isDone = wizardStep > step;
             return (
-              <div key={i} className="smart-card" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <div style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '10px',
-                  backgroundColor: 'var(--bg-app)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: st.color,
-                  border: '1.5px solid var(--border-color)'
+              <button key={label} onClick={() => setWizardStep(step)} className="click-press"
+                style={{ flex: 1, padding: '8px 4px', borderRadius: '10px', border: 'none', fontSize: '10px', fontWeight: 700, cursor: 'pointer',
+                  background: isActive ? 'var(--primary-color)' : isDone ? 'rgba(16,185,129,0.1)' : '#f5f3f9',
+                  color: isActive ? '#fff' : isDone ? '#10b981' : 'var(--text-muted)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px'
                 }}>
-                  <Icon size={20} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>{st.label}</span>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginTop: '2px' }}>
-                    <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>{st.value}</span>
-                    <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 700 }}>↑ {st.rate}</span>
-                  </div>
-                </div>
-              </div>
+                {isDone ? <Check size={10} /> : <span style={{ width: '14px', height: '14px', borderRadius: '50%', background: isActive ? 'rgba(255,255,255,0.2)' : '#ede9f4', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 800 }}>{step}</span>}
+                {label}
+              </button>
             );
           })}
         </div>
 
-        {/* Filters & Search */}
-        <div className="smart-card" style={{ padding: '0px' }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--border-color)',
-            flexWrap: 'wrap',
-            gap: '12px'
-          }}>
-            <div style={{ display: 'flex', gap: '4px', overflowX: 'auto' }}>
-              {['All Classes', 'Upcoming', 'Live Now', 'Completed'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setDashboardTab(tab)}
-                  style={{
-                    padding: '8px 16px',
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    color: dashboardTab === tab ? 'var(--primary-color)' : 'var(--text-secondary)',
-                    borderRadius: '8px',
-                    background: dashboardTab === tab ? 'var(--primary-glow)' : 'transparent',
-                    border: 'none',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
+        {/* Step 1: Details */}
+        {wizardStep === 1 && (
+          <div style={cardStyle}>
+            <h4 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Video size={14} style={{ color: 'var(--primary-color)' }} /> Class Details
+            </h4>
+            <div>
+              <label style={labelStyle}>Class Title *</label>
+              <input type="text" value={classTitle} onChange={e => setClassTitle(e.target.value)} style={inputStyle} placeholder="e.g. SAT Math Advanced Session" />
             </div>
-
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <select 
-                value={categoryFilter}
-                onChange={e => setCategoryFilter(e.target.value)}
-                style={{ fontSize: '12px', padding: '6px 12px', borderRadius: '8px', border: '1.5px solid var(--border-color)' }}
-              >
-                <option>All Categories</option>
-                <option>Scholarship Exams</option>
-                <option>Language Tests</option>
-              </select>
-
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 12px',
-                borderRadius: '8px',
-                border: '1.5px solid var(--border-color)',
-                fontSize: '12px',
-                color: 'var(--text-secondary)'
-              }}>
-                <Search size={13} />
-                <input
-                  type="text"
-                  placeholder="Search classes..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  style={{ border: 'none', outline: 'none', background: 'transparent', width: '100px', fontSize: '12px' }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Listing Table */}
-          <div style={{ overflowX: 'auto' }}>
-            <table className="smart-table" style={{ width: '100%' }}>
-              <thead>
-                <tr>
-                  <th style={{ paddingLeft: '20px' }}>Class details</th>
-                  <th>Course</th>
-                  <th>Date & Time</th>
-                  <th>Participants</th>
-                  <th>Status</th>
-                  <th style={{ paddingRight: '20px', textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredClasses.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                      No live classes found matching filters.
-                    </td>
-                  </tr>
-                ) : (
-                  filteredClasses.map(cls => (
-                    <tr key={cls.id}>
-                      <td style={{ paddingLeft: '20px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <img src={cls.teacherAvatar} alt={cls.teacher} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
-                          <div>
-                            <span style={{ fontWeight: 800, fontSize: '13px', color: 'var(--text-primary)', display: 'block' }}>{cls.title}</span>
-                            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Instructor: {cls.teacher}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <span style={{ fontSize: '12px', fontWeight: 600 }}>{cls.course}</span>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '11px' }}>
-                          <span style={{ fontWeight: 600 }}>{cls.date}</span>
-                          <span style={{ color: 'var(--text-secondary)' }}>{cls.time}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <span style={{ fontSize: '12px', fontWeight: 600 }}>{cls.participants} / {cls.maxParticipants}</span>
-                      </td>
-                      <td>
-                        <span style={{
-                          padding: '3px 8px',
-                          borderRadius: '12px',
-                          fontSize: '10px',
-                          fontWeight: 800,
-                          background: cls.status === 'Live Now' ? '#e6f7ed' : cls.status === 'Upcoming' ? '#ebf3fe' : '#f1f3f9',
-                          color: cls.status === 'Live Now' ? '#2b844a' : cls.status === 'Upcoming' ? '#3b82f6' : 'var(--text-secondary)'
-                        }}>
-                          {cls.status}
-                        </span>
-                      </td>
-                      <td style={{ paddingRight: '20px', textAlign: 'right' }}>
-                        <button style={{
-                          padding: '4px 10px',
-                          borderRadius: '6px',
-                          border: '1.5px solid var(--border-color)',
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          cursor: 'pointer'
-                        }}>
-                          Manage
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render Sub-Views
-  if (activeTab === 'schedule-class') {
-    return renderWizardView();
-  } else if (activeTab === 'class-recordings') {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-fade-in">
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 850, color: 'var(--text-primary)', margin: 0 }}>Class Recordings</h1>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Review, download, and share past recorded sessions.</p>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-          {mockClassesList.map((cls) => (
-            <div key={cls.id} className="smart-card" style={{ padding: '0px', overflow: 'hidden', borderRadius: '16px' }}>
-              <div style={{ position: 'relative' }}>
-                <img src={cls.thumbnail} alt={cls.title} style={{ width: '100%', height: '140px', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <PlayCircle size={36} style={{ color: '#ffffff', opacity: 0.9, cursor: 'pointer' }} />
-                </div>
-              </div>
-              <div style={{ padding: '16px' }}>
-                <h3 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px' }}>{cls.title}</h3>
-                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginBottom: '12px' }}>{cls.teacher} • {cls.date}</span>
-                <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
-                  <button style={{ flex: 1, padding: '6px', borderRadius: '6px', border: '1.5px solid var(--border-color)', fontSize: '11px', fontWeight: 600 }}>Download</button>
-                  <button style={{ flex: 1, padding: '6px', borderRadius: '6px', background: 'var(--primary-color)', color: '#ffffff', fontSize: '11px', border: 'none', fontWeight: 600 }}>Share Link</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  } else if (activeTab === 'live-categories') {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-fade-in">
-        <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 850, color: 'var(--text-primary)', margin: 0 }}>Live Class Categories</h1>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Manage classifications and subject groups for scheduling.</p>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
-          {['Scholarship Exams', 'Language Tests', 'Academic Success', 'Professional Certs'].map((cat, i) => (
-            <div key={i} className="smart-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderRadius: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div>
-                <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', display: 'block' }}>{cat}</span>
-                <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Live sessions enabled</span>
+                <label style={labelStyle}>Teacher</label>
+                <select value={teacherName} onChange={e => setTeacherName(e.target.value)} style={inputStyle}>
+                  <option>Dr. Ahmed Al-Hassan</option><option>Ms. Sarah Johnson</option><option>Dr. Michael Chen</option><option>Ms. Lisa Park</option>
+                </select>
               </div>
-              <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'var(--primary-glow)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px' }}>
-                {6 + i * 4}
+              <div>
+                <label style={labelStyle}>Category</label>
+                <select value={classCategory} onChange={e => setClassCategory(e.target.value)} style={inputStyle}>
+                  <option>Scholarship Exams</option><option>Language Tests</option><option>Academic</option><option>STEM</option>
+                </select>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div>
+                <label style={labelStyle}>Level</label>
+                <select value={classLevel} onChange={e => setClassLevel(e.target.value)} style={inputStyle}>
+                  <option>Beginner</option><option>Intermediate</option><option>Advanced</option><option>All Levels</option>
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>Language</label>
+                <select value={classLanguage} onChange={e => setClassLanguage(e.target.value)} style={inputStyle}>
+                  <option>English</option><option>Arabic</option><option>Malay</option><option>French</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style={labelStyle}>Description</label>
+              <textarea value={classDescription} onChange={e => setClassDescription(e.target.value)} rows={3} style={{ ...inputStyle, resize: 'vertical', lineHeight: 1.5 }} placeholder="Brief description of this live class..." />
+            </div>
+            <button onClick={() => setWizardStep(2)} className="click-press"
+              style={{ width: '100%', padding: '10px', borderRadius: '10px', border: 'none', background: 'var(--primary-gradient)', color: '#fff', fontWeight: 700, fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              Continue <ChevronRight size={14} />
+            </button>
+          </div>
+        )}
+
+        {/* Step 2: Schedule */}
+        {wizardStep === 2 && (
+          <div style={cardStyle}>
+            <h4 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CalendarIcon size={14} style={{ color: 'var(--primary-color)' }} /> Date & Time
+            </h4>
+            <div>
+              <label style={labelStyle}>Date *</label>
+              <input type="date" value={classDate} onChange={e => setClassDate(e.target.value)} style={inputStyle} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div>
+                <label style={labelStyle}>Start Time</label>
+                <select value={startTime} onChange={e => setStartTime(e.target.value)} style={inputStyle}>
+                  {['04:00 PM','04:30 PM','05:00 PM','05:30 PM','06:00 PM','06:30 PM','07:00 PM','07:30 PM','08:00 PM','08:30 PM','09:00 PM'].map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={labelStyle}>End Time</label>
+                <select value={endTime} onChange={e => setEndTime(e.target.value)} style={inputStyle}>
+                  {['05:00 PM','05:30 PM','06:00 PM','06:30 PM','07:00 PM','07:30 PM','08:00 PM','08:30 PM','09:00 PM','09:30 PM','10:00 PM'].map(t => <option key={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+            <div style={{ background: '#f5f3f9', borderRadius: '10px', padding: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+              <Clock size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
+              <span>Duration: <strong style={{ color: 'var(--text-primary)' }}>90 minutes</strong> • Timezone: GMT +3</span>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={() => setWizardStep(1)} style={{ flex: 1, padding: '10px', borderRadius: '10px', border: '1px solid #ede9f4', background: '#fff', color: 'var(--text-secondary)', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }} className="click-press">Back</button>
+              <button onClick={() => setWizardStep(3)} className="click-press"
+                style={{ flex: 2, padding: '10px', borderRadius: '10px', border: 'none', background: 'var(--primary-gradient)', color: '#fff', fontWeight: 700, fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                Continue <ChevronRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Settings & Publish */}
+        {wizardStep === 3 && (
+          <div style={cardStyle}>
+            <h4 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Layers size={14} style={{ color: 'var(--primary-color)' }} /> Class Settings
+            </h4>
+
+            {/* Toggle Settings */}
+            {[
+              { label: 'Record Class Automatically', value: recordClass, set: setRecordClass },
+              { label: 'Enable Live Chat', value: enableChat, set: setEnableChat },
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #f5f3f9' }}>
+                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>{item.label}</span>
+                <button onClick={() => item.set(!item.value)} style={{ width: '40px', height: '22px', borderRadius: '11px', border: 'none', background: item.value ? '#10b981' : '#ede9f4', cursor: 'pointer', position: 'relative', transition: 'all 0.2s' }}>
+                  <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#fff', position: 'absolute', top: '3px', left: item.value ? '21px' : '3px', transition: 'all 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.15)' }} />
+                </button>
+              </div>
+            ))}
+
+            {/* Summary card */}
+            <div style={{ background: '#f5f3f9', borderRadius: '10px', padding: '12px', fontSize: '11px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Summary</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Title</span>
+                <strong style={{ color: 'var(--text-primary)' }}>{classTitle || 'Not set'}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Teacher</span>
+                <strong style={{ color: 'var(--text-primary)' }}>{teacherName}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Date & Time</span>
+                <strong style={{ color: 'var(--text-primary)' }}>{classDate || 'Not set'} • {startTime}</strong>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={() => setWizardStep(2)} style={{ flex: 1, padding: '10px', borderRadius: '10px', border: '1px solid #ede9f4', background: '#fff', color: 'var(--text-secondary)', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }} className="click-press">Back</button>
+              <button onClick={handlePublish} className="click-press"
+                style={{ flex: 2, padding: '10px', borderRadius: '10px', border: 'none', background: 'var(--primary-gradient)', color: '#fff', fontWeight: 700, fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <Check size={14} /> Publish Class
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Recordings View ──────────────────────────────────────────
+  if (activeTab === 'class-recordings') {
+    const recordings = [
+      { title: 'SAT Math Mastery - Session 12', teacher: 'Dr. Ahmed Al-Hassan', date: 'Jun 20', duration: '1h 28m', views: 342 },
+      { title: 'IELTS Speaking - Practice Set 8', teacher: 'Ms. Sarah Johnson', date: 'Jun 19', duration: '58m', views: 256 },
+      { title: 'GRE Quantitative - Mock Test Review', teacher: 'Dr. Michael Chen', date: 'Jun 18', duration: '1h 32m', views: 189 },
+    ];
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }} className="animate-fade-in">
+        <div>
+          <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>Class Recordings</h2>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>Archived recordings from completed sessions</p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {recordings.map((rec, i) => (
+            <div key={i} style={cardStyle}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(124,58,237,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <PlayCircle size={18} style={{ color: '#7c3aed' }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>{rec.title}</h4>
+                  <p style={{ fontSize: '10px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>{rec.teacher} • {rec.date}</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f5f3f9', paddingTop: '8px' }}>
+                <div style={{ display: 'flex', gap: '12px', fontSize: '10px', color: 'var(--text-muted)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><Clock size={10} /> {rec.duration}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><Eye size={10} /> {rec.views} views</span>
+                </div>
+                <button className="click-press" style={{ padding: '5px 10px', borderRadius: '8px', border: 'none', background: 'var(--primary-glow)', color: 'var(--primary-color)', fontSize: '10px', fontWeight: 700, cursor: 'pointer' }}>
+                  Watch
+                </button>
               </div>
             </div>
           ))}
         </div>
       </div>
     );
-  } else if (activeTab === 'live-settings') {
+  }
+
+  // ── Categories View ──────────────────────────────────────────
+  if (activeTab === 'live-categories') {
+    const cats = [
+      { name: 'Scholarship Exams', count: 12, color: '#7c3aed' },
+      { name: 'Language Tests', count: 8, color: '#3b82f6' },
+      { name: 'Graduate Exams', count: 6, color: '#f59e0b' },
+      { name: 'Academic Success', count: 4, color: '#10b981' },
+      { name: 'Professional Certs', count: 3, color: '#ef4444' },
+    ];
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-fade-in">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }} className="animate-fade-in">
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: 850, color: 'var(--text-primary)', margin: 0 }}>Live Class Settings</h1>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Configure default rules, recording storage, and calendar setups.</p>
+          <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>Live Class Categories</h2>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>Organize live sessions by category</p>
         </div>
-        <div className="smart-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px', borderRadius: '16px' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: 800, margin: '0 0 4px' }}>Global Preferences</h3>
-          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '11px', fontWeight: 700 }}>Default Calendar Timezone</label>
-            <select style={{ padding: '8px', borderRadius: '6px', border: '1.5px solid var(--border-color)' }}>
-              <option>(GMT +03:00) Riyadh, Saudi Arabia</option>
-              <option>(GMT +08:00) Kuala Lumpur, Malaysia</option>
-            </select>
-          </div>
-          <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <label style={{ fontSize: '11px', fontWeight: 700 }}>Cloud Recording Storage</label>
-            <select style={{ padding: '8px', borderRadius: '6px', border: '1.5px solid var(--border-color)' }}>
-              <option>AWS S3 Bucket (Primary)</option>
-              <option>Google Cloud Storage (Backup)</option>
-            </select>
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {cats.map((cat, i) => (
+            <div key={i} style={{ ...cardStyle, borderLeft: `4px solid ${cat.color}`, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <h4 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>{cat.name}</h4>
+                <p style={{ fontSize: '10px', color: 'var(--text-secondary)', margin: '2px 0 0 0' }}>{cat.count} classes scheduled</p>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
+            </div>
+          ))}
         </div>
       </div>
     );
-  } else {
-    return renderDashboardView();
   }
+
+  // ── Settings View ────────────────────────────────────────────
+  if (activeTab === 'live-settings') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }} className="animate-fade-in">
+        <div>
+          <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>Live Class Settings</h2>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>Configure default settings for live sessions</p>
+        </div>
+        <div style={cardStyle}>
+          {[
+            { label: 'Auto-record all classes', defaultVal: true },
+            { label: 'Enable waiting room', defaultVal: true },
+            { label: 'Allow students to join early (15 min)', defaultVal: true },
+            { label: 'Send reminder emails', defaultVal: true },
+            { label: 'Enable Q&A during sessions', defaultVal: false },
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: i < 4 ? '1px solid #f5f3f9' : 'none' }}>
+              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>{item.label}</span>
+              <div style={{ width: '40px', height: '22px', borderRadius: '11px', background: item.defaultVal ? '#10b981' : '#ede9f4', position: 'relative' }}>
+                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#fff', position: 'absolute', top: '3px', left: item.defaultVal ? '21px' : '3px', boxShadow: '0 1px 3px rgba(0,0,0,0.15)' }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Dashboard View (default) ─────────────────────────────────
+  const stats = [
+    { label: 'Total Classes', value: '248', icon: CalendarIcon, color: '#7c3aed', bg: 'rgba(124,58,237,0.08)' },
+    { label: 'Upcoming', value: '32', icon: Video, color: '#10b981', bg: 'rgba(16,185,129,0.08)' },
+    { label: 'Participants', value: '14.6K', icon: Users, color: '#3b82f6', bg: 'rgba(59,130,246,0.08)' },
+    { label: 'Watch Hours', value: '2,450', icon: Clock, color: '#ec4899', bg: 'rgba(236,72,153,0.08)' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }} className="animate-fade-in">
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h2 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>Live Classes</h2>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>Manage and schedule live sessions</p>
+        </div>
+        <button onClick={() => setActiveTab('schedule-class')} className="click-press"
+          style={{ padding: '8px 12px', borderRadius: '10px', border: 'none', background: 'var(--primary-gradient)', color: '#fff', fontSize: '11px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Plus size={12} /> New Class
+        </button>
+      </div>
+
+      {/* Stats Row - 2x2 grid for mobile */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        {stats.map((st, i) => {
+          const Icon = st.icon;
+          return (
+            <div key={i} style={{ ...cardStyle, padding: '12px', alignItems: 'center', textAlign: 'center', gap: '6px' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: st.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon size={14} style={{ color: st.color }} />
+              </div>
+              <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>{st.value}</span>
+              <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-muted)' }}>{st.label}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Tab Filters */}
+      <div style={{ display: 'flex', gap: '6px', overflowX: 'auto' }} className="hide-scrollbar">
+        {['All', 'Live', 'Upcoming', 'Completed'].map(tab => {
+          const isActive = dashboardTab === tab;
+          return (
+            <button key={tab} onClick={() => setDashboardTab(tab)} className="click-press"
+              style={{ flexShrink: 0, padding: '6px 14px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+                border: isActive ? 'none' : '1px solid #ede9f4',
+                background: isActive ? 'var(--primary-color)' : '#fff',
+                color: isActive ? '#fff' : 'var(--text-secondary)'
+              }}>
+              {tab} {tab === 'Live' && '🔴'}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Search */}
+      <div style={{ position: 'relative' }}>
+        <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+        <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} style={{ ...inputStyle, paddingLeft: '32px' }} placeholder="Search classes..." />
+      </div>
+
+      {/* Class Cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {filteredClasses.length === 0 && (
+          <div style={{ ...cardStyle, alignItems: 'center', padding: '30px 20px', textAlign: 'center' }}>
+            <AlertCircle size={28} style={{ color: '#ede9f4' }} />
+            <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: 0 }}>No classes found</p>
+          </div>
+        )}
+        {filteredClasses.map(cls => {
+          const statusStyle = getStatusStyle(cls.status);
+          const pctFull = Math.round((cls.participants / cls.max) * 100);
+          return (
+            <div key={cls.id} style={cardStyle}>
+              {/* Thumbnail */}
+              <div style={{ position: 'relative', borderRadius: '10px', overflow: 'hidden', aspectRatio: '16/9' }}>
+                <img src={cls.thumbnail} alt={cls.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <span style={{ position: 'absolute', top: '8px', left: '8px', padding: '3px 8px', borderRadius: '6px', fontSize: '9px', fontWeight: 700, background: statusStyle.bg, color: statusStyle.color, display: 'flex', alignItems: 'center', gap: '4px', backdropFilter: 'blur(4px)' }}>
+                  {cls.status === 'Live Now' && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#ef4444', animation: 'pulse 1.5s infinite' }} />}
+                  {cls.status}
+                </span>
+              </div>
+
+              {/* Info */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img src={cls.avatar} alt={cls.teacher} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #f5f3f9' }} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h3 style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cls.title}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>{cls.teacher}</span>
+                    <span style={{ fontSize: '10px', color: '#f59e0b', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '2px' }}>
+                      <Star size={9} fill="#f59e0b" /> {cls.rating}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Meta */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f5f3f9', paddingTop: '8px' }}>
+                <div style={{ display: 'flex', gap: '10px', fontSize: '10px', color: 'var(--text-muted)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><CalendarIcon size={10} /> {cls.date}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><Clock size={10} /> {cls.time}</span>
+                </div>
+              </div>
+
+              {/* Participants bar */}
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', marginBottom: '4px' }}>
+                  <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>{cls.participants}/{cls.max} enrolled</span>
+                  <span style={{ color: 'var(--primary-color)', fontWeight: 700 }}>{pctFull}%</span>
+                </div>
+                <div style={{ height: '4px', borderRadius: '2px', background: '#f5f3f9' }}>
+                  <div style={{ height: '100%', borderRadius: '2px', background: pctFull > 90 ? '#ef4444' : 'var(--primary-color)', width: `${pctFull}%`, transition: 'width 0.3s' }} />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
