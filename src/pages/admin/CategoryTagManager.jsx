@@ -26,6 +26,10 @@ const labelStyle = {
 export default function CategoryTagManager({ defaultSection = 'categories' }) {
   const [activeSection, setActiveSection] = useState(defaultSection);
 
+  useEffect(() => {
+    setActiveSection(defaultSection);
+  }, [defaultSection]);
+
   // ── Data State ─────────────────────────────────────────────────
   const [categories, setCategories] = useState(() => {
     const saved = localStorage.getItem('suriatech_admin_categories');
