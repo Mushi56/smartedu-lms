@@ -386,9 +386,6 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
       <div className="custom-home-purple-bg">
         {/* Admin Welcome Details */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
-          <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(202, 186, 97, 0.12)', border: '1.5px solid #caba61', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#caba61', flexShrink: 0 }}>
-            <Shield size={22} />
-          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>

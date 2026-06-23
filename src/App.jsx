@@ -518,9 +518,6 @@ export default function App() {
                     alt="Avatar" 
                     style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #caba61', boxShadow: '0 0 0 2px rgba(202,186,97,0.25)' }}
                   />
-                  <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff' }}>
-                    {user?.name || 'Omar'}
-                  </span>
                 </button>
 
                 {/* Alert & Logout actions */}
