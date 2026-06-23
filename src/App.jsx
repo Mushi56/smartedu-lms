@@ -44,6 +44,21 @@ import OrdersPayments from './pages/admin/OrdersPayments';
 import ReviewsPage from './pages/admin/ReviewsPage';
 import CouponsPage from './pages/admin/CouponsPage';
 import AnnouncementsPage from './pages/admin/AnnouncementsPage';
+import SuperAdminPanel from './pages/admin/SuperAdminPanel';
+
+// Teacher Portal Views
+import TeacherDashboard from './pages/teacher/TeacherDashboard';
+import TeacherProfilePage from './pages/teacher/TeacherProfile';
+import TeacherCourses from './pages/teacher/TeacherCourses';
+import TeacherLiveClasses from './pages/teacher/TeacherLiveClasses';
+import TeacherStudents from './pages/teacher/TeacherStudents';
+import TeacherEarnings from './pages/teacher/TeacherEarnings';
+import TeacherReviews from './pages/teacher/TeacherReviews';
+import TeacherSettings from './pages/teacher/TeacherSettings';
+
+// RBAC
+import { getPortalForRole, getAvailablePortals } from './data/permissions';
+import { DollarSign, Star } from 'lucide-react';
 
 export default function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(() => {
@@ -68,7 +83,7 @@ export default function App() {
     const saved = localStorage.getItem('suriatech_mobile_user');
     if (saved) {
       const u = JSON.parse(saved);
-      return u.role === 'admin' || u.role === 'super-admin' ? 'admin' : 'student';
+      return getPortalForRole(u.role);
     }
     return 'student';
   });
@@ -156,7 +171,7 @@ export default function App() {
   const handleLoginSuccess = (userData) => {
     setUser(userData);
     setIsAuthenticated(true);
-    setCurrentPortal(userData.role === 'admin' || userData.role === 'super-admin' ? 'admin' : 'student');
+    setCurrentPortal(getPortalForRole(userData.role));
     localStorage.setItem('suriatech_mobile_authenticated', 'true');
     localStorage.setItem('suriatech_mobile_user', JSON.stringify(userData));
   };
@@ -198,6 +213,9 @@ export default function App() {
     switch (activeTab) {
       // Mobile Tab Bar default views
       case 'home':
+        if (currentPortal === 'teacher') {
+          return <TeacherDashboard db={db} user={user} setActiveTab={setActiveTab} />;
+        }
         return (
           <Home 
             db={db}
@@ -245,6 +263,7 @@ export default function App() {
             }}
             theme={theme}
             setTheme={handleSetTheme}
+            user={user}
           />
         );
 
@@ -369,6 +388,7 @@ export default function App() {
             }}
             theme={theme}
             setTheme={handleSetTheme}
+            user={user}
           />
         );
 
@@ -415,6 +435,29 @@ export default function App() {
         return <CouponsPage />;
       case 'announcements':
         return <AnnouncementsPage />;
+      case 'super-admin-panel':
+        return <SuperAdminPanel user={user} />;
+
+      // Teacher Portal Views
+      case 'teacher-dashboard':
+        return <TeacherDashboard db={db} user={user} setActiveTab={setActiveTab} />;
+      case 'teacher-courses':
+      case 'teacher-create-course':
+        return <TeacherCourses db={db} setDb={setDb} user={user} />;
+      case 'teacher-live-classes':
+        return <TeacherLiveClasses db={db} user={user} />;
+      case 'teacher-students':
+        return <TeacherStudents db={db} user={user} setActiveTab={setActiveTab} />;
+      case 'teacher-earnings':
+        return <TeacherEarnings db={db} user={user} />;
+      case 'teacher-reviews':
+        return <TeacherReviews db={db} user={user} />;
+      case 'teacher-profile':
+        return <TeacherProfilePage db={db} user={user} />;
+      case 'teacher-settings':
+        return <TeacherSettings />;
+      case 'teacher-messages':
+        return <Messages />;
 
       default:
         return <div>Portal Coming Soon</div>;
@@ -453,82 +496,77 @@ export default function App() {
 
             <div className="app-main-layout">
               {/* Top Toolbar / Status Bar Area */}
-              {activeTab !== 'home' && (
-                <header style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '12px 16px',
-                  backgroundColor: 'var(--bg-card)',
-                  borderBottom: '1px solid var(--border-color)',
-                  height: '52px',
-                  zIndex: 90
-                }}>
-                  {/* Profile overview indicator with hamburger menu trigger */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <button
-                      onClick={() => setDrawerOpen(true)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', padding: '4px', display: 'flex', alignItems: 'center' }}
-                      className="click-press header-hamburger"
-                      title="Open Navigation Menu"
-                    >
-                      <Menu size={20} />
-                    </button>
-                    <img 
-                      src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
-                      alt="Avatar" 
-                      style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
-                    />
-                    <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      {user?.name || 'Omar'}
-                    </span>
-                  </div>
+              <header style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '12px 16px',
+                backgroundColor: '#37123c',
+                borderBottom: activeTab === 'home' ? 'none' : '1px solid rgba(255,255,255,0.08)',
+                height: '52px',
+                zIndex: 90
+              }}>
+                {/* Profile photo opens drawer */}
+                <button
+                  onClick={() => setDrawerOpen(true)}
+                  className="click-press"
+                  title="Open Navigation Menu"
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                >
+                  <img 
+                    src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
+                    alt="Avatar" 
+                    style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #caba61', boxShadow: '0 0 0 2px rgba(202,186,97,0.25)' }}
+                  />
+                  <span style={{ fontSize: '12.5px', fontWeight: 800, color: '#ffffff' }}>
+                    {user?.name || 'Omar'}
+                  </span>
+                </button>
 
-                  {/* Alert & Logout actions */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    {/* Notification bell */}
-                    <button 
-                      onClick={() => {
-                        setNotificationsOpen(true);
-                        markAllNotificationsRead();
-                      }}
-                      className="click-press"
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', color: 'var(--text-primary)' }}
-                    >
-                      <Bell size={18} />
-                      {unreadCount > 0 && (
-                        <span style={{
-                          position: 'absolute',
-                          top: '-4px',
-                          right: '-4px',
-                          background: 'var(--accent-red)',
-                          color: '#fff',
-                          fontSize: '8px',
-                          fontWeight: 800,
-                          borderRadius: '50%',
-                          width: '14px',
-                          height: '14px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}>
-                          {unreadCount}
-                        </span>
-                      )}
-                    </button>
+                {/* Alert & Logout actions */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {/* Notification bell */}
+                  <button 
+                    onClick={() => {
+                      setNotificationsOpen(true);
+                      markAllNotificationsRead();
+                    }}
+                    className="click-press"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', color: '#ffffff' }}
+                  >
+                    <Bell size={18} />
+                    {unreadCount > 0 && (
+                      <span style={{
+                        position: 'absolute',
+                        top: '-4px',
+                        right: '-4px',
+                        background: '#caba61',
+                        color: '#37123c',
+                        fontSize: '8px',
+                        fontWeight: 800,
+                        borderRadius: '50%',
+                        width: '14px',
+                        height: '14px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
 
-                    {/* Logout trigger */}
-                    <button
-                      onClick={handleLogout}
-                      className="click-press"
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
-                      title="Sign Out"
-                    >
-                      <LogOut size={16} />
-                    </button>
-                  </div>
-                </header>
-              )}
+                  {/* Logout trigger */}
+                  <button
+                    onClick={handleLogout}
+                    className="click-press"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.7)' }}
+                    title="Sign Out"
+                  >
+                    <LogOut size={16} />
+                  </button>
+                </div>
+              </header>
 
               {/* Core scrollable panel views */}
               <main className="mobile-content-container">
@@ -537,7 +575,7 @@ export default function App() {
 
               {/* Bottom Nav Bar */}
               <nav className="bottom-nav">
-                {currentPortal === 'admin' ? (
+                {(currentPortal === 'admin' || currentPortal === 'super-admin') ? (
                   <>
                     <button
                       onClick={() => {
@@ -591,6 +629,58 @@ export default function App() {
                       onClick={() => {
                         setDrawerOpen(true);
                       }}
+                      className="nav-item"
+                    >
+                      <div className="nav-icon-wrapper">
+                        <Menu size={18} />
+                      </div>
+                      <span>More</span>
+                    </button>
+                  </>
+                ) : currentPortal === 'teacher' ? (
+                  <>
+                    <button
+                      onClick={() => setActiveTab('home')}
+                      className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <HomeIcon size={18} />
+                      </div>
+                      <span>Home</span>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('teacher-courses')}
+                      className={`nav-item ${activeTab === 'teacher-courses' || activeTab === 'teacher-create-course' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <BookOpen size={18} />
+                      </div>
+                      <span>Courses</span>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('teacher-students')}
+                      className={`nav-item ${activeTab === 'teacher-students' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <Users size={18} />
+                      </div>
+                      <span>Students</span>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('teacher-earnings')}
+                      className={`nav-item ${activeTab === 'teacher-earnings' ? 'active' : ''}`}
+                    >
+                      <div className="nav-icon-wrapper">
+                        <DollarSign size={18} />
+                      </div>
+                      <span>Earnings</span>
+                    </button>
+
+                    <button
+                      onClick={() => setDrawerOpen(true)}
                       className="nav-item"
                     >
                       <div className="nav-icon-wrapper">
