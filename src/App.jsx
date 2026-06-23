@@ -375,8 +375,6 @@ export default function App() {
           <TeacherManager db={db} setDb={setDb} />
         );
       case 'categories':
-      case 'tags':
-      case 'levels':
         return (
           <CategoryTagManager />
         );
