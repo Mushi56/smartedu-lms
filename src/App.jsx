@@ -30,6 +30,7 @@ import Progress from './pages/student/Progress';
 import Payments from './pages/student/Payments';
 import Favorites from './pages/student/Favorites';
 import BecomeInstructor from './pages/student/BecomeInstructor';
+import Quizzes from './pages/student/Quizzes';
 
 // Admin Portal Views
 import AdminDashboard from './pages/admin/Dashboard';
@@ -395,10 +396,22 @@ export default function App() {
           <CategoryTagManager defaultSection="levels" />
         );
       case 'exams':
-        return (
+        return currentPortal === 'admin' ? (
           <QuizManager 
             quizzes={quizzes} 
             setQuizzes={setQuizzes} 
+          />
+        ) : (
+          <Quizzes 
+            quizzes={quizzes} 
+            streak={db.streak} 
+            overallProgress={db.overallProgress} 
+            setOverallProgress={(newProgress) => {
+              setDb(prev => {
+                const nextVal = typeof newProgress === 'function' ? newProgress(prev.overallProgress) : newProgress;
+                return { ...prev, overallProgress: nextVal };
+              });
+            }} 
           />
         );
       case 'orders':
