@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
   UserPlus, Search, Star, BookOpen, Users, Mail,
   Phone, MapPin, Edit3, Trash2, CheckCircle, XCircle,
-  Clock, Award, X, ChevronDown, Filter, ArrowLeft, Camera
+  Clock, Award, X, ChevronDown, ChevronUp, Filter, ArrowLeft, Camera,
+  FileText, Globe, Video, DollarSign, Check
 } from 'lucide-react';
 
 // ── Mock teacher data ──────────────────────────────────────────────
@@ -96,13 +97,22 @@ const labelStyle = {
   color: 'var(--text-secondary)', display: 'block', marginBottom: '5px'
 };
 
-export default function TeacherManager() {
-  const [teachers, setTeachers] = useState(MOCK_TEACHERS);
+export default function TeacherManager({ db, setDb }) {
+  const teachers = db?.teachers || [];
+  const setTeachers = (updater) => {
+    setDb(prev => {
+      const nextTeachers = typeof updater === 'function' ? updater(prev.teachers || []) : updater;
+      return { ...prev, teachers: nextTeachers };
+    });
+  };
   const [view, setView] = useState('list'); // 'list' | 'add' | 'detail'
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [form, setForm] = useState(EMPTY_FORM);
+  const [expandedAppId, setExpandedAppId] = useState(null);
+
+  const pendingApps = db?.instructorApplications?.filter(a => a.status === 'Pending') || [];
 
   const filtered = teachers.filter(t => {
     const matchSearch =
@@ -148,6 +158,62 @@ export default function TeacherManager() {
 
   const deleteTeacher = (id) => {
     setTeachers(prev => prev.filter(t => t.id !== id));
+  };
+
+  const handleApproveApp = (app) => {
+    const newTeacher = {
+      id: `teacher-${Date.now()}`,
+      name: app.studentName,
+      email: app.email,
+      phone: app.phone || '',
+      specialty: `${app.category} Expert`,
+      location: app.location || '',
+      courses: 0,
+      students: 0,
+      rating: 5.0,
+      status: 'active',
+      joined: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      avatar: app.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120',
+      bio: app.bio || '',
+      tags: [app.category],
+    };
+
+    const updatedApps = db.instructorApplications.map(a => 
+      a.id === app.id ? { ...a, status: 'Approved' } : a
+    );
+
+    const newNotification = {
+      id: `n-${Date.now()}`,
+      text: `Congratulations! Your application to become an instructor was approved. You are now an active teacher!`,
+      time: 'Just now',
+      read: false
+    };
+
+    setDb(prev => ({
+      ...prev,
+      teachers: [newTeacher, ...(prev.teachers || [])],
+      instructorApplications: updatedApps,
+      notifications: [newNotification, ...(prev.notifications || [])]
+    }));
+  };
+
+  const handleRejectApp = (app) => {
+    const updatedApps = db.instructorApplications.map(a => 
+      a.id === app.id ? { ...a, status: 'Rejected' } : a
+    );
+
+    const newNotification = {
+      id: `n-${Date.now()}`,
+      text: `Your instructor application was reviewed and could not be approved at this time.`,
+      time: 'Just now',
+      read: false
+    };
+
+    setDb(prev => ({
+      ...prev,
+      instructorApplications: updatedApps,
+      notifications: [newNotification, ...(prev.notifications || [])]
+    }));
   };
 
   // ── DETAIL VIEW ────────────────────────────────────────────────
@@ -413,103 +479,296 @@ export default function TeacherManager() {
 
       {/* Status filter chips */}
       <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '2px' }} className="hide-scrollbar">
-        {['All', 'Active', 'Pending', 'Inactive'].map(f => (
-          <button key={f} onClick={() => setStatusFilter(f)}
-            className="click-press"
-            style={{
-              flexShrink: 0, padding: '6px 14px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
-              border: statusFilter === f ? 'none' : '1px solid #ede9f4',
-              background: statusFilter === f ? 'var(--primary-color)' : '#fff',
-              color: statusFilter === f ? '#fff' : 'var(--text-secondary)',
-            }}>
-            {f}
-          </button>
-        ))}
+        {['All', 'Active', 'Pending', 'Inactive', 'Applications'].map(f => {
+          const isSelected = statusFilter === f;
+          const displayLabel = f === 'Applications' ? `Applications (${pendingApps.length})` : f;
+          return (
+            <button key={f} onClick={() => setStatusFilter(f)}
+              className="click-press"
+              style={{
+                flexShrink: 0, padding: '6px 14px', borderRadius: '20px', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+                border: isSelected ? 'none' : '1px solid #ede9f4',
+                background: isSelected ? 'var(--primary-color)' : '#fff',
+                color: isSelected ? '#fff' : 'var(--text-secondary)',
+              }}>
+              {displayLabel}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Teacher Cards */}
-      {filtered.length === 0 ? (
-        <div style={{ ...cardStyle, alignItems: 'center', padding: '40px 20px', textAlign: 'center' }}>
-          <Users size={36} style={{ color: '#ede9f4' }} />
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: 0 }}>No teachers found.</p>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {filtered.map(t => (
-            <div
-              key={t.id}
-              style={{ background: '#fff', borderRadius: '16px', border: '1px solid #ede9f4', padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}
-            >
-              {/* Top Row: Avatar + info + status */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div onClick={() => openDetail(t)} style={{ cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
-                  <img src={t.avatar} alt={t.name} style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ede9f4', display: 'block' }} />
-                  <span style={{
-                    position: 'absolute', bottom: 0, right: 0,
-                    width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #fff',
-                    background: t.status === 'active' ? '#10b981' : t.status === 'pending' ? '#f59e0b' : '#ef4444'
-                  }} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }} onClick={() => openDetail(t)} style={{ flex: 1, minWidth: 0, cursor: 'pointer' }}>
-                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 1px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</h3>
-                  <p style={{ fontSize: '10px', color: 'var(--text-secondary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.specialty}</p>
-                </div>
-                {/* Edit / Delete */}
-                <div style={{ display: 'flex', gap: '5px', flexShrink: 0 }}>
-                  <button onClick={() => openEdit(t)} style={{ padding: '6px 10px', borderRadius: '8px', background: 'var(--primary-glow)', color: 'var(--primary-color)', border: 'none', cursor: 'pointer' }} className="click-press">
-                    <Edit3 size={12} />
-                  </button>
-                  <button onClick={() => deleteTeacher(t.id)} style={{ padding: '6px 10px', borderRadius: '8px', background: 'rgba(239,68,68,0.06)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.1)', cursor: 'pointer' }} className="click-press">
-                    <Trash2 size={12} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Stats row */}
-              <div style={{ display: 'flex', gap: '8px' }}>
-                {[
-                  { icon: BookOpen, val: `${t.courses} courses`, color: '#7c3aed' },
-                  { icon: Users, val: `${t.students.toLocaleString()} students`, color: '#3b82f6' },
-                  { icon: Star, val: t.rating, color: '#f59e0b' },
-                ].map((s, i) => {
-                  const Icon = s.icon;
-                  return (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '9.5px', fontWeight: 700, color: s.color, background: `${s.color}10`, padding: '4px 8px', borderRadius: '8px' }}>
-                      <Icon size={10} />
-                      {s.val}
+      {/* Teacher Cards or Applications */}
+      {statusFilter === 'Applications' ? (
+        pendingApps.length === 0 ? (
+          <div style={{ ...cardStyle, alignItems: 'center', padding: '40px 20px', textAlign: 'center' }}>
+            <Users size={36} style={{ color: '#ede9f4' }} />
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: 0 }}>No pending instructor applications.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {pendingApps.map(app => {
+              const isExpanded = expandedAppId === app.id;
+              return (
+                <div
+                  key={app.id}
+                  style={{
+                    background: '#fff',
+                    borderRadius: '16px',
+                    border: '1px solid #ede9f4',
+                    padding: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)'
+                  }}
+                >
+                  {/* Header row: avatar, name, date */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ position: 'relative', flexShrink: 0 }}>
+                      <img
+                        src={app.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'}
+                        alt={app.studentName}
+                        style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ede9f4' }}
+                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100'; }}
+                      />
+                      <span style={{
+                        position: 'absolute', bottom: 0, right: 0,
+                        width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #fff',
+                        background: '#f59e0b'
+                      }} />
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Tags */}
-              {t.tags.length > 0 && (
-                <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-                  {t.tags.map(tag => (
-                    <span key={tag} style={{ fontSize: '8.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '20px', background: '#f5f3f9', color: 'var(--text-secondary)' }}>
-                      {tag}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h3 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 1px 0' }}>{app.studentName}</h3>
+                      <p style={{ fontSize: '10.5px', color: 'var(--text-secondary)', margin: 0 }}>Submitted {app.submittedAt}</p>
+                    </div>
+                    <span style={{ fontSize: '9px', background: 'rgba(245,158,11,0.1)', color: '#d97706', padding: '3px 8px', borderRadius: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+                      Pending
                     </span>
-                  ))}
-                </div>
-              )}
+                  </div>
 
-              {/* Status Toggle */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '8px', borderTop: '1px solid #f5f3f9' }}>
-                <span style={{
-                  fontSize: '10px', fontWeight: 700, padding: '3px 10px', borderRadius: '10px',
-                  background: t.status === 'active' ? 'rgba(16,185,129,0.1)' : t.status === 'pending' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
-                  color: t.status === 'active' ? '#10b981' : t.status === 'pending' ? '#f59e0b' : '#ef4444',
-                  textTransform: 'capitalize'
-                }}>
-                  {t.status}
-                </span>
-                <button onClick={() => toggleStatus(t.id)} style={{ padding: '5px 12px', borderRadius: '8px', border: '1px solid #ede9f4', background: '#fff', color: 'var(--text-secondary)', fontSize: '10px', fontWeight: 700, cursor: 'pointer' }} className="click-press">
-                  {t.status === 'active' ? 'Deactivate' : 'Activate'}
-                </button>
+                  {/* Headline & specialty tags */}
+                  <div>
+                    <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 6px 0', lineHeight: 1.4 }}>
+                      {app.headline || `Wants to teach ${app.category}`}
+                    </h4>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '9px', fontWeight: 700, padding: '3px 8px', borderRadius: '20px', background: 'var(--primary-glow)', color: 'var(--primary-color)' }}>
+                        {app.category}
+                      </span>
+                      <span style={{ fontSize: '9px', fontWeight: 700, padding: '3px 8px', borderRadius: '20px', background: '#faf9fc', border: '1px solid #ede9f4', color: 'var(--text-secondary)' }}>
+                        {app.qualification}
+                      </span>
+                      <span style={{ fontSize: '9px', fontWeight: 700, padding: '3px 8px', borderRadius: '20px', background: '#faf9fc', border: '1px solid #ede9f4', color: 'var(--text-secondary)' }}>
+                        {app.experienceYears} Years Exp
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Bio brief */}
+                  <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
+                    {app.bio ? (app.bio.length > 120 && !isExpanded ? `${app.bio.substring(0, 120)}...` : app.bio) : 'No bio provided.'}
+                  </p>
+
+                  {/* Expandable detailed content */}
+                  {isExpanded && (
+                    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderTop: '1px solid #f5f3f9', paddingTop: '10px', marginTop: '4px' }}>
+                      {/* Grid details */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                        <div><strong>Email:</strong> <span style={{ color: 'var(--text-primary)' }}>{app.email}</span></div>
+                        <div><strong>Phone:</strong> <span style={{ color: 'var(--text-primary)' }}>{app.phone || 'N/A'}</span></div>
+                        <div><strong>Location:</strong> <span style={{ color: 'var(--text-primary)' }}>{app.location || 'N/A'}</span></div>
+                        <div><strong>University:</strong> <span style={{ color: 'var(--text-primary)' }}>{app.university || 'N/A'}</span></div>
+                        <div><strong>Hourly Rate:</strong> <span style={{ color: 'var(--primary-color)', fontWeight: 700 }}>${app.hourlyRate}/hr</span></div>
+                      </div>
+
+                      {/* Attached Documents */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+                        <strong style={{ fontSize: '11px', color: 'var(--text-primary)' }}>Submitted Credentials</strong>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: '#faf9fc', border: '1px solid #ede9f4', borderRadius: '8px', fontSize: '10.5px' }}>
+                            <FileText size={12} style={{ color: 'var(--primary-color)' }} />
+                            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1, color: 'var(--text-primary)' }}>
+                              {app.resumeFile || 'resume.pdf'}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: '#faf9fc', border: '1px solid #ede9f4', borderRadius: '8px', fontSize: '10.5px' }}>
+                            <Award size={12} style={{ color: 'var(--secondary-color)' }} />
+                            <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1, color: 'var(--text-primary)' }}>
+                              {app.degreeFile || 'degree.pdf'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Video Intro */}
+                      {app.videoUrl && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: 'rgba(239, 68, 68, 0.04)', border: '1px solid rgba(239, 68, 68, 0.08)', borderRadius: '8px', fontSize: '10.5px', marginTop: '2px' }}>
+                          <Video size={12} style={{ color: '#ef4444' }} />
+                          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text-primary)' }}>
+                            Intro Video: {app.videoUrl}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Actions & Expand Toggle */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderTop: '1px solid #f5f3f9', paddingTop: '10px', marginTop: '4px' }}>
+                    {/* Accept button */}
+                    <button
+                      onClick={() => handleApproveApp(app)}
+                      className="click-press"
+                      style={{
+                        flex: 1.2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        padding: '8px 12px',
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <Check size={12} strokeWidth={2.5} /> Approve
+                    </button>
+
+                    {/* Reject button */}
+                    <button
+                      onClick={() => handleRejectApp(app)}
+                      className="click-press"
+                      style={{
+                        flex: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        padding: '8px 12px',
+                        background: '#fff',
+                        border: '1px solid #f3e8ff',
+                        color: '#ef4444',
+                        borderRadius: '8px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <X size={12} strokeWidth={2.5} /> Reject
+                    </button>
+
+                    {/* Expand/Collapse */}
+                    <button
+                      onClick={() => setExpandedAppId(isExpanded ? null : app.id)}
+                      className="click-press"
+                      style={{
+                        padding: '8px 10px',
+                        background: '#f5f3f9',
+                        color: 'var(--primary-color)',
+                        border: 'none',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      ) : (
+        /* Regular Teacher Cards (existing list view) */
+        filtered.length === 0 ? (
+          <div style={{ ...cardStyle, alignItems: 'center', padding: '40px 20px', textAlign: 'center' }}>
+            <Users size={36} style={{ color: '#ede9f4' }} />
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: 0 }}>No teachers found.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {filtered.map(t => (
+              <div
+                key={t.id}
+                style={{ background: '#fff', borderRadius: '16px', border: '1px solid #ede9f4', padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px' }}
+              >
+                {/* Top Row: Avatar + info + status */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div onClick={() => openDetail(t)} style={{ cursor: 'pointer', position: 'relative', flexShrink: 0 }}>
+                    <img src={t.avatar} alt={t.name} style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #ede9f4', display: 'block' }} />
+                    <span style={{
+                      position: 'absolute', bottom: 0, right: 0,
+                      width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #fff',
+                      background: t.status === 'active' ? '#10b981' : t.status === 'pending' ? '#f59e0b' : '#ef4444'
+                    }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }} onClick={() => openDetail(t)} style={{ flex: 1, minWidth: 0, cursor: 'pointer' }}>
+                    <h3 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 1px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</h3>
+                    <p style={{ fontSize: '10px', color: 'var(--text-secondary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.specialty}</p>
+                  </div>
+                  {/* Edit / Delete */}
+                  <div style={{ display: 'flex', gap: '5px', flexShrink: 0 }}>
+                    <button onClick={() => openEdit(t)} style={{ padding: '6px 10px', borderRadius: '8px', background: 'var(--primary-glow)', color: 'var(--primary-color)', border: 'none', cursor: 'pointer' }} className="click-press">
+                      <Edit3 size={12} />
+                    </button>
+                    <button onClick={() => deleteTeacher(t.id)} style={{ padding: '6px 10px', borderRadius: '8px', background: 'rgba(239,68,68,0.06)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.1)', cursor: 'pointer' }} className="click-press">
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Stats row */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {[
+                    { icon: BookOpen, val: `${t.courses} courses`, color: '#7c3aed' },
+                    { icon: Users, val: `${t.students.toLocaleString()} students`, color: '#3b82f6' },
+                    { icon: Star, val: t.rating, color: '#f59e0b' },
+                  ].map((s, i) => {
+                    const Icon = s.icon;
+                    return (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '9.5px', fontWeight: 700, color: s.color, background: `${s.color}10`, padding: '4px 8px', borderRadius: '8px' }}>
+                        <Icon size={10} />
+                        {s.val}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Tags */}
+                {t.tags.length > 0 && (
+                  <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+                    {t.tags.map(tag => (
+                      <span key={tag} style={{ fontSize: '8.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '20px', background: '#f5f3f9', color: 'var(--text-secondary)' }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Status Toggle */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '8px', borderTop: '1px solid #f5f3f9' }}>
+                  <span style={{
+                    fontSize: '10px', fontWeight: 700, padding: '3px 10px', borderRadius: '10px',
+                    background: t.status === 'active' ? 'rgba(16,185,129,0.1)' : t.status === 'pending' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)',
+                    color: t.status === 'active' ? '#10b981' : t.status === 'pending' ? '#f59e0b' : '#ef4444',
+                    textTransform: 'capitalize'
+                  }}>
+                    {t.status}
+                  </span>
+                  <button onClick={() => toggleStatus(t.id)} style={{ padding: '5px 12px', borderRadius: '8px', border: '1px solid #ede9f4', background: '#fff', color: 'var(--text-secondary)', fontSize: '10px', fontWeight: 700, cursor: 'pointer' }} className="click-press">
+                    {t.status === 'active' ? 'Deactivate' : 'Activate'}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )
       )}
     </div>
   );

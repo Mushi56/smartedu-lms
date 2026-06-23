@@ -343,7 +343,7 @@ export default function App() {
         );
       case 'become-instructor':
         return (
-          <BecomeInstructor />
+          <BecomeInstructor db={db} setDb={setDb} />
         );
       case 'settings':
         return currentPortal === 'admin' ? (
@@ -372,7 +372,7 @@ export default function App() {
       case 'users':
       case 'teachers':
         return (
-          <TeacherManager />
+          <TeacherManager db={db} setDb={setDb} />
         );
       case 'categories':
       case 'tags':

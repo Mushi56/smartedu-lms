@@ -120,6 +120,73 @@ const setStorageItem = (key, value) => {
   }
 };
 
+const initialTeachers = [
+  {
+    id: 'teacher-1',
+    name: 'Dr. Ahmed Al-Hassan',
+    email: 'ahmed@suriatech.com',
+    phone: '+60 11-1234 5678',
+    specialty: 'SAT & ACT Expert',
+    location: 'Kuala Lumpur, MY',
+    courses: 5,
+    students: 1240,
+    rating: 4.9,
+    status: 'active',
+    joined: 'Jan 2024',
+    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120&q=80',
+    bio: 'Dr. Ahmed has over 12 years of experience in standardized test preparation.',
+    tags: ['SAT', 'ACT', 'PSAT'],
+  },
+  {
+    id: 'teacher-2',
+    name: 'Ms. Sarah Johnson',
+    email: 'sarah@suriatech.com',
+    phone: '+60 12-9876 5432',
+    specialty: 'IELTS & TOEFL Expert',
+    location: 'Penang, MY',
+    courses: 3,
+    students: 870,
+    rating: 4.8,
+    status: 'active',
+    joined: 'Mar 2024',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
+    bio: 'Sarah is a certified IELTS examiner with Band 9 proficiency.',
+    tags: ['IELTS', 'TOEFL', 'English'],
+  },
+  {
+    id: 'teacher-3',
+    name: 'Dr. Michael Chen',
+    email: 'michael@suriatech.com',
+    phone: '+60 17-5555 1234',
+    specialty: 'GRE & GMAT Expert',
+    location: 'Johor Bahru, MY',
+    courses: 4,
+    students: 650,
+    rating: 4.7,
+    status: 'pending',
+    joined: 'Jun 2024',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80',
+    bio: 'Dr. Michael holds a PhD in Mathematics from MIT.',
+    tags: ['GRE', 'GMAT', 'Calculus'],
+  },
+  {
+    id: 'teacher-4',
+    name: 'Mr. David Wilson',
+    email: 'david@suriatech.com',
+    phone: '+60 14-2222 3333',
+    specialty: 'Computer Science Expert',
+    location: 'Shah Alam, MY',
+    courses: 6,
+    students: 2100,
+    rating: 4.9,
+    status: 'active',
+    joined: 'Nov 2023',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
+    bio: 'David is a full-stack developer with expertise in AI & Data Science.',
+    tags: ['Python', 'AI', 'DSA'],
+  },
+];
+
 export const getMobileDB = () => {
   return {
     courses: getStorageItem("suriatech_mobile_courses", initialCourses),
@@ -128,7 +195,9 @@ export const getMobileDB = () => {
     achievements: getStorageItem("suriatech_mobile_achievements", initialAchievements),
     notifications: getStorageItem("suriatech_mobile_notifications", initialNotifications),
     streak: getStorageItem("suriatech_mobile_streak", 14),
-    overallProgress: getStorageItem("suriatech_mobile_overall_progress", 67)
+    overallProgress: getStorageItem("suriatech_mobile_overall_progress", 67),
+    teachers: getStorageItem("suriatech_mobile_teachers", initialTeachers),
+    instructorApplications: getStorageItem("suriatech_mobile_instructor_applications", [])
   };
 };
 
@@ -140,6 +209,8 @@ export const saveMobileDB = (db) => {
   setStorageItem("suriatech_mobile_notifications", db.notifications);
   setStorageItem("suriatech_mobile_streak", db.streak);
   setStorageItem("suriatech_mobile_overall_progress", db.overallProgress);
+  setStorageItem("suriatech_mobile_teachers", db.teachers);
+  setStorageItem("suriatech_mobile_instructor_applications", db.instructorApplications);
 };
 
 // AI response engine supporting real API key or simulated learning tutor
