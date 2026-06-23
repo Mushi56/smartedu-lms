@@ -99,13 +99,6 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
         <div className="custom-home-purple-bg">
           {/* User Welcome Row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
-            <img 
-              onClick={onOpenDrawer}
-              src={user?.avatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100"} 
-              alt="Avatar" 
-              style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2.5px solid #caba61', cursor: 'pointer', flexShrink: 0 }}
-              className="click-press"
-            />
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>

@@ -30,11 +30,6 @@ export default function TeacherDashboard({ db, user, setActiveTab }) {
       {/* Purple Header */}
       <div className="custom-home-purple-bg">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
-          <img
-            src={user?.avatar || myTeacher.avatar}
-            alt="Avatar"
-            style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2.5px solid #caba61', flexShrink: 0 }}
-          />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Welcome back,</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
