@@ -4,10 +4,23 @@ import {
   SlidersHorizontal, MoreVertical, Plus, UserPlus, ShoppingBag, Send, 
   BarChart2, Shield, ChevronDown, Check, GraduationCap, DollarSign, Users, Award, User
 } from 'lucide-react';
+import VerificationBadge from '../../components/VerificationBadge';
 
 export default function Home({ db, user, currentPortal, onSelectCourse, onSelectLiveClass, onSelectTab, onOpenDrawer }) {
   const { courses = [], classes = [], streak = 14, overallProgress = 67 } = db;
-  const isAdmin = currentPortal === 'admin';
+  const isAdmin = currentPortal === 'admin' || currentPortal === 'super-admin';
+  const isTeacher = currentPortal === 'teacher';
+
+  const getTeacherStatus = (teacherName) => {
+    if (!teacherName) return 'teacher';
+    const teacher = db.teachers?.find(t => t.name === teacherName || t.name.includes(teacherName) || teacherName.includes(t.name.replace(/^(Dr\.|Ms\.|Mr\.)\s*/, '')));
+    if (teacher) return teacher.verificationStatus;
+    const cleanName = teacherName.replace(/^(Dr\.|Ms\.|Mr\.)\s*/, '');
+    const firstName = cleanName.split(' ')[0];
+    const partialTeacher = db.teachers?.find(t => t.name.includes(firstName));
+    return partialTeacher ? partialTeacher.verificationStatus : 'verified';
+  };
+
 
   // ----------------------------------------------------
   // STUDENT PORTAL HOMEPAGE DATA & STATES
@@ -77,58 +90,29 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
     }
   };
 
-  // Render Student view
-  if (!isAdmin) {
+  // Render Student view (only when portal is student)
+  if (!isAdmin && !isTeacher) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#faf9fc', margin: '-16px -16px 0 -16px' }}>
         
         {/* Purple Welcome Header */}
         <div className="custom-home-purple-bg">
-          {/* Logo & Alerts Row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'calc(10px + var(--safe-top))' }}>
-            <div onClick={onOpenDrawer} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} className="click-press">
-              {/* Stacked logo geometry */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                <div style={{ width: '16px', height: '6px', background: '#caba61', borderRadius: '1.5px', transform: 'skewX(-15deg)' }} />
-                <div style={{ width: '18px', height: '6px', background: '#ffffff', borderRadius: '1.5px', transform: 'skewX(-15deg)' }} />
-                <div style={{ width: '14px', height: '6px', background: '#caba61', borderRadius: '1.5px', transform: 'skewX(-15deg)' }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1.1 }}>
-                <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '1px', color: '#ffffff' }}>SURIA</span>
-                <span style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.8px', color: '#caba61' }}>TECH</span>
-              </div>
-            </div>
-
-            {/* Notification Bell */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <button 
-                onClick={onOpenDrawer}
-                className="click-press"
-                style={{ background: 'rgba(255,255,255,0.06)', border: 'none', cursor: 'pointer', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', position: 'relative' }}
-              >
-                <Bell size={18} />
-                <span style={{ position: 'absolute', top: '8px', right: '8px', backgroundColor: '#caba61', width: '12px', height: '12px', borderRadius: '50%', border: '2px solid #37123c', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '7px', fontWeight: 800, color: '#37123c' }}>
-                  3
-                </span>
-              </button>
-            </div>
-          </div>
-
           {/* User Welcome Row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '8px 0 16px 0', textAlign: 'left' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
             <img 
               onClick={onOpenDrawer}
               src={user?.avatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100"} 
               alt="Avatar" 
-              style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', border: '2.5px solid #caba61', cursor: 'pointer' }}
+              style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2.5px solid #caba61', cursor: 'pointer', flexShrink: 0 }}
               className="click-press"
             />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-              <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h2 style={{ fontSize: '17px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
                   {user?.name || 'Aisha Rahman'}
                 </h2>
+                <VerificationBadge status={user?.verificationStatus || user?.role} size={14} style={{ marginLeft: '4px' }} />
                 <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(202, 186, 97, 0.16)', border: '1px solid #caba61', borderRadius: '6px', padding: '1px 6px' }}>
                   <span style={{ fontSize: '8px', color: '#caba61', fontWeight: 800 }}>Gold Learner</span>
                 </div>
@@ -328,7 +312,10 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                         alt="Teacher" 
                         style={{ width: '20px', height: '20px', borderRadius: '50%' }}
                       />
-                      <span style={{ fontSize: '10.5px', color: '#8c7f94', fontWeight: 600 }}>By {classes[0].teacher}</span>
+                      <span style={{ fontSize: '10.5px', color: '#8c7f94', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        By {classes[0].teacher}
+                        <VerificationBadge status={getTeacherStatus(classes[0].teacher)} size={11} />
+                      </span>
                     </div>
                   </div>
 
@@ -378,7 +365,10 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
               {recommendedTeachers.map((teacher, index) => (
                 <div key={index} className="teacher-card">
                   <img src={teacher.avatar} alt={teacher.name} className="teacher-avatar" />
-                  <span className="teacher-name">{teacher.name}</span>
+                  <span className="teacher-name" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', justifyContent: 'center' }}>
+                    {teacher.name}
+                    <VerificationBadge status={getTeacherStatus(teacher.name)} size={11} />
+                  </span>
                   <span className="teacher-title">{teacher.title}</span>
                   <div className="teacher-rating-badge">
                     <Star size={8} fill="#caba61" stroke="none" />
@@ -401,43 +391,19 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
       
       {/* Purple Welcome Header */}
       <div className="custom-home-purple-bg">
-        {/* Logo & Admin Indicator */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'calc(10px + var(--safe-top))' }}>
-          <div onClick={onOpenDrawer} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }} className="click-press">
-            {/* Stacked logo geometry */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <div style={{ width: '16px', height: '6px', background: '#caba61', borderRadius: '1.5px', transform: 'skewX(-15deg)' }} />
-              <div style={{ width: '18px', height: '6px', background: '#ffffff', borderRadius: '1.5px', transform: 'skewX(-15deg)' }} />
-              <div style={{ width: '14px', height: '6px', background: '#caba61', borderRadius: '1.5px', transform: 'skewX(-15deg)' }} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', lineHeight: 1.1 }}>
-              <span style={{ fontSize: '12px', fontWeight: 800, letterSpacing: '1px', color: '#ffffff' }}>SURIA</span>
-              <span style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.8px', color: '#caba61' }}>TECH</span>
-            </div>
-          </div>
-
-          {/* Admin Avatar & Dropdown */}
-          <div 
-            onClick={onOpenDrawer}
-            className="click-press"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.08)', padding: '5px 12px', borderRadius: '20px', cursor: 'pointer' }}
-          >
-            <div style={{ width: '22px', height: '22px', borderRadius: '50%', backgroundColor: '#caba61', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#37123c' }}>
-              <User size={13} />
-            </div>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#ffffff' }}>Admin</span>
-            <ChevronDown size={12} style={{ color: '#ffffff', opacity: 0.8 }} />
-          </div>
-        </div>
-
         {/* Admin Welcome Details */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', margin: '14px 0 16px 0', textAlign: 'left' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(202, 186, 97, 0.12)', border: '1.5px solid #caba61', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#caba61' }}>
-            <Shield size={24} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
+          <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(202, 186, 97, 0.12)', border: '1.5px solid #caba61', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#caba61', flexShrink: 0 }}>
+            <Shield size={22} />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-            <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
-            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#ffffff', margin: 0 }}>Admin</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+                {user?.name || 'Admin'}
+              </h2>
+              <VerificationBadge status={user?.verificationStatus || user?.role} size={16} />
+            </div>
           </div>
         </div>
 

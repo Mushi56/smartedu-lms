@@ -132,10 +132,20 @@ const initialTeachers = [
     students: 1240,
     rating: 4.9,
     status: 'active',
+    verificationStatus: 'top-educator',
     joined: 'Jan 2024',
     avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120&q=80',
     bio: 'Dr. Ahmed has over 12 years of experience in standardized test preparation.',
     tags: ['SAT', 'ACT', 'PSAT'],
+    revenue: 24580,
+    monthlyRevenue: 3200,
+    pendingPayout: 1450,
+    featured: true,
+    payouts: [
+      { id: 'p1', amount: 2800, date: 'May 2026', status: 'completed' },
+      { id: 'p2', amount: 3100, date: 'Apr 2026', status: 'completed' },
+      { id: 'p3', amount: 1450, date: 'Jun 2026', status: 'pending' }
+    ]
   },
   {
     id: 'teacher-2',
@@ -148,10 +158,19 @@ const initialTeachers = [
     students: 870,
     rating: 4.8,
     status: 'active',
+    verificationStatus: 'premium',
     joined: 'Mar 2024',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80',
     bio: 'Sarah is a certified IELTS examiner with Band 9 proficiency.',
     tags: ['IELTS', 'TOEFL', 'English'],
+    revenue: 18340,
+    monthlyRevenue: 2650,
+    pendingPayout: 980,
+    featured: false,
+    payouts: [
+      { id: 'p4', amount: 2200, date: 'May 2026', status: 'completed' },
+      { id: 'p5', amount: 980, date: 'Jun 2026', status: 'pending' }
+    ]
   },
   {
     id: 'teacher-3',
@@ -164,10 +183,18 @@ const initialTeachers = [
     students: 650,
     rating: 4.7,
     status: 'pending',
+    verificationStatus: 'pending',
     joined: 'Jun 2024',
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80',
     bio: 'Dr. Michael holds a PhD in Mathematics from MIT.',
     tags: ['GRE', 'GMAT', 'Calculus'],
+    revenue: 8920,
+    monthlyRevenue: 1200,
+    pendingPayout: 600,
+    featured: false,
+    payouts: [
+      { id: 'p6', amount: 600, date: 'Jun 2026', status: 'pending' }
+    ]
   },
   {
     id: 'teacher-4',
@@ -180,11 +207,42 @@ const initialTeachers = [
     students: 2100,
     rating: 4.9,
     status: 'active',
+    verificationStatus: 'verified',
     joined: 'Nov 2023',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
     bio: 'David is a full-stack developer with expertise in AI & Data Science.',
     tags: ['Python', 'AI', 'DSA'],
+    revenue: 31250,
+    monthlyRevenue: 4100,
+    pendingPayout: 2200,
+    featured: true,
+    payouts: [
+      { id: 'p7', amount: 3800, date: 'May 2026', status: 'completed' },
+      { id: 'p8', amount: 2200, date: 'Jun 2026', status: 'pending' }
+    ]
   },
+  {
+    id: 'teacher-5',
+    name: 'Ms. Fatima Al-Rashid',
+    email: 'fatima@suriatech.com',
+    phone: '+60 18-4444 7777',
+    specialty: 'Arabic & Islamic Studies',
+    location: 'Kota Kinabalu, MY',
+    courses: 2,
+    students: 320,
+    rating: 4.6,
+    status: 'suspended',
+    verificationStatus: 'suspended',
+    joined: 'Aug 2024',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80',
+    bio: 'Fatima specializes in Quran memorization and Arabic language instruction.',
+    tags: ['Arabic', 'Islamic Studies'],
+    revenue: 4200,
+    monthlyRevenue: 0,
+    pendingPayout: 0,
+    featured: false,
+    payouts: []
+  }
 ];
 
 export const getMobileDB = () => {

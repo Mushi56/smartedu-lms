@@ -5,6 +5,8 @@ import {
   Clock, Award, X, ChevronDown, ChevronUp, Filter, ArrowLeft, Camera,
   FileText, Globe, Video, DollarSign, Check
 } from 'lucide-react';
+import VerificationBadge from '../../components/VerificationBadge';
+import { VERIFICATION_STATUSES } from '../../data/permissions';
 
 // ── Mock teacher data ──────────────────────────────────────────────
 const MOCK_TEACHERS = [
@@ -235,8 +237,14 @@ export default function TeacherManager({ db, setDb }) {
             <img src={t.avatar} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div>
-            <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0' }}>{t.name}</h3>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0' }}>{t.name}</h3>
+              <VerificationBadge status={t.verificationStatus || 'pending'} size={16} />
+            </div>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{t.specialty}</span>
+            <div style={{ marginTop: '6px' }}>
+              <VerificationBadge status={t.verificationStatus || 'pending'} size={12} showLabel />
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
             {t.tags.map(tag => (
@@ -296,6 +304,33 @@ export default function TeacherManager({ db, setDb }) {
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.6 }}>{t.bio}</p>
           </div>
         )}
+
+        {/* Verification Status Management */}
+        <div style={cardStyle}>
+          <h4 style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Verification Status</h4>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {Object.entries(VERIFICATION_STATUSES).map(([key, cfg]) => (
+              <button
+                key={key}
+                onClick={() => {
+                  setTeachers(prev => prev.map(teach => teach.id === t.id ? { ...teach, verificationStatus: key } : teach));
+                  setSelected(prev => ({ ...prev, verificationStatus: key }));
+                }}
+                className="click-press"
+                style={{
+                  padding: '6px 12px', borderRadius: '16px', fontSize: '9px', fontWeight: 700,
+                  border: t.verificationStatus === key ? `2px solid ${cfg.color}` : '1px solid #ede9f4',
+                  backgroundColor: t.verificationStatus === key ? cfg.bgColor : '#fff',
+                  color: cfg.color, cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: '4px'
+                }}
+              >
+                <VerificationBadge status={key} size={12} />
+                {cfg.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Actions */}
         <div style={{ display: 'flex', gap: '10px' }}>

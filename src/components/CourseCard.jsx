@@ -1,5 +1,6 @@
 import React from 'react';
 import { Play } from 'lucide-react';
+import VerificationBadge from './VerificationBadge';
 
 export default function CourseCard({ course, onSelectCourse }) {
   // Select matching custom illustration vector for each course to match screenshots perfectly
@@ -107,7 +108,10 @@ export default function CourseCard({ course, onSelectCourse }) {
 
       <div className="course-card-details">
         <span className="course-card-title">{course.title}</span>
-        <span className="course-card-teacher">{course.teacher}</span>
+        <span className="course-card-teacher" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+          {course.teacher}
+          <VerificationBadge status={course.verificationStatus || 'teacher'} size={12} />
+        </span>
         
         <div className="course-card-progress">
           <div className="course-progress-bar-bg">

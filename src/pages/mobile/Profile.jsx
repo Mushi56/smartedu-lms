@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Award, Shield, Key, Eye, EyeOff, Settings, Check, Download, ArrowLeft, Sun, Moon, Volume2 } from 'lucide-react';
+import VerificationBadge from '../../components/VerificationBadge';
 
-export default function Profile({ db, setDb, apiKey, setApiKey, theme, setTheme }) {
+export default function Profile({ db, setDb, apiKey, setApiKey, theme, setTheme, user }) {
   const { courses = [], achievements = [] } = db;
+
+
   const [keyInput, setKeyInput] = useState(apiKey);
   const [showKey, setShowKey] = useState(false);
   const [isEditingKey, setIsEditingKey] = useState(false);
@@ -33,16 +36,21 @@ export default function Profile({ db, setDb, apiKey, setApiKey, theme, setTheme 
           <div className="mobile-card" style={{ padding: '20px', alignItems: 'center', textAlign: 'center', gap: '12px' }}>
             <div style={{ position: 'relative' }}>
               <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"
-                alt="Student Avatar"
+                src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200"}
+                alt="User Avatar"
                 style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--secondary-color)', boxShadow: 'var(--shadow-md)' }}
               />
               <span style={{ position: 'absolute', bottom: '0', right: '0', background: 'var(--accent-green)', width: '16px', height: '16px', borderRadius: '50%', border: '2.5px solid #fff' }} />
             </div>
 
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>Omar Hassan</h3>
-              <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Premium Student Member</span>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>{user?.name || 'Omar Hassan'}</h3>
+                <VerificationBadge status={user?.verificationStatus || user?.role} size={14} style={{ marginLeft: '6px' }} />
+              </div>
+              <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                {user?.role === 'super-admin' ? 'Super Admin' : user?.role === 'admin' ? 'Admin' : user?.role === 'teacher' ? 'Verified Teacher' : 'Premium Student Member'}
+              </span>
             </div>
 
             {/* Level progress */}

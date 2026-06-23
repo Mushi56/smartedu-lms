@@ -3,8 +3,10 @@ import {
   LayoutDashboard, BookOpen, Video, Calendar, FileText, Notebook, 
   MessageCircle, TrendingUp, CreditCard, Award, Heart, Crown, Settings,
   Users, CheckSquare, BarChart2, Star, Ticket, Volume2, ChevronRight, ChevronDown, X,
-  Sun, Moon, ShieldAlert
+  Sun, Moon, ShieldAlert, DollarSign, Shield, User, Eye
 } from 'lucide-react';
+import VerificationBadge from './VerificationBadge';
+import { getAvailablePortals } from '../data/permissions';
 
 export default function AppDrawer({ 
   isOpen, 
@@ -18,11 +20,17 @@ export default function AppDrawer({
   setTheme, 
   logout 
 }) {
-  const [openSubmenu, setOpenSubmenu] = useState(null); // 'courses' or 'live-classes' or null
+  const [openSubmenu, setOpenSubmenu] = useState(null);
 
   const isStudent = currentPortal === 'student';
-  const hasAdminPrivileges = user?.role === 'admin' || user?.role === 'super-admin';
+  const isTeacher = currentPortal === 'teacher';
+  const isAdmin = currentPortal === 'admin' || currentPortal === 'super-admin';
+  const isSuperAdmin = currentPortal === 'super-admin';
 
+  const availablePortals = getAvailablePortals(user?.role);
+  const canSwitchPortal = availablePortals.length > 1;
+
+  // ─── Navigation Link Arrays ──────────────────────────────────
   const studentLinks = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
     { id: 'courses', name: 'My Courses', icon: BookOpen },
@@ -35,8 +43,28 @@ export default function AppDrawer({
     { id: 'payments', name: 'Payments', icon: CreditCard },
     { id: 'certificates', name: 'Certificates', icon: Award },
     { id: 'favorites', name: 'Favorites', icon: Heart },
-    { id: 'become-instructor', name: 'Become an Instructor', icon: Crown },
+    ...(user?.role === 'student' ? [{ id: 'become-instructor', name: 'Become an Instructor', icon: Crown }] : []),
     { id: 'settings', name: 'Settings', icon: Settings }
+  ];
+
+  const teacherLinks = [
+    { id: 'teacher-dashboard', name: 'Dashboard', icon: LayoutDashboard },
+    { id: 'teacher-profile', name: 'My Profile', icon: User },
+    { 
+      id: 'teacher-courses-parent', 
+      name: 'My Courses', 
+      icon: BookOpen,
+      submenu: [
+        { id: 'teacher-courses', name: 'All Courses' },
+        { id: 'teacher-create-course', name: 'Create Course' }
+      ]
+    },
+    { id: 'teacher-live-classes', name: 'Live Classes', icon: Video },
+    { id: 'teacher-students', name: 'My Students', icon: Users },
+    { id: 'teacher-earnings', name: 'Earnings', icon: DollarSign },
+    { id: 'teacher-reviews', name: 'Reviews', icon: Star },
+    { id: 'teacher-messages', name: 'Messages', icon: MessageCircle },
+    { id: 'teacher-settings', name: 'Settings', icon: Settings }
   ];
 
   const adminLinks = [
@@ -74,10 +102,14 @@ export default function AppDrawer({
     { id: 'coupons', name: 'Coupons', icon: Ticket },
     { id: 'resources', name: 'Resources', icon: Notebook },
     { id: 'announcements', name: 'Announcements', icon: Volume2 },
-    { id: 'settings', name: 'Settings', icon: Settings }
+    { id: 'settings', name: 'Settings', icon: Settings },
+    // Super Admin exclusive
+    ...(isSuperAdmin ? [{ id: 'super-admin-panel', name: 'Platform Control', icon: Shield }] : [])
   ];
 
-  const activeLinks = isStudent ? studentLinks : adminLinks;
+  // Pick links based on active portal
+  const activeLinks = isStudent ? studentLinks : isTeacher ? teacherLinks : adminLinks;
+  const sectionTitle = isStudent ? 'Student Dashboard' : isTeacher ? 'Teacher Dashboard' : (isSuperAdmin ? 'Super Admin Panel' : 'Admin Operations');
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
@@ -88,11 +120,32 @@ export default function AppDrawer({
     setOpenSubmenu(openSubmenu === menuId ? null : menuId);
   };
 
-  const handlePortalSwitch = () => {
-    const nextPortal = currentPortal === 'student' ? 'admin' : 'student';
-    setCurrentPortal(nextPortal);
-    setActiveTab('dashboard'); // Reset tab to dashboard on switch
+  const handlePortalSwitch = (targetPortal) => {
+    setCurrentPortal(targetPortal);
+    // Set default tab for the target portal
+    if (targetPortal === 'teacher') setActiveTab('teacher-dashboard');
+    else if (targetPortal === 'admin' || targetPortal === 'super-admin') setActiveTab('dashboard');
+    else setActiveTab('home');
     onClose();
+  };
+
+  const getPortalLabel = (portal) => {
+    switch (portal) {
+      case 'student': return 'Student';
+      case 'teacher': return 'Teacher';
+      case 'admin': return 'Admin';
+      case 'super-admin': return 'Super Admin';
+      default: return portal;
+    }
+  };
+
+  const getPortalColor = (portal) => {
+    switch (portal) {
+      case 'teacher': return '#3b82f6';
+      case 'admin': return '#ec4899';
+      case 'super-admin': return '#eab308';
+      default: return '#7c3aed';
+    }
   };
 
   return (
@@ -112,16 +165,24 @@ export default function AppDrawer({
         <div className="drawer-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
             <img 
-              src={user?.avatar || (isStudent ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100")} 
+              src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
               alt="Profile" 
               style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--border-color)' }}
             />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
-                {user?.name || (isStudent ? 'Omar Hassan' : 'Admin User')}
-              </span>
-              <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                {user?.role === 'super-admin' ? 'Super Admin' : user?.role === 'admin' ? 'Admin' : 'Student'}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                  {user?.name || 'User'}
+                </span>
+                <VerificationBadge 
+                  status={user?.verificationStatus || user?.role} 
+                  size={12} 
+                  style={{ marginLeft: '4px' }}
+                />
+              </div>
+              <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600, textAlign: 'left' }}>
+                {user?.role === 'super-admin' ? 'Super Admin' : user?.role === 'admin' ? 'Admin' : user?.role === 'teacher' ? 'Teacher' : 'Student'}
+                {isStudent ? '' : isTeacher ? ' Portal' : ' Portal'}
               </span>
             </div>
           </div>
@@ -159,9 +220,7 @@ export default function AppDrawer({
           </button>
 
           {/* Main Portal Specific Options */}
-          <div className="drawer-section-title">
-            {isStudent ? 'Student Dashboard Modules' : 'Admin Operations'}
-          </div>
+          <div className="drawer-section-title">{sectionTitle}</div>
 
           {activeLinks.map((link) => {
             const Icon = link.icon;
@@ -217,28 +276,41 @@ export default function AppDrawer({
         {/* Drawer Footer Actions */}
         <div className="drawer-footer">
           {/* Portal Quick Switcher (If allowed) */}
-          {hasAdminPrivileges && (
-            <button
-              onClick={handlePortalSwitch}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                backgroundColor: 'rgba(124, 58, 237, 0.08)',
-                color: '#7c3aed',
-                border: '1px solid rgba(124, 58, 237, 0.15)',
-                fontWeight: 700,
-                fontSize: '12px',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}
-              className="click-press"
-            >
-              <span>Switch to {isStudent ? 'Admin' : 'Student'} Portal</span>
-            </button>
+          {canSwitchPortal && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '8px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Switch Portal</span>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {availablePortals.map(portal => {
+                  const isActive = currentPortal === portal;
+                  const pColor = getPortalColor(portal);
+                  return (
+                    <button
+                      key={portal}
+                      onClick={() => !isActive && handlePortalSwitch(portal)}
+                      style={{
+                        flex: '1 0 auto',
+                        padding: '7px 12px',
+                        borderRadius: '8px',
+                        backgroundColor: isActive ? `${pColor}15` : 'var(--bg-input)',
+                        color: isActive ? pColor : 'var(--text-secondary)',
+                        border: isActive ? `1.5px solid ${pColor}` : '1px solid var(--border-color)',
+                        fontWeight: 700,
+                        fontSize: '10px',
+                        cursor: isActive ? 'default' : 'pointer',
+                        opacity: isActive ? 1 : 0.8,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px'
+                      }}
+                      className={isActive ? '' : 'click-press'}
+                    >
+                      {getPortalLabel(portal)}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           )}
 
           <div className="drawer-footer-actions">

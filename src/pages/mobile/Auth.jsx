@@ -24,17 +24,37 @@ export default function Auth({ onLoginSuccess }) {
       setLoading(false);
       // Mock Success Callback
       let determinedRole = 'student';
+      let userAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200';
+      let displayName = isLogin ? (email.split('@')[0]) : name;
+
       if (email.toLowerCase().includes('superadmin')) {
         determinedRole = 'super-admin';
+        userAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200';
+        if (isLogin) displayName = 'Super Admin';
       } else if (email.toLowerCase().includes('admin')) {
         determinedRole = 'admin';
+        userAvatar = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80';
+        if (isLogin) displayName = 'Sarah Johnson';
+      } else if (email.toLowerCase().includes('teacher')) {
+        determinedRole = 'teacher';
+        userAvatar = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200&q=80';
+        if (isLogin) displayName = 'Dr. Ahmed Al-Hassan';
+      } else {
+        if (isLogin && email.toLowerCase().includes('student')) displayName = 'Omar Hassan';
       }
 
+      // Assign verification status based on role
+      let verificationStatus = null;
+      if (determinedRole === 'teacher') verificationStatus = 'verified';
+      else if (determinedRole === 'admin') verificationStatus = 'admin';
+      else if (determinedRole === 'super-admin') verificationStatus = 'super-admin';
+
       const mockUser = {
-        name: isLogin ? (email.split('@')[0]) : name,
+        name: displayName,
         email: email,
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
-        role: determinedRole
+        avatar: userAvatar,
+        role: determinedRole,
+        verificationStatus: verificationStatus
       };
       onLoginSuccess(mockUser);
     }, 800);
@@ -45,10 +65,18 @@ export default function Auth({ onLoginSuccess }) {
       setEmail('student@suriatech.com');
       setPassword('password123');
       setName('Omar Hassan');
-    } else {
-      setEmail('guest@suriatech.com');
-      setPassword('guestPass');
-      setName('Guest User');
+    } else if (role === 'teacher') {
+      setEmail('teacher@suriatech.com');
+      setPassword('password123');
+      setName('Dr. Ahmed Al-Hassan');
+    } else if (role === 'admin') {
+      setEmail('admin@suriatech.com');
+      setPassword('password123');
+      setName('Sarah Johnson');
+    } else if (role === 'super-admin') {
+      setEmail('superadmin@suriatech.com');
+      setPassword('password123');
+      setName('Super Admin');
     }
     setIsLogin(true);
     setError('');
@@ -176,13 +204,14 @@ export default function Auth({ onLoginSuccess }) {
         <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'block', marginBottom: '12px' }}>
           Quick Demo Bypass
         </span>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', padding: '0 8px' }}>
           <button
+            type="button"
             onClick={() => fillQuickCredentials('student')}
             className="click-press"
             style={{
-              padding: '8px 16px',
-              borderRadius: '20px',
+              padding: '10px 12px',
+              borderRadius: '16px',
               border: '1px solid var(--border-color)',
               background: 'var(--bg-card)',
               color: 'var(--text-primary)',
@@ -191,17 +220,21 @@ export default function Auth({ onLoginSuccess }) {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              justifyContent: 'center',
+              gap: '6px',
+              boxShadow: 'var(--shadow-sm)'
             }}
           >
-            <Check size={11} /> Student Account
+            Student Account
           </button>
+          
           <button
-            onClick={() => fillQuickCredentials('guest')}
+            type="button"
+            onClick={() => fillQuickCredentials('teacher')}
             className="click-press"
             style={{
-              padding: '8px 16px',
-              borderRadius: '20px',
+              padding: '10px 12px',
+              borderRadius: '16px',
               border: '1px solid var(--border-color)',
               background: 'var(--bg-card)',
               color: 'var(--text-primary)',
@@ -210,10 +243,100 @@ export default function Auth({ onLoginSuccess }) {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              justifyContent: 'center',
+              gap: '6px',
+              boxShadow: 'var(--shadow-sm)'
             }}
           >
-            <Check size={11} /> Guest Account
+            Teacher Account
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#3b82f6', // blue
+              color: '#ffffff',
+              borderRadius: '50%',
+              width: '14px',
+              height: '14px',
+              padding: '2px',
+              flexShrink: 0
+            }}>
+              <Check size={10} strokeWidth={4} />
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => fillQuickCredentials('admin')}
+            className="click-press"
+            style={{
+              padding: '10px 12px',
+              borderRadius: '16px',
+              border: '1px solid var(--border-color)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-primary)',
+              fontSize: '11px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+          >
+            Admin Account
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#ec4899', // pink
+              color: '#ffffff',
+              borderRadius: '50%',
+              width: '14px',
+              height: '14px',
+              padding: '2px',
+              flexShrink: 0
+            }}>
+              <Check size={10} strokeWidth={4} />
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => fillQuickCredentials('super-admin')}
+            className="click-press"
+            style={{
+              padding: '10px 12px',
+              borderRadius: '16px',
+              border: '1px solid var(--border-color)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-primary)',
+              fontSize: '11px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              boxShadow: 'var(--shadow-sm)'
+            }}
+          >
+            Super Admin
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#eab308', // golden
+              color: '#ffffff',
+              borderRadius: '50%',
+              width: '14px',
+              height: '14px',
+              padding: '2px',
+              flexShrink: 0
+            }}>
+              <Check size={10} strokeWidth={4} />
+            </span>
           </button>
         </div>
       </div>
