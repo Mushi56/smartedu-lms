@@ -142,7 +142,7 @@ export default function AppDrawer({
             inset: 0,
             backgroundColor: 'rgba(15, 23, 42, 0.4)',
             backdropFilter: 'blur(6px)',
-            zIndex: 98,
+            zIndex: 9998,
             transition: 'opacity 0.3s ease'
           }}
         />
@@ -159,7 +159,7 @@ export default function AppDrawer({
           background: 'rgba(255, 255, 255, 0.98)',
           backdropFilter: 'blur(20px)',
           boxShadow: '10px 0 30px rgba(0, 0, 0, 0.05)',
-          zIndex: 99,
+          zIndex: 9999,
           display: 'flex',
           flexDirection: 'column',
           transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
