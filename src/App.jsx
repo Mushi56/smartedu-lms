@@ -164,24 +164,8 @@ export default function App() {
   useEffect(() => {
     const savedTheme = localStorage.getItem('suriatech_mobile_theme') || 'light';
     setTheme(savedTheme);
-    
-    let resolvedTheme = savedTheme;
-    if (savedTheme === 'auto') {
-      resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    document.documentElement.setAttribute('data-theme', resolvedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
-
-  // System theme changes listener
-  useEffect(() => {
-    if (theme !== 'auto') return;
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleSystemThemeChange = (e) => {
-      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-    };
-    mediaQuery.addEventListener('change', handleSystemThemeChange);
-    return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
-  }, [theme]);
 
   // Sync native mobile status bar theme-color meta tag
   useEffect(() => {
@@ -203,12 +187,7 @@ export default function App() {
   const handleSetTheme = (nextTheme) => {
     setTheme(nextTheme);
     localStorage.setItem('suriatech_mobile_theme', nextTheme);
-    
-    let resolvedTheme = nextTheme;
-    if (nextTheme === 'auto') {
-      resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    document.documentElement.setAttribute('data-theme', resolvedTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
   };
 
   const handleLoginSuccess = (userData) => {
