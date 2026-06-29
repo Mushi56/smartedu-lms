@@ -97,7 +97,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
         {/* PREMIUM PURPLE HEADER */}
         <div style={{
           background: 'linear-gradient(135deg, #4f46e5 0%, #312e81 100%)',
-          padding: '24px 20px 60px 20px',
+          padding: '24px 20px 90px 20px',
           borderBottomLeftRadius: '32px',
           borderBottomRightRadius: '32px',
           position: 'relative',
@@ -389,7 +389,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
       {/* PREMIUM PURPLE HEADER */}
       <div style={{
         background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
-        padding: '24px 20px 40px 20px',
+        padding: '24px 20px 65px 20px',
         position: 'relative',
         overflow: 'hidden',
         boxShadow: '0 10px 30px rgba(30, 27, 75, 0.2)'

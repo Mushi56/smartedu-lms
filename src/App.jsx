@@ -516,11 +516,15 @@ export default function App() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '12px 16px',
-                backgroundColor: '#37123c',
-                borderBottom: activeTab === 'home' ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                height: '52px',
-                zIndex: 90
+                padding: '12px 20px',
+                background: activeTab === 'home' 
+                  ? (currentPortal === 'admin' || currentPortal === 'super-admin' ? '#1e1b4b' : '#4f46e5') 
+                  : '#ffffff',
+                borderBottom: activeTab === 'home' ? 'none' : '1px solid rgba(0,0,0,0.04)',
+                height: '64px',
+                zIndex: 90,
+                boxShadow: activeTab === 'home' ? 'none' : '0 4px 20px rgba(0,0,0,0.02)',
+                transition: 'all 0.3s ease'
               }}>
                 {/* Profile photo opens drawer */}
                 <button
@@ -532,12 +536,16 @@ export default function App() {
                   <img 
                     src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
                     alt="Avatar" 
-                    style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #caba61', boxShadow: '0 0 0 2px rgba(202,186,97,0.25)' }}
+                    style={{ 
+                      width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', 
+                      border: activeTab === 'home' ? '2px solid rgba(255,255,255,0.2)' : '2px solid #f1f5f9', 
+                      boxShadow: activeTab === 'home' ? 'none' : '0 2px 8px rgba(0,0,0,0.05)' 
+                    }}
                   />
                 </button>
 
                 {/* Alert & Logout actions */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   {/* Notification bell */}
                   <button 
                     onClick={() => {
@@ -545,24 +553,33 @@ export default function App() {
                       markAllNotificationsRead();
                     }}
                     className="click-press"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', color: '#ffffff' }}
+                    style={{ 
+                      background: activeTab === 'home' ? 'rgba(255,255,255,0.1)' : '#f8fafc', 
+                      border: activeTab === 'home' ? 'none' : '1px solid rgba(0,0,0,0.04)', 
+                      cursor: 'pointer', position: 'relative', 
+                      color: activeTab === 'home' ? '#ffffff' : '#475569',
+                      width: '38px', height: '38px', borderRadius: '50%',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      transition: 'all 0.2s'
+                    }}
                   >
                     <Bell size={18} />
                     {unreadCount > 0 && (
                       <span style={{
                         position: 'absolute',
-                        top: '-4px',
-                        right: '-4px',
-                        background: '#caba61',
-                        color: '#37123c',
-                        fontSize: '8px',
+                        top: '0px',
+                        right: '0px',
+                        background: '#ef4444',
+                        color: '#ffffff',
+                        fontSize: '9px',
                         fontWeight: 800,
                         borderRadius: '50%',
                         width: '14px',
                         height: '14px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        border: activeTab === 'home' ? '2px solid transparent' : '2px solid #ffffff'
                       }}>
                         {unreadCount}
                       </span>
@@ -573,10 +590,14 @@ export default function App() {
                   <button
                     onClick={handleLogout}
                     className="click-press"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.7)' }}
+                    style={{ 
+                      background: 'none', border: 'none', cursor: 'pointer', 
+                      color: activeTab === 'home' ? 'rgba(255,255,255,0.8)' : '#94a3b8',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}
                     title="Sign Out"
                   >
-                    <LogOut size={16} />
+                    <LogOut size={20} />
                   </button>
                 </div>
               </header>
