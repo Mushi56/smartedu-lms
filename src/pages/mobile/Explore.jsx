@@ -391,6 +391,8 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
             <video
               src={activeLesson.videoUrl}
               controls
+              controlsList="nodownload"
+              onContextMenu={e => e.preventDefault()}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               poster={currentCourse.thumbnail}
             />

@@ -115,6 +115,8 @@ This lecture explored the regression model foundations in supervised machine lea
               key={currentLesson.videoUrl}
               src={currentLesson.videoUrl} 
               controls 
+              controlsList="nodownload"
+              onContextMenu={e => e.preventDefault()}
               autoPlay
               style={{ width: '100%', height: '100%', borderRadius: '16px' }}
             />
