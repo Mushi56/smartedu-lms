@@ -1,30 +1,31 @@
 import React, { useState } from 'react';
-import { BookOpen, Plus, Search, Edit3, Trash2, Eye, Send, Clock, CheckCircle, XCircle, Filter, Star } from 'lucide-react';
+import { BookOpen, Plus, Search, Edit3, Trash2, Eye, Send, Clock, CheckCircle, XCircle, Filter, Star, X } from 'lucide-react';
 
 export default function TeacherCourses({ db, setDb, user }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const handleEditCourse = (course) => {
-    const newTitle = window.prompt("Enter new course title:", course.title);
-    if (newTitle && newTitle.trim() !== '') {
-      const updated = (db?.courses || []).map(c => c.id === course.id ? { ...c, title: newTitle } : c);
-      setDb({ ...db, courses: updated });
-    }
-  };
+  // Modal Form States
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('create'); // 'create' or 'edit'
+  const [editingCourseId, setEditingCourseId] = useState(null);
 
-  const handleDeleteCourse = (courseId) => {
-    if (window.confirm("Are you sure you want to delete this course?")) {
-      const updated = (db?.courses || []).filter(c => c.id !== courseId);
-      setDb({ ...db, courses: updated });
-    }
-  };
+  // Form Fields
+  const [courseTitle, setCourseTitle] = useState('');
+  const [courseCategory, setCourseCategory] = useState('STEM');
+  const [courseLevel, setCourseLevel] = useState('Beginner');
+  const [courseDescription, setCourseDescription] = useState('');
+  const [courseThumbnail, setCourseThumbnail] = useState('');
 
-  const courses = (db?.courses || []).map((c, i) => ({
+  const rawCourses = db?.courses || [];
+
+  // Map courses and add simulated metrics if missing
+  const courses = rawCourses.map((c, i) => ({
     ...c,
-    publishStatus: i === 0 ? 'published' : i === 1 ? 'published' : i === 2 ? 'draft' : 'pending',
-    enrollments: Math.floor(Math.random() * 500) + 50,
-    revenue: `$${(Math.random() * 5000 + 500).toFixed(0)}`
+    publishStatus: c.publishStatus || (i === 0 ? 'published' : i === 1 ? 'published' : i === 2 ? 'draft' : 'pending'),
+    enrollments: c.studentsCount || Math.floor(Math.random() * 500) + 50,
+    revenue: c.revenue || `$${(Math.random() * 5000 + 500).toFixed(0)}`,
+    rating: c.rating || '4.8'
   }));
 
   const filtered = courses.filter(c => {
@@ -51,6 +52,108 @@ export default function TeacherCourses({ db, setDb, user }) {
     position: 'relative'
   };
 
+  // Actions
+  const handleOpenCreateModal = () => {
+    setModalMode('create');
+    setEditingCourseId(null);
+    setCourseTitle('');
+    setCourseCategory('STEM');
+    setCourseLevel('Beginner');
+    setCourseDescription('');
+    setCourseThumbnail('');
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (course) => {
+    setModalMode('edit');
+    setEditingCourseId(course.id);
+    setCourseTitle(course.title || '');
+    setCourseCategory(course.category || 'STEM');
+    setCourseLevel(course.level || 'Beginner');
+    setCourseDescription(course.description || '');
+    setCourseThumbnail(course.thumbnail || '');
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteCourse = (courseId) => {
+    if (window.confirm('Are you sure you want to delete this course?')) {
+      const updated = rawCourses.filter(c => c.id !== courseId);
+      setDb(prev => ({ ...prev, courses: updated }));
+    }
+  };
+
+  const handleSaveCourse = (e) => {
+    e.preventDefault();
+    if (!courseTitle.trim()) {
+      alert('Course Title is required.');
+      return;
+    }
+
+    const defaultThumbnail = 'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80';
+
+    if (modalMode === 'create') {
+      const newCourse = {
+        id: `c_${Date.now()}`,
+        title: courseTitle,
+        category: courseCategory,
+        level: courseLevel,
+        description: courseDescription || 'No description provided.',
+        thumbnail: courseThumbnail.trim() || defaultThumbnail,
+        teacher: user?.name || 'Instructor',
+        progress: 0,
+        studentsCount: 0,
+        chaptersCount: 0,
+        rating: '5.0',
+        reviews: 0,
+        publishStatus: 'draft',
+        modules: []
+      };
+
+      const updated = [newCourse, ...rawCourses];
+      setDb(prev => ({ ...prev, courses: updated }));
+    } else {
+      const updated = rawCourses.map(c => {
+        if (c.id === editingCourseId) {
+          return {
+            ...c,
+            title: courseTitle,
+            category: courseCategory,
+            level: courseLevel,
+            description: courseDescription,
+            thumbnail: courseThumbnail.trim() || c.thumbnail || defaultThumbnail
+          };
+        }
+        return c;
+      });
+      setDb(prev => ({ ...prev, courses: updated }));
+    }
+
+    setIsModalOpen(false);
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 14px',
+    borderRadius: '10px',
+    border: '1px solid var(--border-color)',
+    backgroundColor: 'var(--bg-input)',
+    color: 'var(--text-primary)',
+    fontSize: '13px',
+    outline: 'none',
+    fontWeight: 500,
+    fontFamily: 'inherit'
+  };
+
+  const labelStyle = {
+    fontSize: '11px',
+    fontWeight: 800,
+    color: 'var(--text-secondary)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+    marginBottom: '6px',
+    display: 'block'
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-fade-in">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -65,7 +168,7 @@ export default function TeacherCourses({ db, setDb, user }) {
             background: 'var(--primary-color)', color: '#fff', border: 'none', borderRadius: '14px',
             fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.15)'
           }}
-          onClick={() => alert('Opening course creation wizard...')}
+          onClick={handleOpenCreateModal}
         >
           <Plus size={14} /> Create Course
         </button>
@@ -164,13 +267,152 @@ export default function TeacherCourses({ db, setDb, user }) {
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexShrink: 0 }}>
-                <button onClick={() => handleEditCourse(course)} className="click-press" style={{ background: 'var(--bg-input)', border: 'none', cursor: 'pointer', color: 'var(--primary-color)', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Edit"><Edit3 size={13} /></button>
+                <button onClick={() => handleOpenEditModal(course)} className="click-press" style={{ background: 'var(--bg-input)', border: 'none', cursor: 'pointer', color: 'var(--primary-color)', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Edit"><Edit3 size={13} /></button>
                 <button onClick={() => handleDeleteCourse(course.id)} className="click-press" style={{ background: 'rgba(239, 68, 68, 0.06)', border: 'none', cursor: 'pointer', color: '#ef4444', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Delete"><Trash2 size={13} /></button>
               </div>
             </div>
           );
         })}
       </div>
+
+      {/* CREATE & EDIT MODAL OVERLAY */}
+      {isModalOpen && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(15, 23, 42, 0.4)',
+          backdropFilter: 'blur(4px)',
+          zIndex: 110,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px'
+        }}>
+          <div style={{
+            background: 'var(--bg-card)',
+            borderRadius: '24px',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+            width: '100%',
+            maxWidth: '440px',
+            maxHeight: '90%',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            animation: 'scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }} className="hide-scrollbar">
+            
+            {/* Modal Header */}
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+                {modalMode === 'create' ? 'Create New Course' : 'Edit Course Details'}
+              </h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="click-press"
+                style={{ 
+                  background: 'var(--bg-input)', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)',
+                  width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleSaveCourse} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div>
+                <label style={labelStyle}>Course Title</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. Master React & Redux"
+                  value={courseTitle}
+                  onChange={e => setCourseTitle(e.target.value)}
+                  style={inputStyle}
+                  required
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={labelStyle}>Category</label>
+                  <select 
+                    value={courseCategory} 
+                    onChange={e => setCourseCategory(e.target.value)}
+                    style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}
+                  >
+                    <option value="STEM">STEM</option>
+                    <option value="Test Prep">Test Prep</option>
+                    <option value="Language">Language</option>
+                    <option value="Arts">Arts</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={labelStyle}>Difficulty Level</label>
+                  <select 
+                    value={courseLevel} 
+                    onChange={e => setCourseLevel(e.target.value)}
+                    style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}
+                  >
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label style={labelStyle}>Description</label>
+                <textarea 
+                  rows={4}
+                  placeholder="Tell students what this course covers..."
+                  value={courseDescription}
+                  onChange={e => setCourseDescription(e.target.value)}
+                  style={{ ...inputStyle, resize: 'none', height: '80px' }}
+                />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Thumbnail URL</label>
+                <input 
+                  type="url" 
+                  placeholder="https://images.unsplash.com/..."
+                  value={courseThumbnail}
+                  onChange={e => setCourseThumbnail(e.target.value)}
+                  style={inputStyle}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: '12px', marginTop: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                <button 
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="click-press"
+                  style={{
+                    flex: 1, padding: '10px', borderRadius: '12px', border: '1px solid var(--border-color)',
+                    background: 'var(--bg-card)', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 800, cursor: 'pointer'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="click-press"
+                  style={{
+                    flex: 1, padding: '10px', borderRadius: '12px', border: 'none',
+                    background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', color: '#fff',
+                    fontSize: '12px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.2)'
+                  }}
+                >
+                  {modalMode === 'create' ? 'Create Course' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
