@@ -5,6 +5,21 @@ export default function TeacherCourses({ db, setDb, user }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
+  const handleEditCourse = (course) => {
+    const newTitle = window.prompt("Enter new course title:", course.title);
+    if (newTitle && newTitle.trim() !== '') {
+      const updated = (db?.courses || []).map(c => c.id === course.id ? { ...c, title: newTitle } : c);
+      setDb({ ...db, courses: updated });
+    }
+  };
+
+  const handleDeleteCourse = (courseId) => {
+    if (window.confirm("Are you sure you want to delete this course?")) {
+      const updated = (db?.courses || []).filter(c => c.id !== courseId);
+      setDb({ ...db, courses: updated });
+    }
+  };
+
   const courses = (db?.courses || []).map((c, i) => ({
     ...c,
     publishStatus: i === 0 ? 'published' : i === 1 ? 'published' : i === 2 ? 'draft' : 'pending',
@@ -149,8 +164,8 @@ export default function TeacherCourses({ db, setDb, user }) {
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexShrink: 0 }}>
-                <button className="click-press" style={{ background: 'var(--bg-input)', border: 'none', cursor: 'pointer', color: 'var(--primary-color)', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Edit"><Edit3 size={13} /></button>
-                <button className="click-press" style={{ background: 'rgba(239, 68, 68, 0.06)', border: 'none', cursor: 'pointer', color: '#ef4444', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Delete"><Trash2 size={13} /></button>
+                <button onClick={() => handleEditCourse(course)} className="click-press" style={{ background: 'var(--bg-input)', border: 'none', cursor: 'pointer', color: 'var(--primary-color)', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Edit"><Edit3 size={13} /></button>
+                <button onClick={() => handleDeleteCourse(course.id)} className="click-press" style={{ background: 'rgba(239, 68, 68, 0.06)', border: 'none', cursor: 'pointer', color: '#ef4444', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Delete"><Trash2 size={13} /></button>
               </div>
             </div>
           );
