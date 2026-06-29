@@ -862,7 +862,7 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
               {/* Bigger Video Preview Player */}
               {lVideoPreviewUrl && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <div style={{ position: 'relative', width: '100%', height: '120px', borderRadius: '8px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)' }}>
+                  <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', height: 'auto', borderRadius: '8px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)' }}>
                     <video src={lVideoPreviewUrl} controls style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   </div>
                   <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Tap play to preview video</span>
