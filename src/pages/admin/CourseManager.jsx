@@ -459,7 +459,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
                   isExpanded={expandedModule === mod.id}
                   setExpandedModule={setExpandedModule}
                   onDeleteModule={id => setForm(f => ({ ...f, modules: f.modules.filter(m => m.id !== id) }))}
-                  onAddLesson={(modId, lt, ld, lv, la) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoUrl: lv || '', attachmentUrl: la || '' }] }) }))}
+                  onAddLesson={(modId, lt, ld, vn, an, at) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoName: vn, attachmentName: an, attachmentType: at }] }) }))}
                   onDeleteLesson={(modId, lesId) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: m.lessons.filter(l => l.id !== lesId) }) }))}
                 />
               ))}
@@ -734,8 +734,13 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
 function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteModule, onAddLesson, onDeleteLesson }) {
   const [lTitle, setLTitle] = useState('');
   const [lDuration, setLDuration] = useState('');
-  const [lVideoUrl, setLVideoUrl] = useState('');
-  const [lAttachmentUrl, setLAttachmentUrl] = useState('');
+  
+  // Video and Attachment File Upload state
+  const [lVideoFile, setLVideoFile] = useState(null);
+  const [lAttachmentFile, setLAttachmentFile] = useState(null);
+  const [lAttachmentType, setLAttachmentType] = useState('Study Material');
+
+  const ATTACHMENT_TYPES = ['Study Material', 'Practice Material', 'Assignment', 'Slides', 'Syllabus'];
 
   return (
     <div style={{ background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
@@ -762,7 +767,7 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
       {isExpanded && (
         <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid var(--border-color)', background: 'var(--bg-input)' }}>
           {mod.lessons.map(les => (
-            <div key={les.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '10px 12px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+            <div key={les.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '10px 12px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)', textAlign: 'left' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <PlayCircle size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
                 <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{les.title}</span>
@@ -771,16 +776,19 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
                   <X size={13} />
                 </button>
               </div>
-              {(les.videoUrl || les.attachmentUrl) && (
-                <div style={{ display: 'flex', gap: '12px', paddingLeft: '22px', marginTop: '2px', fontSize: '10px', color: 'var(--text-muted)' }}>
-                  {les.videoUrl && (
+              
+              {/* Media & Attachment tags inside lessons list */}
+              {(les.videoName || les.videoUrl || les.attachmentName || les.attachmentUrl) && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '22px', marginTop: '4px', fontSize: '10px', color: 'var(--text-muted)' }}>
+                  {(les.videoName || les.videoUrl) && (
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Video size={10} /> Video Linked
+                      <Video size={12} style={{ color: '#3b82f6' }} /> Video: {les.videoName || 'Uploaded Lecture'}
                     </span>
                   )}
-                  {les.attachmentUrl && (
+                  {(les.attachmentName || les.attachmentUrl) && (
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <Link size={10} /> Attachment Attached
+                      <FileText size={12} style={{ color: '#10b981' }} />
+                      <strong style={{ color: 'var(--text-secondary)' }}>{les.attachmentType || 'Attachment'}:</strong> {les.attachmentName || 'Downloadable File'}
                     </span>
                   )}
                 </div>
@@ -792,24 +800,94 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
           <form onSubmit={e => { 
             e.preventDefault(); 
             if (!lTitle.trim()) return; 
-            onAddLesson(mod.id, lTitle.trim(), lDuration || '10:00', lVideoUrl.trim(), lAttachmentUrl.trim()); 
+            onAddLesson(
+              mod.id, 
+              lTitle.trim(), 
+              lDuration || '10:00', 
+              lVideoFile ? lVideoFile.name : '', 
+              lAttachmentFile ? lAttachmentFile.name : '',
+              lAttachmentType
+            ); 
+            // Reset states
             setLTitle(''); 
             setLDuration(''); 
-            setLVideoUrl('');
-            setLAttachmentUrl('');
+            setLVideoFile(null);
+            setLAttachmentFile(null);
+            setLAttachmentType('Study Material');
           }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px', padding: '12px', borderRadius: '12px', border: '1px dashed var(--border-color)', background: 'var(--bg-card)' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', padding: '12px', borderRadius: '12px', border: '1px dashed var(--border-color)', background: 'var(--bg-card)', textAlign: 'left' }}
           >
             <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)' }}>Add New Lesson</div>
-            <input type="text" value={lTitle} onChange={e => setLTitle(e.target.value)} placeholder="Lesson title..." style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} required />
+            <input type="text" value={lTitle} onChange={e => setLTitle(e.target.value)} placeholder="Lesson title (e.g. Intro to SAT Functions)..." style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} required />
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              <input type="text" value={lVideoUrl} onChange={e => setLVideoUrl(e.target.value)} placeholder="Video URL (e.g. YouTube/Vimeo)" style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} />
-              <input type="text" value={lAttachmentUrl} onChange={e => setLAttachmentUrl(e.target.value)} placeholder="Attachment Link (PDF, ZIP, Slides)" style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} />
+            {/* Custom Video File Selector */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)' }}>Lesson Video</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <label className="click-press" style={{
+                  display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px',
+                  border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)',
+                  fontSize: '10.5px', fontWeight: 700, cursor: 'pointer'
+                }}>
+                  <Video size={13} style={{ color: '#3b82f6' }} /> Select Video File
+                  <input 
+                    type="file" 
+                    accept="video/*" 
+                    onChange={e => { if (e.target.files?.[0]) setLVideoFile(e.target.files[0]); }}
+                    style={{ display: 'none' }} 
+                  />
+                </label>
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }}>
+                  {lVideoFile ? `🎥 ${lVideoFile.name}` : 'No file selected (gallery/files)'}
+                </span>
+                {lVideoFile && (
+                  <button type="button" onClick={() => setLVideoFile(null)} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}>
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <input type="text" value={lDuration} onChange={e => setLDuration(e.target.value)} placeholder="Duration (e.g. 10:00)" style={{ flex: 1, padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} />
+            {/* Custom Document Attachment Selector */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px solid var(--border-color)', paddingTop: '8px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)' }}>Lesson Attachment</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <select 
+                  value={lAttachmentType} 
+                  onChange={e => setLAttachmentType(e.target.value)}
+                  style={{ padding: '6px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit', cursor: 'pointer' }}
+                >
+                  {ATTACHMENT_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
+                </select>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label className="click-press" style={{
+                    display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px',
+                    border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)',
+                    fontSize: '10.5px', fontWeight: 700, cursor: 'pointer', flexShrink: 0
+                  }}>
+                    <FileText size={13} style={{ color: '#10b981' }} /> Upload Document
+                    <input 
+                      type="file" 
+                      accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" 
+                      onChange={e => { if (e.target.files?.[0]) setLAttachmentFile(e.target.files[0]); }}
+                      style={{ display: 'none' }} 
+                    />
+                  </label>
+                  {lAttachmentFile && (
+                    <button type="button" onClick={() => setLAttachmentFile(null)} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}>
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {lAttachmentFile ? `📎 [${lAttachmentType}] ${lAttachmentFile.name}` : 'No attachment file selected (PDF, slides, etc.)'}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '8px' }}>
+              <input type="text" value={lDuration} onChange={e => setLDuration(e.target.value)} placeholder="Lesson Duration (e.g. 15:30)" style={{ flex: 1, padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} />
               <button type="submit" style={{ padding: '8px 20px', background: 'var(--primary-gradient)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '11px', cursor: 'pointer' }}>Add Lesson</button>
             </div>
           </form>
