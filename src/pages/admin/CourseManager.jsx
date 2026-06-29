@@ -42,14 +42,9 @@ const emptyForm = {
 };
 
 // ── Reusable input styles ────────────────────────────────────────
-const inputStyle = {
-  width: '100%', padding: '10px 12px', fontSize: '13px',
-  border: '1px solid var(--border-color)', borderRadius: '10px',
-  background: '#fff', color: 'var(--text-primary)', outline: 'none',
-  fontFamily: 'inherit', boxSizing: 'border-box'
-};
+const inputStyle = { width: '100%', padding: '10px 12px', fontSize: '13px', border: '1px solid var(--border-color)', borderRadius: '10px', background: 'var(--bg-input)', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' };
 const labelStyle = { fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' };
-const cardStyle = { background: '#fff', borderRadius: '14px', border: '1px solid var(--border-color)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' };
+const cardStyle = { background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-premium)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' };
 const sectionHeaderStyle = { fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' };
 
 export default function CourseManager({ courses, setDb, initialView = 'list', user }) {
@@ -187,10 +182,10 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
 
   // ── ADD / EDIT COURSE WORKSPACE ────────────────────────────────
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left', margin: '-16px', padding: '16px', background: '#f6f4fa', minHeight: '100%', boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'left', margin: '-16px', padding: '16px', background: 'var(--bg-app)', minHeight: '100%', boxSizing: 'border-box' }}>
 
       {/* Top Bar: Back + Step Title + Actions */}
-      <div style={{ background: '#fff', borderRadius: '14px', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '10px', border: '1px solid var(--border-color)' }}>
+      <div style={{ background: 'var(--bg-card)', borderRadius: '14px', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '10px', border: '1px solid var(--border-subtle)' }}>
         <button
           onClick={() => setView('list')}
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', padding: '4px', flexShrink: 0 }}
@@ -220,7 +215,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
       </div>
 
       {/* Step Progress Dots */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#fff', borderRadius: '14px', padding: '12px 14px', border: '1px solid var(--border-color)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--bg-card)', borderRadius: '14px', padding: '12px 14px', border: '1px solid var(--border-subtle)' }}>
         {STEPS.map((s, i) => {
           const isActive = activeStep === s.step;
           const isDone = activeStep > s.step;
@@ -386,7 +381,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {form.learningOutcomes.map((outcome, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: '#f6f4fa', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: 'var(--bg-app)', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
                   <Check size={12} style={{ color: '#10b981', flexShrink: 0 }} strokeWidth={3} />
                   <span style={{ fontSize: '12px', flex: 1, color: 'var(--text-primary)' }}>{outcome}</span>
                   <button type="button" onClick={() => setForm(f => ({ ...f, learningOutcomes: f.learningOutcomes.filter((_, i) => i !== idx) }))}
@@ -487,10 +482,10 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
                     flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px',
                     padding: '14px 8px', borderRadius: '12px', cursor: 'pointer',
                     border: `2px solid ${form.priceType === type ? 'var(--primary-color)' : 'var(--border-color)'}`,
-                    background: form.priceType === type ? 'var(--primary-glow)' : '#fafafb', transition: 'all 0.15s'
+                    background: form.priceType === type ? 'var(--primary-glow)' : 'var(--bg-input)', transition: 'all 0.15s'
                   }}
                 >
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: form.priceType === type ? 'var(--primary-color)' : '#e2e8f0', color: form.priceType === type ? '#fff' : 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: form.priceType === type ? 'var(--primary-color)' : 'var(--bg-input)', color: form.priceType === type ? '#fff' : 'var(--text-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {type === 'Free' ? <Zap size={16} /> : <DollarSign size={16} />}
                   </div>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: form.priceType === type ? 'var(--primary-color)' : 'var(--text-primary)' }}>{type}</span>
@@ -555,7 +550,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
                 <label style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', cursor: 'pointer', flexShrink: 0 }}>
                   <input type="checkbox" checked={form[item.key]} onChange={e => setForm(f => ({ ...f, [item.key]: e.target.checked }))} style={{ display: 'none' }} />
                   <div style={{ width: '38px', height: '20px', borderRadius: '10px', background: form[item.key] ? 'var(--primary-color)' : '#cbd5e1', transition: 'all 0.2s', position: 'relative' }}>
-                    <div style={{ position: 'absolute', top: '2px', left: form[item.key] ? '20px' : '2px', width: '16px', height: '16px', borderRadius: '50%', background: '#fff', transition: 'all 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
+                    <div style={{ position: 'absolute', top: '2px', left: form[item.key] ? '20px' : '2px', width: '16px', height: '16px', borderRadius: '50%', background: 'var(--bg-card)', transition: 'all 0.2s', boxShadow: '0 1px 4px rgba(0,0,0,0.2)' }} />
                   </div>
                 </label>
               </div>
@@ -581,7 +576,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
             <div style={sectionHeaderStyle}><Image size={15} style={{ color: 'var(--primary-color)' }} /> Course Thumbnail</div>
 
             {/* Preview */}
-            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-color)', background: '#f6f4fa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-subtle)', background: 'var(--bg-app)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {form.thumbnail ? (
                 <>
                   <img src={form.thumbnail} alt="Thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -622,7 +617,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
           {/* Promo Video */}
           <div style={cardStyle}>
             <div style={sectionHeaderStyle}><Video size={15} style={{ color: '#ef4444' }} /> Promotional Video</div>
-            <div style={{ border: '2px dashed var(--border-color)', borderRadius: '12px', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', background: '#fafafb', textAlign: 'center' }}>
+            <div style={{ border: '2px dashed var(--border-color)', borderRadius: '12px', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', background: 'var(--bg-input)', textAlign: 'center' }}>
               <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(239,68,68,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Video size={20} style={{ color: '#ef4444' }} />
               </div>
@@ -640,7 +635,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
           {/* Resources */}
           <div style={cardStyle}>
             <div style={sectionHeaderStyle}><Download size={15} style={{ color: '#22c55e' }} /> Resources</div>
-            <div style={{ border: '2px dashed var(--border-color)', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', background: '#fafafb', textAlign: 'center' }}>
+            <div style={{ border: '2px dashed var(--border-color)', borderRadius: '12px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', background: 'var(--bg-input)', textAlign: 'center' }}>
               <FileText size={24} style={{ color: 'var(--text-muted)', opacity: 0.6 }} />
               <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-primary)' }}>Attach PDFs, Worksheets, Notes</div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>PDF, DOCX, XLSX — max 20MB</div>
@@ -655,7 +650,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
 
           {/* Course preview card */}
           <div style={{ ...cardStyle, padding: '0', overflow: 'hidden' }}>
-            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: '#f6f4fa' }}>
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: 'var(--bg-app)' }}>
               {form.thumbnail
                 ? <img src={form.thumbnail} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Image size={32} style={{ color: 'var(--border-color)' }} /></div>
@@ -712,7 +707,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
           <button onClick={handleSave} className="click-press" style={{ width: '100%', padding: '14px', borderRadius: '12px', border: 'none', background: 'var(--primary-gradient)', color: '#fff', fontWeight: 800, fontSize: '15px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 6px 20px rgba(37,22,45,0.3)' }}>
             <Award size={18} /> Publish Course
           </button>
-          <button onClick={() => setView('list')} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)', background: '#fff', color: 'var(--text-secondary)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
+          <button onClick={() => setView('list')} style={{ width: '100%', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--bg-card)', color: 'var(--text-secondary)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }}>
             Save as Draft
           </button>
         </div>
@@ -721,7 +716,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
       {/* Floating Next/Prev controls */}
       <div style={{ display: 'flex', gap: '10px', paddingBottom: '8px' }}>
         {activeStep > 1 && (
-          <button onClick={() => setActiveStep(p => p - 1)} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)', background: '#fff', color: 'var(--text-primary)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }} className="click-press">
+          <button onClick={() => setActiveStep(p => p - 1)} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--bg-card)', color: 'var(--text-primary)', fontWeight: 700, fontSize: '13px', cursor: 'pointer' }} className="click-press">
             ← Back
           </button>
         )}
@@ -741,10 +736,10 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
   const [lDuration, setLDuration] = useState('');
 
   return (
-    <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid var(--border-color)', overflow: 'hidden' }}>
+    <div style={{ background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
       {/* Module Header */}
       <div onClick={() => setExpandedModule(isExpanded ? null : mod.id)}
-        style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: isExpanded ? 'var(--primary-glow)' : '#fff' }}
+        style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: isExpanded ? 'var(--primary-glow)' : 'var(--bg-card)' }}
       >
         <div style={{ width: '26px', height: '26px', borderRadius: '6px', background: 'var(--primary-gradient)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}>
           {idx + 1}
@@ -763,9 +758,9 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
 
       {/* Expanded: Lessons */}
       {isExpanded && (
-        <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid var(--border-color)', background: '#fafafb' }}>
+        <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid var(--border-color)', background: 'var(--bg-input)' }}>
           {mod.lessons.map(les => (
-            <div key={les.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: '#fff', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+            <div key={les.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
               <PlayCircle size={12} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
               <span style={{ fontSize: '11px', color: 'var(--text-primary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{les.title}</span>
               <span style={{ fontSize: '9px', color: 'var(--text-muted)', flexShrink: 0 }}>{les.duration}</span>
@@ -779,8 +774,8 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
           <form onSubmit={e => { e.preventDefault(); if (!lTitle.trim()) return; onAddLesson(mod.id, lTitle.trim(), lDuration); setLTitle(''); setLDuration(''); }}
             style={{ display: 'flex', gap: '6px', marginTop: '4px' }}
           >
-            <input type="text" value={lTitle} onChange={e => setLTitle(e.target.value)} placeholder="Lesson title..." style={{ flex: 1, padding: '7px 10px', fontSize: '11px', border: '1px solid var(--border-color)', borderRadius: '8px', outline: 'none', fontFamily: 'inherit' }} />
-            <input type="text" value={lDuration} onChange={e => setLDuration(e.target.value)} placeholder="mm:ss" style={{ width: '54px', padding: '7px 8px', fontSize: '11px', border: '1px solid var(--border-color)', borderRadius: '8px', outline: 'none', fontFamily: 'inherit' }} />
+            <input type="text" value={lTitle} onChange={e => setLTitle(e.target.value)} placeholder="Lesson title..." style={{ flex: 1, padding: '7px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', fontFamily: 'inherit' }} />
+            <input type="text" value={lDuration} onChange={e => setLDuration(e.target.value)} placeholder="mm:ss" style={{ width: '54px', padding: '7px 8px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', fontFamily: 'inherit' }} />
             <button type="submit" style={{ padding: '7px 10px', background: 'var(--primary-color)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontSize: '11px', cursor: 'pointer', flexShrink: 0 }}>+</button>
           </form>
         </div>
