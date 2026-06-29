@@ -13,7 +13,7 @@ export default function TeacherCourses({ db, setDb, user }) {
   }));
 
   const filtered = courses.filter(c => {
-    const matchSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchSearch = (c.title || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchStatus = statusFilter === 'all' || c.publishStatus === statusFilter;
     return matchSearch && matchStatus;
   });
