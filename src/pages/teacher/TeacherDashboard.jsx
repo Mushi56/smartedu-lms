@@ -36,15 +36,15 @@ export default function TeacherDashboard({ db, user, setActiveTab }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: 'var(--bg-app)', margin: '-16px -16px 0 -16px' }} className="animate-fade-in">
 
-      {/* Blue Header */}
+      {/* Purple Header */}
       <div style={{
-        background: 'linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%)',
-        padding: '24px 20px 70px 20px',
+        background: 'linear-gradient(135deg, #4f46e5 0%, #312e81 100%)',
+        padding: '24px 20px 100px 20px',
         borderBottomLeftRadius: '32px',
         borderBottomRightRadius: '32px',
         position: 'relative',
         overflow: 'hidden',
-        boxShadow: '0 10px 30px rgba(59, 130, 246, 0.15)'
+        boxShadow: '0 10px 30px rgba(79, 70, 229, 0.15)'
       }}>
         {/* Glow */}
         <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(99,102,241,0.2) 0%, rgba(99,102,241,0) 70%)', pointerEvents: 'none' }} />
@@ -63,7 +63,7 @@ export default function TeacherDashboard({ db, user, setActiveTab }) {
       </div>
 
       {/* Floating Metrics (Grid) */}
-      <div style={{ margin: '-50px 20px 0 20px', position: 'relative', zIndex: 10 }}>
+      <div style={{ margin: '-60px 20px 0 20px', position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
           {metrics.map((m, i) => {
             const Icon = m.icon;

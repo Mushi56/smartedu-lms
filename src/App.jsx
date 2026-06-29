@@ -169,7 +169,7 @@ export default function App() {
 
   // Sync native mobile status bar theme-color meta tag
   useEffect(() => {
-    const isHomeHeaderDark = activeTab === 'home' && !scrolled;
+    const isHomeHeaderDark = (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled;
     const isPurpleTheme = currentPortal !== 'admin' && currentPortal !== 'super-admin';
     const color = isHomeHeaderDark 
       ? (isPurpleTheme ? '#4f46e5' : '#1e1b4b') 
@@ -539,13 +539,13 @@ export default function App() {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '12px 20px',
-                background: activeTab === 'home' && !scrolled
+                background: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled
                   ? (currentPortal === 'admin' || currentPortal === 'super-admin' ? '#1e1b4b' : '#4f46e5') 
                   : '#ffffff',
-                borderBottom: activeTab === 'home' && !scrolled ? 'none' : '1px solid rgba(0,0,0,0.04)',
+                borderBottom: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? 'none' : '1px solid rgba(0,0,0,0.04)',
                 height: '64px',
                 zIndex: 90,
-                boxShadow: activeTab === 'home' && !scrolled ? 'none' : '0 4px 20px rgba(0,0,0,0.02)',
+                boxShadow: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? 'none' : '0 4px 20px rgba(0,0,0,0.02)',
                 transition: 'all 0.3s ease'
               }}>
                 {/* Profile photo opens drawer */}
@@ -560,8 +560,8 @@ export default function App() {
                     alt="Avatar" 
                     style={{ 
                       width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', 
-                      border: activeTab === 'home' && !scrolled ? '2px solid rgba(255,255,255,0.2)' : '2px solid #f1f5f9', 
-                      boxShadow: activeTab === 'home' && !scrolled ? 'none' : '0 2px 8px rgba(0,0,0,0.05)' 
+                      border: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? '2px solid rgba(255,255,255,0.2)' : '2px solid #f1f5f9', 
+                      boxShadow: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? 'none' : '0 2px 8px rgba(0,0,0,0.05)' 
                     }}
                   />
                 </button>
@@ -576,10 +576,10 @@ export default function App() {
                     }}
                     className="click-press"
                     style={{ 
-                      background: activeTab === 'home' && !scrolled ? 'rgba(255,255,255,0.1)' : '#f8fafc', 
-                      border: activeTab === 'home' && !scrolled ? 'none' : '1px solid rgba(0,0,0,0.04)', 
+                      background: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? 'rgba(255,255,255,0.1)' : '#f8fafc', 
+                      border: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? 'none' : '1px solid rgba(0,0,0,0.04)', 
                       cursor: 'pointer', position: 'relative', 
-                      color: activeTab === 'home' && !scrolled ? '#ffffff' : '#475569',
+                      color: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? '#ffffff' : '#475569',
                       width: '38px', height: '38px', borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       transition: 'all 0.2s'
@@ -601,7 +601,7 @@ export default function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        border: activeTab === 'home' && !scrolled ? '2px solid transparent' : '2px solid #ffffff'
+                        border: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? '2px solid transparent' : '2px solid #ffffff'
                       }}>
                         {unreadCount}
                       </span>
@@ -614,7 +614,7 @@ export default function App() {
                     className="click-press"
                     style={{ 
                       background: 'none', border: 'none', cursor: 'pointer', 
-                      color: activeTab === 'home' && !scrolled ? 'rgba(255,255,255,0.8)' : '#94a3b8',
+                      color: (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled ? 'rgba(255,255,255,0.8)' : '#94a3b8',
                       display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}
                     title="Sign Out"

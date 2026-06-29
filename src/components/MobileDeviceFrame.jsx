@@ -21,7 +21,7 @@ export default function MobileDeviceFrame({ children, activeTab, currentPortal, 
     return () => clearInterval(interval);
   }, []);
 
-  const isHomeHeaderDark = activeTab === 'home' && !scrolled;
+  const isHomeHeaderDark = (activeTab === 'home' || activeTab === 'teacher-dashboard') && !scrolled;
   const isPurpleTheme = currentPortal !== 'admin' && currentPortal !== 'super-admin';
   
   const statusBarBg = isHomeHeaderDark 
