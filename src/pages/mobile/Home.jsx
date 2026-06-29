@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Flame, Clock, Calendar, ChevronRight, Play, Star, BookOpen, Bell, Search, 
   SlidersHorizontal, MoreVertical, Plus, UserPlus, ShoppingBag, Send, 
-  BarChart2, Shield, ChevronDown, Check, GraduationCap, DollarSign, Users, Award, User
+  BarChart2, Shield, ChevronDown, Check, GraduationCap, DollarSign, Users, Award, User, Sparkles, Video
 } from 'lucide-react';
 import VerificationBadge from '../../components/VerificationBadge';
 
@@ -10,8 +10,6 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
   const { courses = [], classes = [], streak = 14, overallProgress = 67 } = db;
   const isAdmin = currentPortal === 'admin' || currentPortal === 'super-admin';
   const isTeacher = currentPortal === 'teacher';
-
-
 
   // ----------------------------------------------------
   // STUDENT PORTAL HOMEPAGE DATA & STATES
@@ -48,7 +46,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
   // ADMIN PORTAL HOMEPAGE DATA & STATES
   // ----------------------------------------------------
   const adminMetrics = [
-    { title: 'Total Students', value: '12,458', change: '↑ 12.5%', icon: Users, color: '#7c3aed' },
+    { title: 'Total Students', value: '12,458', change: '↑ 12.5%', icon: Users, color: '#6366f1' },
     { title: 'Total Courses', value: '356', change: '↑ 8.3%', icon: BookOpen, color: '#10b981' },
     { title: 'Revenue', value: '$98,765', change: '↑ 15.7%', icon: DollarSign, color: '#3b82f6' },
     { title: 'Active Orders', value: '1,245', change: '↑ 9.4%', icon: ShoppingBag, color: '#f59e0b' }
@@ -61,7 +59,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
   ];
 
   const recentActivity = [
-    { id: 'ra-1', type: 'order', title: 'New order #ORD-1256', sub: 'UI/UX Design Masterclass', time: 'May 23, 2025 10:24 AM', amount: '+$49.00', icon: ShoppingBag, bg: 'rgba(124, 58, 237, 0.08)', color: '#7c3aed' },
+    { id: 'ra-1', type: 'order', title: 'New order #ORD-1256', sub: 'UI/UX Design Masterclass', time: 'May 23, 2025 10:24 AM', amount: '+$49.00', icon: ShoppingBag, bg: 'rgba(99, 102, 241, 0.08)', color: '#6366f1' },
     { id: 'ra-2', type: 'student', title: 'New student registered', sub: 'James Anderson', time: 'May 23, 2025 09:15 AM', icon: User, bg: 'rgba(107, 114, 128, 0.08)', color: '#6b7280' }
   ];
 
@@ -81,107 +79,169 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
     }
   };
 
-  // Render Student view (only when portal is student)
+  // Common styles
+  const premiumCard = {
+    background: '#ffffff',
+    borderRadius: '24px',
+    boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
+    padding: '20px',
+    border: '1px solid rgba(0,0,0,0.02)',
+    position: 'relative'
+  };
+
+  // Render Student view
   if (!isAdmin && !isTeacher) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#faf9fc', margin: '-16px -16px 0 -16px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#f8fafc', margin: '-16px -16px 0 -16px' }} className="animate-fade-in">
         
-        {/* Purple Welcome Header */}
-        <div className="custom-home-purple-bg">
-          {/* User Welcome Row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+        {/* PREMIUM PURPLE HEADER */}
+        <div style={{
+          background: 'linear-gradient(135deg, #4f46e5 0%, #312e81 100%)',
+          padding: '24px 20px 60px 20px',
+          borderBottomLeftRadius: '32px',
+          borderBottomRightRadius: '32px',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: '0 10px 30px rgba(79, 70, 229, 0.2)'
+        }}>
+          {/* Subtle bg glow */}
+          <div style={{
+            position: 'absolute',
+            top: '-40px',
+            right: '-40px',
+            width: '150px',
+            height: '150px',
+            background: 'radial-gradient(circle, rgba(236,72,153,0.3) 0%, rgba(236,72,153,0) 70%)',
+            pointerEvents: 'none'
+          }} />
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.8)', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                Welcome back
+              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
                   {user?.name || 'Aisha Rahman'}
                 </h2>
-                <VerificationBadge status={user?.verificationStatus || user?.role} size={14} style={{ marginLeft: '4px' }} />
+                <VerificationBadge status={user?.verificationStatus || user?.role} size={16} />
               </div>
             </div>
+            
+            <div style={{
+              width: '42px', height: '42px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', 
+              display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)',
+              cursor: 'pointer'
+            }} onClick={() => onSelectTab('profile')} className="click-press">
+              {user?.avatar ? (
+                <img src={user.avatar} alt="avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+              ) : (
+                <Bell size={20} style={{ color: '#fff' }} />
+              )}
+            </div>
           </div>
+        </div>
 
-          {/* Learning Goal Card (Overlapping header) */}
+        {/* FLOATING LEARNING GOAL CARD */}
+        <div style={{ margin: '-40px 20px 0 20px', position: 'relative', zIndex: 10 }}>
           <div 
             onClick={() => onSelectTab('explore')}
-            className="custom-home-card click-press"
+            className="click-press"
             style={{ 
+              ...premiumCard, 
+              padding: '18px 20px',
+              display: 'flex', 
               flexDirection: 'column', 
-              gap: '12px',
-              padding: '16px', 
-              boxShadow: '0 8px 24px rgba(0,0,0,0.1)'
+              gap: '14px',
+              cursor: 'pointer'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'rgba(124, 58, 237, 0.1)', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Award size={18} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div style={{ 
+                  width: '40px', height: '40px', borderRadius: '12px', 
+                  background: 'linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(236,72,153,0.1) 100%)', 
+                  color: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+                }}>
+                  <Award size={22} />
                 </div>
-                <div style={{ textAlign: 'left' }}>
-                  <span style={{ fontSize: '10.5px', color: '#8c7f94', fontWeight: 600 }}>Learning Goal</span>
-                  <h4 style={{ fontSize: '12.5px', fontWeight: 800, color: '#1e0926', marginTop: '1px' }}>Complete UI/UX Design Course</h4>
+                <div>
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Learning Goal</span>
+                  <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: '2px 0 0 0' }}>Complete UI/UX Design</h4>
                 </div>
               </div>
-              <ChevronRight size={16} style={{ color: '#a095a8' }} />
+              <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
             </div>
             
-            {/* Progress Slider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ flex: 1, height: '6px', backgroundColor: '#f0ecf4', borderRadius: '3px', overflow: 'hidden' }}>
-                <div style={{ width: '65%', height: '100%', backgroundColor: '#caba61', borderRadius: '3px' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ flex: 1, height: '6px', backgroundColor: '#f1f5f9', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{ width: '65%', height: '100%', background: 'linear-gradient(90deg, #6366f1 0%, #ec4899 100%)', borderRadius: '3px' }} />
               </div>
-              <span style={{ fontSize: '11px', fontWeight: 800, color: '#1e0926' }}>65%</span>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>65%</span>
             </div>
           </div>
-
         </div>
 
-        {/* Content Section */}
-        <div className="custom-home-content-container">
+        {/* MAIN CONTENT ZONE */}
+        <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '28px' }}>
 
-          {/* Search Bar */}
-          <div className="custom-home-search-bar">
-            <Search size={16} style={{ color: '#a095a8' }} />
+          {/* SEARCH BAR */}
+          <div style={{ 
+            display: 'flex', alignItems: 'center', background: '#fff', 
+            borderRadius: '16px', padding: '12px 16px', gap: '12px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.03)'
+          }}>
+            <Search size={18} style={{ color: 'var(--text-muted)' }} />
             <input 
               type="text" 
-              placeholder="Search courses" 
+              placeholder="Search courses, mentors..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ flex: 1, border: 'none', background: 'none', outline: 'none', fontSize: '14px', color: 'var(--text-primary)', fontWeight: 500 }}
             />
-            <button style={{ background: 'none', border: 'none', color: '#1e0926', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-              <SlidersHorizontal size={16} />
+            <button style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', padding: 0 }}>
+              <SlidersHorizontal size={18} />
             </button>
           </div>
 
-          {/* Featured Courses */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div className="section-header">
-              <h3 className="section-title">Featured Courses</h3>
-              <button onClick={() => onSelectTab('explore')} className="section-see-all">See All</button>
+          {/* FEATURED COURSES */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Featured Courses</h3>
+              <button onClick={() => onSelectTab('explore')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>See All</button>
             </div>
 
-            <div className="hide-scrollbar" style={{ display: 'flex', gap: '14px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -16px', paddingLeft: '16px', paddingRight: '16px' }}>
+            <div className="hide-scrollbar" style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }}>
               {decoratedCourses.map((course) => (
                 <div 
                   key={course.id}
                   onClick={() => onSelectCourse(course)}
-                  className="custom-course-thumbnail-card click-press"
-                  style={{ cursor: 'pointer' }}
+                  className="click-press"
+                  style={{ 
+                    ...premiumCard, 
+                    padding: '0', 
+                    width: '220px', 
+                    flexShrink: 0, 
+                    cursor: 'pointer',
+                    overflow: 'hidden'
+                  }}
                 >
-                  <div className="custom-course-thumbnail">
-                    <img src={course.thumbnail} alt={course.title} />
-                    <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '8px', fontWeight: 700, padding: '2px 6px', borderRadius: '10px' }}>
+                  <div style={{ position: 'relative', height: '130px', width: '100%' }}>
+                    <img src={course.thumbnail} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(255,255,255,0.9)', color: 'var(--text-primary)', fontSize: '10px', fontWeight: 800, padding: '4px 8px', borderRadius: '12px', backdropFilter: 'blur(4px)' }}>
                       {course.category}
                     </div>
                   </div>
-                  <div className="custom-course-info">
-                    <h4 className="custom-course-title">{course.title}</h4>
-                    <div className="custom-course-meta">
-                      <span className="custom-course-rating">
-                        <Star size={10} fill="#caba61" stroke="none" />
-                        {course.rating} <span style={{ color: '#8c7f94', fontWeight: 500 }}>({course.reviewsCount})</span>
+                  <div style={{ padding: '16px' }}>
+                    <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 8px 0', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {course.title}
+                    </h4>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        <Star size={14} fill="#f59e0b" stroke="none" />
+                        {course.rating} <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({course.reviewsCount})</span>
                       </span>
-                      <span className="custom-course-price">{course.price}</span>
+                      <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--primary-color)' }}>{course.price}</span>
                     </div>
                   </div>
                 </div>
@@ -189,165 +249,128 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
             </div>
           </div>
 
-          {/* Continue Learning */}
+          {/* CONTINUE LEARNING */}
           {activeCourse && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div className="section-header">
-                <h3 className="section-title">Continue Learning</h3>
-                <button onClick={() => onSelectTab('explore')} className="section-see-all">See All</button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Continue Learning</h3>
               </div>
 
               <div 
                 onClick={() => onSelectCourse(activeCourse)}
-                className="custom-home-card click-press"
+                className="click-press"
                 style={{ 
-                  flexDirection: 'column', 
-                  gap: '10px', 
-                  padding: '0',
-                  overflow: 'hidden',
+                  ...premiumCard, 
+                  padding: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
                   cursor: 'pointer'
                 }}
               >
-                {/* 9:16 Portrait Thumbnail */}
-                <div style={{ width: '100%', aspectRatio: '9/16', position: 'relative', flexShrink: 0, maxHeight: '200px', overflow: 'hidden' }}>
-                  <img 
-                    src={activeCourse.thumbnail} 
-                    alt={activeCourse.title} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                  />
-                  {/* Play overlay */}
-                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Play size={16} fill="#311442" stroke="none" />
+                <div style={{ width: '80px', height: '80px', borderRadius: '16px', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
+                  <img src={activeCourse.thumbnail} alt={activeCourse.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Play size={14} fill="var(--primary-color)" stroke="none" style={{ marginLeft: '2px' }} />
                     </div>
                   </div>
                 </div>
-
-                {/* Info & Continue Button */}
-                <div style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left', minWidth: 0 }}>
-                    <h4 style={{ fontSize: '12.5px', fontWeight: 800, color: '#1e0926', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {activeCourse.title}
-                    </h4>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div style={{ flex: 1, height: '4px', backgroundColor: '#f0ecf4', borderRadius: '2px', overflow: 'hidden' }}>
-                        <div style={{ width: `${activeCourse.progress}%`, height: '100%', backgroundColor: '#caba61', borderRadius: '2px' }} />
-                      </div>
-                      <span style={{ fontSize: '9px', fontWeight: 700, color: '#8c7f94', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                        {activeCourse.progress}%
-                      </span>
+                
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {activeCourse.title}
+                  </h4>
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>By {activeCourse.teacher || 'Instructor'}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px' }}>
+                    <div style={{ flex: 1, height: '4px', backgroundColor: '#f1f5f9', borderRadius: '2px', overflow: 'hidden' }}>
+                      <div style={{ width: `${activeCourse.progress}%`, height: '100%', background: 'linear-gradient(90deg, #10b981 0%, #34d399 100%)', borderRadius: '2px' }} />
                     </div>
+                    <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-primary)', flexShrink: 0 }}>
+                      {activeCourse.progress}%
+                    </span>
                   </div>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectCourse(activeCourse);
-                    }}
-                    className="click-press"
-                    style={{
-                      flexShrink: 0,
-                      background: '#311442',
-                      color: '#ffffff',
-                      border: 'none',
-                      padding: '7px 16px',
-                      borderRadius: '20px',
-                      fontSize: '10.5px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    Continue
-                  </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Upcoming Live Class */}
+          {/* UPCOMING LIVE CLASS */}
           {classes.length > 0 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div className="section-header">
-                <h3 className="section-title">Upcoming Live Class</h3>
-                <button onClick={() => onSelectTab('live-classes')} className="section-see-all">See All</button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Upcoming Live Class</h3>
+                <button onClick={() => onSelectTab('live-classes')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>See All</button>
               </div>
 
-              <div className="custom-home-card" style={{ padding: '14px', gap: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                  
-                  {/* Left: Info */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left', flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ backgroundColor: '#fff6f0', border: '1px solid #ffd2be', borderRadius: '6px', padding: '2px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#f97316' }} />
-                        <span style={{ fontSize: '8.5px', color: '#f97316', fontWeight: 800 }}>LIVE</span>
-                      </div>
+              <div style={{ 
+                ...premiumCard, 
+                padding: '18px', 
+                background: 'linear-gradient(135deg, #fff 0%, #f8fafc 100%)',
+                border: '1px solid rgba(99, 102, 241, 0.1)',
+                borderLeft: '4px solid #ef4444'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.1)', padding: '4px 10px', borderRadius: '12px', alignSelf: 'flex-start' }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#ef4444', animation: 'pulse 1.5s infinite' }} />
+                      <span style={{ fontSize: '10px', color: '#ef4444', fontWeight: 800, letterSpacing: '0.5px' }}>LIVE SOON</span>
                     </div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 800, color: '#1e0926', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    <h4 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, lineHeight: 1.4 }}>
                       {classes[0].title}
                     </h4>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
-                      <img 
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=60" 
-                        alt="Teacher" 
-                        style={{ width: '20px', height: '20px', borderRadius: '50%' }}
-                      />
-                      <span style={{ fontSize: '10.5px', color: '#8c7f94', fontWeight: 600 }}>By {classes[0].teacher}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                      <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=60" alt="Teacher" style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid #e2e8f0' }} />
+                      <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>{classes[0].teacher}</span>
                     </div>
                   </div>
 
-                  {/* Right: Date Time & Join */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', alignItems: 'flex-end', textAlign: 'right' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '9.5px', color: '#8c7f94', fontWeight: 600 }}>
-                        <Calendar size={11} style={{ color: '#caba61' }} /> May 24, 2025
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                        <Calendar size={14} style={{ color: 'var(--primary-color)' }} /> May 24
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '9.5px', color: '#8c7f94', fontWeight: 600 }}>
-                        <Clock size={11} style={{ color: '#caba61' }} /> {classes[0].time}
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                        <Clock size={14} style={{ color: 'var(--primary-color)' }} /> {classes[0].time}
                       </span>
                     </div>
-
                     <button 
                       onClick={() => onSelectLiveClass(classes[0])}
                       className="click-press"
                       style={{
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #caba61',
-                        color: '#caba61',
-                        padding: '6px 16px',
-                        borderRadius: '20px',
-                        fontSize: '11px',
-                        fontWeight: 800,
-                        cursor: 'pointer',
-                        marginTop: '4px'
+                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                        color: '#ffffff', border: 'none', padding: '8px 20px', borderRadius: '16px',
+                        fontSize: '12px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.2)'
                       }}
                     >
-                      Join
+                      Join Now
                     </button>
                   </div>
-
                 </div>
               </div>
             </div>
           )}
 
-          {/* Recommended Teachers */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div className="section-header">
-              <h3 className="section-title">Recommended Teachers</h3>
-              <button onClick={() => onSelectTab('explore')} className="section-see-all">See All</button>
+          {/* RECOMMENDED TEACHERS */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Top Mentors</h3>
+              <button onClick={() => onSelectTab('explore')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>See All</button>
             </div>
 
-            <div className="hide-scrollbar" style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -16px', paddingLeft: '16px', paddingRight: '16px' }}>
+            <div className="hide-scrollbar" style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }}>
               {recommendedTeachers.map((teacher, index) => (
-                <div key={index} className="teacher-card">
-                  <img src={teacher.avatar} alt={teacher.name} className="teacher-avatar" />
-                  <span className="teacher-name">{teacher.name}</span>
-                  <span className="teacher-title">{teacher.title}</span>
-                  <div className="teacher-rating-badge">
-                    <Star size={8} fill="#caba61" stroke="none" />
-                    <span>{teacher.rating}</span>
+                <div key={index} style={{ ...premiumCard, padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '140px', flexShrink: 0, gap: '10px' }} className="click-press">
+                  <div style={{ position: 'relative' }}>
+                    <img src={teacher.avatar} alt={teacher.name} style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                    <div style={{ position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)', background: '#fff', borderRadius: '10px', padding: '2px 6px', display: 'flex', alignItems: 'center', gap: '2px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
+                      <Star size={10} fill="#f59e0b" stroke="none" />
+                      <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-primary)' }}>{teacher.rating}</span>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: 'center', marginTop: '6px' }}>
+                    <h4 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>{teacher.name}</h4>
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500 }}>{teacher.title}</span>
                   </div>
                 </div>
               ))}
@@ -355,86 +378,98 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
           </div>
 
         </div>
-
       </div>
     );
   }
 
   // Render Admin view
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#faf9fc', margin: '-16px -16px 0 -16px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#f8fafc', margin: '-16px -16px 0 -16px' }} className="animate-fade-in">
       
-      {/* Purple Welcome Header */}
-      <div className="custom-home-purple-bg">
-        {/* Admin Welcome Details */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#ffffff', margin: 0 }}>
-                {user?.name || 'Admin'}
+      {/* PREMIUM PURPLE HEADER */}
+      <div style={{
+        background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
+        padding: '24px 20px 40px 20px',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 10px 30px rgba(30, 27, 75, 0.2)'
+      }}>
+        {/* Subtle bg glow */}
+        <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(99,102,241,0.3) 0%, rgba(99,102,241,0) 70%)', pointerEvents: 'none' }} />
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.8)', fontWeight: 600, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+              Admin Dashboard
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#ffffff', margin: 0, letterSpacing: '-0.5px' }}>
+                {user?.name || 'Admin Panel'}
               </h2>
               <VerificationBadge status={user?.verificationStatus || user?.role} size={16} />
             </div>
           </div>
+          
+          <div style={{
+            width: '42px', height: '42px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.1)', 
+            display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)',
+            cursor: 'pointer'
+          }} className="click-press">
+            {user?.avatar ? (
+              <img src={user.avatar} alt="avatar" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+            ) : (
+              <Shield size={20} style={{ color: '#fff' }} />
+            )}
+          </div>
         </div>
+      </div>
 
+      <div style={{ padding: '0 20px', marginTop: '-20px', zIndex: 10, position: 'relative' }}>
         {/* Metrics Row - all 4 cards in one line */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', margin: '0 0 -30px 0', zIndex: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
           {adminMetrics.map((metric, idx) => {
             const IconComponent = metric.icon;
             return (
-              <div 
-                key={idx} 
-                className="custom-home-card" 
-                style={{ 
-                  padding: '10px 6px',
-                  boxShadow: '0 8px 20px rgba(0,0,0,0.06)',
-                  textAlign: 'center',
-                  alignItems: 'center',
-                  gap: '4px'
-                }}
-              >
-                <div style={{ width: '26px', height: '26px', borderRadius: '8px', backgroundColor: `${metric.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' }}>
-                  <IconComponent size={13} style={{ color: metric.color }} />
+              <div key={idx} style={{ ...premiumCard, padding: '14px 8px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '10px', backgroundColor: `${metric.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <IconComponent size={16} style={{ color: metric.color }} />
                 </div>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: '#1e0926', lineHeight: 1.1, display: 'block' }}>{metric.value}</span>
-                <span style={{ fontSize: '7px', fontWeight: 700, color: '#8c7f94', lineHeight: 1.2, display: 'block' }}>{metric.title}</span>
-                <span style={{ fontSize: '7.5px', fontWeight: 800, color: '#10b981', display: 'block' }}>{metric.change}</span>
+                <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1 }}>{metric.value}</span>
+                <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-secondary)', lineHeight: 1.2 }}>{metric.title}</span>
+                <span style={{ fontSize: '10px', fontWeight: 800, color: '#10b981', marginTop: '2px' }}>{metric.change}</span>
               </div>
             );
           })}
         </div>
-
       </div>
 
-      {/* Content Section */}
-      <div className="custom-home-content-container" style={{ marginTop: '20px' }}>
+      {/* ADMIN CONTENT SECTION */}
+      <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '28px' }}>
 
         {/* Quick Actions */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '10px' }}>
-          <h3 className="section-title">Quick Actions</h3>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', padding: '4px 0' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Quick Actions</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
             {[
               { label: 'Add Course', icon: Plus },
               { label: 'Add Teacher', icon: UserPlus },
               { label: 'View Orders', icon: ShoppingBag },
-              { label: 'Send Message', icon: Send },
-              { label: 'Generate Report', icon: BarChart2 }
+              { label: 'Messages', icon: Send },
+              { label: 'Reports', icon: BarChart2 }
             ].map((act, index) => {
               const ActionIcon = act.icon;
               return (
                 <div 
                   key={index}
                   onClick={() => handleQuickAction(act.label)}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flex: 1, cursor: 'pointer' }}
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', flex: 1, cursor: 'pointer' }}
                   className="click-press"
                 >
-                  <div style={{ width: '42px', height: '42px', borderRadius: '50%', backgroundColor: 'rgba(55, 18, 60, 0.06)', border: '1px solid rgba(55, 18, 60, 0.05)', color: '#37123c', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <ActionIcon size={16} />
+                  <div style={{ width: '46px', height: '46px', borderRadius: '16px', backgroundColor: '#fff', border: '1px solid rgba(0,0,0,0.04)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                    <ActionIcon size={18} />
                   </div>
-                  <span style={{ fontSize: '8.5px', fontWeight: 700, color: '#504156', textAlign: 'center', lineHeight: 1.2, whiteSpace: 'nowrap' }}>
-                    {act.label.split(' ')[0]}<br/>{act.label.split(' ')[1] || ''}
+                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.2 }}>
+                    {act.label}
                   </span>
                 </div>
               );
@@ -443,37 +478,29 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
         </div>
 
         {/* Pending Approvals */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div className="section-header">
-            <h3 className="section-title">Pending Approvals</h3>
-            <button onClick={() => onSelectTab('courses')} className="section-see-all">See All</button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Pending Approvals</h3>
+            <button onClick={() => onSelectTab('courses')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>See All</button>
           </div>
 
-          <div className="hide-scrollbar" style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '4px', margin: '0 -16px', paddingLeft: '16px', paddingRight: '16px' }}>
+          <div className="hide-scrollbar" style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px', margin: '0 -20px', paddingLeft: '20px', paddingRight: '20px' }}>
             {pendingApprovals.map((pa) => (
               <div 
                 key={pa.id} 
-                className="custom-home-card" 
-                style={{ 
-                  width: '180px', 
-                  flexShrink: 0, 
-                  padding: '14px', 
-                  justifyContent: 'space-between',
-                  textAlign: 'left',
-                  height: '136px'
-                }}
+                style={{ ...premiumCard, width: '220px', flexShrink: 0, padding: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '14px' }}
               >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: '#caba61' }} />
-                    <span style={{ fontSize: '8.5px', color: '#caba61', fontWeight: 800, textTransform: 'uppercase' }}>{pa.type}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(245, 158, 11, 0.1)', padding: '4px 10px', borderRadius: '12px', alignSelf: 'flex-start' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#f59e0b' }} />
+                    <span style={{ fontSize: '10px', color: '#d97706', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase' }}>{pa.type}</span>
                   </div>
-                  <h4 style={{ fontSize: '11px', fontWeight: 800, color: '#1e0926', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', height: '30px', lineHeight: 1.35 }}>
+                  <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.4, margin: '4px 0 0 0' }}>
                     {pa.title}
                   </h4>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-                    <img src={pa.avatar} alt="Author" style={{ width: '18px', height: '18px', borderRadius: '50%' }} />
-                    <span style={{ fontSize: '9px', color: '#8c7f94', fontWeight: 600 }}>{pa.author}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                    <img src={pa.avatar} alt="Author" style={{ width: '24px', height: '24px', borderRadius: '50%' }} />
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>{pa.author}</span>
                   </div>
                 </div>
 
@@ -481,20 +508,11 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                   onClick={() => handleReviewAction(pa)}
                   className="click-press"
                   style={{
-                    width: '100%',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e8e2ee',
-                    color: '#37123c',
-                    padding: '5px 0',
-                    borderRadius: '8px',
-                    fontSize: '10.5px',
-                    fontWeight: 750,
-                    cursor: 'pointer',
-                    marginTop: '8px',
-                    textAlign: 'center'
+                    width: '100%', backgroundColor: 'var(--primary-glow)', color: 'var(--primary-color)',
+                    border: 'none', padding: '10px 0', borderRadius: '12px', fontSize: '12px', fontWeight: 800, cursor: 'pointer'
                   }}
                 >
-                  Review
+                  Review Request
                 </button>
               </div>
             ))}
@@ -502,40 +520,37 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
         </div>
 
         {/* Charts & Analytics Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: '16px' }}>
           
           {/* Revenue Analytics Card */}
-          <div className="custom-home-card" style={{ padding: '12px', textAlign: 'left', gap: '6px' }}>
+          <div style={{ ...premiumCard, padding: '18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#1e0926' }}>Revenue Analytics</span>
-              <span style={{ fontSize: '8.5px', color: '#8c7f94', display: 'flex', alignItems: 'center', gap: '2px', fontWeight: 600 }}>This Month <ChevronDown size={8} /></span>
+              <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Revenue</span>
+              <span style={{ fontSize: '10px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>This Month <ChevronDown size={12} /></span>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '16px', fontWeight: 800, color: '#1e0926' }}>$98,765</span>
-              <span style={{ fontSize: '8px', color: '#10b981', fontWeight: 700 }}>↑ 15.7% <span style={{ color: '#8c7f94', fontWeight: 500 }}>vs last month</span></span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <span style={{ fontSize: '22px', fontWeight: 800, color: 'var(--text-primary)' }}>$98,765</span>
+              <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 800 }}>↑ 15.7% <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>vs last month</span></span>
             </div>
 
             {/* Custom SVG Line Chart */}
-            <div style={{ width: '100%', height: '50px', marginTop: '6px' }}>
+            <div style={{ width: '100%', height: '60px', marginTop: '10px' }}>
               <svg width="100%" height="100%" viewBox="0 0 100 50" preserveAspectRatio="none">
                 <defs>
-                  <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.25"/>
-                    <stop offset="100%" stopColor="#7c3aed" stopOpacity="0"/>
+                  <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3"/>
+                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0"/>
                   </linearGradient>
                 </defs>
-                {/* Fill area under curve */}
-                <path d="M 0,45 C 10,40 20,42 30,35 C 40,28 50,15 60,25 C 70,35 80,10 100,5 L 100,50 L 0,50 Z" fill="url(#purpleGrad)" />
-                {/* Stroke line */}
-                <path d="M 0,45 C 10,40 20,42 30,35 C 40,28 50,15 60,25 C 70,35 80,10 100,5" fill="none" stroke="#7c3aed" strokeWidth="1.5" strokeLinecap="round" />
-                {/* Dots at peaks */}
-                <circle cx="60" cy="25" r="1.5" fill="#7c3aed" />
-                <circle cx="100" cy="5" r="1.5" fill="#7c3aed" />
+                <path d="M 0,45 C 10,35 20,40 30,25 C 40,10 50,20 60,15 C 70,10 80,30 100,5 L 100,50 L 0,50 Z" fill="url(#blueGrad)" />
+                <path d="M 0,45 C 10,35 20,40 30,25 C 40,10 50,20 60,15 C 70,10 80,30 100,5" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="60" cy="15" r="2.5" fill="#3b82f6" stroke="#fff" strokeWidth="1" />
+                <circle cx="100" cy="5" r="2.5" fill="#3b82f6" stroke="#fff" strokeWidth="1" />
               </svg>
             </div>
             {/* Axis labels */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '7px', color: '#a095a8', fontWeight: 700 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: 'var(--text-muted)', fontWeight: 700, marginTop: '4px' }}>
               <span>Apr 20</span>
               <span>May 04</span>
               <span>May 18</span>
@@ -543,47 +558,38 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
           </div>
 
           {/* Course Distribution Donut */}
-          <div className="custom-home-card" style={{ padding: '12px', textAlign: 'left', gap: '8px' }}>
-            <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#1e0926' }}>Course Distribution</span>
+          <div style={{ ...premiumCard, padding: '18px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>Distribution</span>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               {/* Donut Chart SVG */}
-              <div style={{ width: '64px', height: '64px', position: 'relative', flexShrink: 0 }}>
+              <div style={{ width: '80px', height: '80px', position: 'relative', flexShrink: 0 }}>
                 <svg width="100%" height="100%" viewBox="0 0 100 100">
-                  {/* Total circle path = 282.7 (radius=45) */}
-                  {/* Design 32% (stroke length: 90.5, offset: 0) */}
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="#7c3aed" strokeWidth="12" strokeDasharray="90.5 192.2" strokeDashoffset="0" transform="rotate(-90 50 50)" />
-                  {/* Development 28% (stroke length: 79.2, offset: -90.5) */}
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" strokeWidth="12" strokeDasharray="79.2 203.5" strokeDashoffset="-90.5" transform="rotate(-90 50 50)" />
-                  {/* Marketing 18% (stroke length: 50.9, offset: -169.7) */}
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" strokeWidth="12" strokeDasharray="50.9 231.8" strokeDashoffset="-169.7" transform="rotate(-90 50 50)" />
-                  {/* Business 12% (stroke length: 33.9, offset: -220.6) */}
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="#f59e0b" strokeWidth="12" strokeDasharray="33.9 248.8" strokeDashoffset="-220.6" transform="rotate(-90 50 50)" />
-                  {/* Others 10% (stroke length: 28.3, offset: -254.5) */}
-                  <circle cx="50" cy="50" r="40" fill="none" stroke="#ef4444" strokeWidth="12" strokeDasharray="28.3 254.4" strokeDashoffset="-254.5" transform="rotate(-90 50 50)" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#6366f1" strokeWidth="14" strokeDasharray="90.5 192.2" strokeDashoffset="0" transform="rotate(-90 50 50)" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" strokeWidth="14" strokeDasharray="79.2 203.5" strokeDashoffset="-90.5" transform="rotate(-90 50 50)" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#10b981" strokeWidth="14" strokeDasharray="50.9 231.8" strokeDashoffset="-169.7" transform="rotate(-90 50 50)" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#f59e0b" strokeWidth="14" strokeDasharray="33.9 248.8" strokeDashoffset="-220.6" transform="rotate(-90 50 50)" />
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#ef4444" strokeWidth="14" strokeDasharray="28.3 254.4" strokeDashoffset="-254.5" transform="rotate(-90 50 50)" />
                 </svg>
-                {/* Center text */}
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', lineHeight: 1.1 }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#1e0926' }}>356</span>
-                  <span style={{ fontSize: '7px', color: '#8c7f94', fontWeight: 650 }}>Courses</span>
+                  <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>356</span>
+                  <span style={{ fontSize: '9px', color: 'var(--text-secondary)', fontWeight: 700 }}>Total</span>
                 </div>
               </div>
 
               {/* Legends list */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flex: 1 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
                 {[
-                  { name: 'Design', pct: '32%', color: '#7c3aed' },
+                  { name: 'Design', pct: '32%', color: '#6366f1' },
                   { name: 'Develop', pct: '28%', color: '#3b82f6' },
-                  { name: 'Market', pct: '18%', color: '#10b981' },
-                  { name: 'Business', pct: '12%', color: '#f59e0b' },
-                  { name: 'Others', pct: '10%', color: '#ef4444' }
+                  { name: 'Market', pct: '18%', color: '#10b981' }
                 ].map((leg, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '8px', fontWeight: 600 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                      <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: leg.color }} />
-                      <span style={{ color: '#8c7f94' }}>{leg.name}</span>
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '10px', fontWeight: 700 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: leg.color }} />
+                      <span style={{ color: 'var(--text-secondary)' }}>{leg.name}</span>
                     </div>
-                    <span style={{ color: '#1e0926', fontWeight: 800 }}>{leg.pct}</span>
+                    <span style={{ color: 'var(--text-primary)', fontWeight: 800 }}>{leg.pct}</span>
                   </div>
                 ))}
               </div>
@@ -594,34 +600,42 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
         </div>
 
         {/* Recent Activity */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <div className="section-header">
-            <h3 className="section-title">Recent Activity</h3>
-            <button onClick={() => onSelectTab('orders')} className="section-see-all">See All</button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>Recent Activity</h3>
+            <button onClick={() => onSelectTab('orders')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>See All</button>
           </div>
 
-          <div className="custom-home-card" style={{ padding: '12px', gap: '14px' }}>
-            {recentActivity.map((activity) => {
+          <div style={{ ...premiumCard, padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {recentActivity.map((activity, index) => {
               const ActivityIcon = activity.icon;
               return (
-                <div key={activity.id} style={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: '10px' }}>
+                <div key={activity.id} style={{ 
+                  display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: '12px',
+                  borderBottom: index !== recentActivity.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none',
+                  paddingBottom: index !== recentActivity.length - 1 ? '12px' : '0'
+                }}>
                   
                   {/* Left content */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', textAlign: 'left' }}>
-                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: activity.bg, color: activity.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <ActivityIcon size={14} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: activity.bg, color: activity.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <ActivityIcon size={18} />
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-                      <h4 style={{ fontSize: '11.5px', fontWeight: 800, color: '#1e0926', margin: 0 }}>{activity.title}</h4>
-                      <span style={{ fontSize: '9px', color: '#8c7f94', fontWeight: 600 }}>{activity.sub}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <h4 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>{activity.title}</h4>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>{activity.sub}</span>
                     </div>
                   </div>
 
                   {/* Right metadata */}
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px', textAlign: 'right', flexShrink: 0 }}>
-                    <span style={{ fontSize: '8px', color: '#a095a8', fontWeight: 700 }}>{activity.time.split(' ')[2] === 'AM' || activity.time.split(' ')[2] === 'PM' ? `${activity.time.split(' ')[0]} ${activity.time.split(' ')[1]} ${activity.time.split(' ')[2]}` : activity.time}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', textAlign: 'right', flexShrink: 0 }}>
+                    <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700 }}>
+                      {activity.time.split(' ')[2] === 'AM' || activity.time.split(' ')[2] === 'PM' 
+                        ? `${activity.time.split(' ')[0]} ${activity.time.split(' ')[1]} ${activity.time.split(' ')[2]}` 
+                        : activity.time}
+                    </span>
                     {activity.amount && (
-                      <span style={{ fontSize: '10px', fontWeight: 800, color: '#10b981' }}>{activity.amount}</span>
+                      <span style={{ fontSize: '12px', fontWeight: 800, color: '#10b981' }}>{activity.amount}</span>
                     )}
                   </div>
 
