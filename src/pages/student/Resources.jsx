@@ -121,8 +121,9 @@ export default function Resources() {
         display: 'flex', 
         gap: '8px', 
         overflowX: 'auto', 
-        paddingTop: '4px',
-        paddingBottom: '8px'
+        overflowY: 'hidden',
+        height: '48px',
+        alignItems: 'center'
       }} className="hide-scrollbar">
         {types.map((t) => (
           <button
