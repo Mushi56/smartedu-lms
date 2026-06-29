@@ -16,7 +16,7 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
           className="click-press" 
           style={{ 
             display: 'inline-flex', alignItems: 'center', gap: '8px',
-            background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', 
+            background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', 
             padding: '8px 16px', borderRadius: '14px', fontSize: '12px',
             fontWeight: 800, color: 'var(--text-secondary)', cursor: 'pointer',
             boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
@@ -79,7 +79,7 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
 
       {/* Curriculum Syllabus */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        <div style={{ background: '#ffffff', padding: '20px', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.02)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
+        <div style={{ background: 'var(--bg-card)', padding: '20px', borderRadius: '24px', border: '1px solid var(--border-subtle)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
           <h3 style={{ fontSize: '15px', fontWeight: 800, marginBottom: '16px', color: 'var(--text-primary)' }}>Course Syllabus</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -89,10 +89,10 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
                 <div 
                   key={mod.id} 
                   style={{ 
-                    border: '1px solid rgba(0,0,0,0.03)', 
+                    border: '1px solid var(--border-subtle)', 
                     borderRadius: '16px', 
                     overflow: 'hidden',
-                    background: '#ffffff',
+                    background: 'var(--bg-card)',
                     boxShadow: '0 2px 12px rgba(0,0,0,0.01)'
                   }}
                 >
@@ -128,7 +128,7 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
 
                   {/* Lessons list */}
                   {isExpanded && (
-                    <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid rgba(0,0,0,0.03)' }}>
+                    <div style={{ backgroundColor: 'var(--bg-card)', borderTop: '1px solid rgba(0,0,0,0.03)' }}>
                       {mod.lessons.map((lesson, idx) => (
                         <div 
                           key={lesson.id} 
@@ -167,14 +167,14 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
 
         {/* Instructor & Action box */}
         <div style={{ 
-          background: '#ffffff', padding: '16px 20px', borderRadius: '24px', 
-          border: '1px solid rgba(0,0,0,0.02)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+          background: 'var(--bg-card)', padding: '16px 20px', borderRadius: '24px', 
+          border: '1px solid var(--border-subtle)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' 
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
             <img 
               src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200" 
-              style={{ width: '44px', height: '44px', borderRadius: '50%', border: '2px solid #fff', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}
+              style={{ width: '44px', height: '44px', borderRadius: '50%', border: '2px solid var(--bg-card)', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}
               alt="Teacher avatar" 
             />
             <div>

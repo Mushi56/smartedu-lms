@@ -58,9 +58,9 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
   };
 
   const premiumCard = {
-    background: '#ffffff',
+    background: 'var(--bg-card)',
     borderRadius: '20px',
-    border: '1px solid rgba(0,0,0,0.02)',
+    border: '1px solid var(--border-subtle)',
     boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
     padding: '16px',
     position: 'relative'
@@ -82,7 +82,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
         {/* Search */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: '12px',
-          background: '#fff', border: '1px solid rgba(0,0,0,0.03)', borderRadius: '16px',
+          background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '16px',
           padding: '12px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.02)'
         }}>
           <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
@@ -235,7 +235,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
             className="click-press"
             style={{ 
               display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', 
+              background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', 
               padding: '8px 16px', borderRadius: '14px', fontSize: '12px',
               fontWeight: 800, color: 'var(--text-secondary)', cursor: 'pointer',
               boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
@@ -283,10 +283,10 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
               <div 
                 key={mod.id} 
                 style={{ 
-                  border: '1px solid rgba(0,0,0,0.03)', 
+                  border: '1px solid var(--border-subtle)', 
                   borderRadius: '16px', 
                   overflow: 'hidden',
-                  background: '#ffffff',
+                  background: 'var(--bg-card)',
                   boxShadow: '0 2px 12px rgba(0,0,0,0.01)'
                 }}
               >
@@ -312,7 +312,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
 
                 {/* Lesson collapse list */}
                 {isExpanded && (
-                  <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid rgba(0,0,0,0.03)', background: '#ffffff' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid rgba(0,0,0,0.03)', background: 'var(--bg-card)' }}>
                     {mod.lessons.map((lesson) => (
                       <div
                         key={lesson.id}
@@ -375,7 +375,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
             className="click-press"
             style={{ 
               display: 'inline-flex', alignItems: 'center', gap: '8px',
-              background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', 
+              background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', 
               padding: '8px 16px', borderRadius: '14px', fontSize: '12px',
               fontWeight: 800, color: 'var(--text-secondary)', cursor: 'pointer',
               boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
@@ -395,7 +395,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
               poster={currentCourse.thumbnail}
             />
           </div>
-          <div style={{ padding: '16px', background: '#ffffff' }}>
+          <div style={{ padding: '16px', background: 'var(--bg-card)' }}>
             <span style={{ fontSize: '9px', color: 'var(--primary-color)', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase' }}>NOW PLAYING</span>
             <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px', marginBottom: '2px', lineHeight: 1.3 }}>{activeLesson.title}</h3>
             <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', fontWeight: 550 }}>Course: {currentCourse.title}</span>
@@ -425,7 +425,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
             onClick={() => alert("Mock study slides PDF downloaded to device.")}
             className="click-press"
             style={{ 
-              flex: 0.8, backgroundColor: '#ffffff', color: 'var(--text-secondary)', border: '1px solid rgba(0,0,0,0.04)',
+              flex: 0.8, backgroundColor: 'var(--bg-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)',
               padding: '12px', borderRadius: '16px', fontSize: '12px', fontWeight: 800,
               cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
               boxShadow: '0 2px 10px rgba(0,0,0,0.02)'

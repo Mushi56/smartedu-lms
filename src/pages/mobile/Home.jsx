@@ -81,18 +81,18 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
 
   // Common styles
   const premiumCard = {
-    background: '#ffffff',
+    background: 'var(--bg-card)',
     borderRadius: '24px',
-    boxShadow: '0 8px 30px rgba(0,0,0,0.04)',
+    boxShadow: 'var(--shadow-premium)',
     padding: '20px',
-    border: '1px solid rgba(0,0,0,0.02)',
+    border: '1px solid var(--border-subtle)',
     position: 'relative'
   };
 
   // Render Student view
   if (!isAdmin && !isTeacher) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#f8fafc', margin: '-16px -16px 0 -16px' }} className="animate-fade-in">
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: 'var(--bg-app)', margin: '-16px -16px 0 -16px' }} className="animate-fade-in">
         
         {/* PREMIUM PURPLE HEADER */}
         <div style={{
@@ -187,9 +187,9 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
 
           {/* SEARCH BAR */}
           <div style={{ 
-            display: 'flex', alignItems: 'center', background: '#fff', 
+            display: 'flex', alignItems: 'center', background: 'var(--bg-card)', 
             borderRadius: '16px', padding: '12px 16px', gap: '12px',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.03)', border: '1px solid rgba(0,0,0,0.03)'
+            boxShadow: '0 4px 16px rgba(0,0,0,0.03)', border: '1px solid var(--border-subtle)'
           }}>
             <Search size={18} style={{ color: 'var(--text-muted)' }} />
             <input 
@@ -362,8 +362,8 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
               {recommendedTeachers.map((teacher, index) => (
                 <div key={index} style={{ ...premiumCard, padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '140px', flexShrink: 0, gap: '10px' }} className="click-press">
                   <div style={{ position: 'relative' }}>
-                    <img src={teacher.avatar} alt={teacher.name} style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
-                    <div style={{ position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)', background: '#fff', borderRadius: '10px', padding: '2px 6px', display: 'flex', alignItems: 'center', gap: '2px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
+                    <img src={teacher.avatar} alt={teacher.name} style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--bg-card)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                    <div style={{ position: 'absolute', bottom: '-4px', left: '50%', transform: 'translateX(-50%)', background: 'var(--bg-card)', borderRadius: '10px', padding: '2px 6px', display: 'flex', alignItems: 'center', gap: '2px', boxShadow: '0 2px 6px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
                       <Star size={10} fill="#f59e0b" stroke="none" />
                       <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-primary)' }}>{teacher.rating}</span>
                     </div>
@@ -384,7 +384,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
 
   // Render Admin view
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: '#f8fafc', margin: '-16px -16px 0 -16px' }} className="animate-fade-in">
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100%', backgroundColor: 'var(--bg-app)', margin: '-16px -16px 0 -16px' }} className="animate-fade-in">
       
       {/* PREMIUM PURPLE HEADER */}
       <div style={{
@@ -465,7 +465,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', flex: 1, cursor: 'pointer' }}
                   className="click-press"
                 >
-                  <div style={{ width: '46px', height: '46px', borderRadius: '16px', backgroundColor: '#fff', border: '1px solid rgba(0,0,0,0.04)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                  <div style={{ width: '46px', height: '46px', borderRadius: '16px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-subtle)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
                     <ActionIcon size={18} />
                   </div>
                   <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', textAlign: 'center', lineHeight: 1.2 }}>

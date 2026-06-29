@@ -129,10 +129,10 @@ export default function Schedule({
   const currentMonthLabel = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
   const premiumCard = {
-    background: '#ffffff',
+    background: 'var(--bg-card)',
     borderRadius: '24px',
-    border: '1px solid rgba(0,0,0,0.02)',
-    boxShadow: '0 8px 30px rgba(0,0,0,0.03)',
+    border: '1px solid var(--border-subtle)',
+    boxShadow: 'var(--shadow-premium)',
     padding: '20px',
     position: 'relative'
   };
@@ -172,7 +172,7 @@ export default function Schedule({
         background: '#f1f5f9', 
         borderRadius: '20px', 
         padding: '4px',
-        border: '1px solid rgba(0,0,0,0.02)'
+        border: '1px solid var(--border-subtle)'
       }}>
         <button
           onClick={() => setActiveSubTab('live')}
@@ -237,7 +237,7 @@ export default function Schedule({
                 <button 
                   onClick={handlePrevMonth}
                   style={{
-                    border: '1px solid rgba(0,0,0,0.04)', background: '#fff', width: '30px', height: '30px',
+                    border: '1px solid var(--border-subtle)', background: 'var(--bg-card)', width: '30px', height: '30px',
                     borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', color: 'var(--text-secondary)', boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
                   }}
@@ -248,7 +248,7 @@ export default function Schedule({
                 <button 
                   onClick={handleNextMonth}
                   style={{
-                    border: '1px solid rgba(0,0,0,0.04)', background: '#fff', width: '30px', height: '30px',
+                    border: '1px solid var(--border-subtle)', background: 'var(--bg-card)', width: '30px', height: '30px',
                     borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     cursor: 'pointer', color: 'var(--text-secondary)', boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
                   }}
@@ -356,10 +356,10 @@ export default function Schedule({
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {selectedDayClasses.map((cls) => (
                   <div key={cls.id} style={{
-                    border: '1px solid rgba(0,0,0,0.03)',
+                    border: '1px solid var(--border-subtle)',
                     borderRadius: '16px',
                     padding: '16px',
-                    background: '#f8fafc',
+                    background: 'var(--bg-app)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '12px',

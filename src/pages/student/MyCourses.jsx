@@ -45,9 +45,9 @@ export default function MyCourses({ courses = [], onSelectCourse }) {
           const Icon = s.icon;
           return (
             <div key={s.label} style={{
-              background: '#fff', 
+              background: 'var(--bg-card)', 
               borderRadius: '16px', 
-              border: '1px solid rgba(0,0,0,0.02)',
+              border: '1px solid var(--border-subtle)',
               boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
               padding: '14px 10px', 
               textAlign: 'center',
@@ -74,7 +74,7 @@ export default function MyCourses({ courses = [], onSelectCourse }) {
       {/* Search Bar */}
       <div style={{
         display: 'flex', alignItems: 'center', gap: '12px',
-        background: '#fff', border: '1px solid rgba(0,0,0,0.03)', borderRadius: '16px',
+        background: 'var(--bg-card)', border: '1px solid var(--border-subtle)', borderRadius: '16px',
         padding: '12px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.02)'
       }}>
         <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
@@ -120,7 +120,7 @@ export default function MyCourses({ courses = [], onSelectCourse }) {
       {/* Course List */}
       {filtered.length === 0 ? (
         <div style={{
-          background: '#fff', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.02)',
+          background: 'var(--bg-card)', borderRadius: '24px', border: '1px solid var(--border-subtle)',
           padding: '48px 24px', textAlign: 'center', display: 'flex',
           flexDirection: 'column', alignItems: 'center', gap: '12px',
           boxShadow: '0 8px 30px rgba(0,0,0,0.02)'
@@ -146,9 +146,9 @@ export default function MyCourses({ courses = [], onSelectCourse }) {
                 onClick={() => onSelectCourse(course.id)}
                 className="click-press"
                 style={{
-                  background: '#fff', 
+                  background: 'var(--bg-card)', 
                   borderRadius: '20px',
-                  border: '1px solid rgba(0,0,0,0.02)', 
+                  border: '1px solid var(--border-subtle)', 
                   overflow: 'hidden',
                   cursor: 'pointer', 
                   display: 'flex', 

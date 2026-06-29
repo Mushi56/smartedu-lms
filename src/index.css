@@ -19,6 +19,9 @@
   --bg-card: #ffffff;
   --bg-input: #f4f0f8;
   --border-color: #e8e2ee;
+  --bg-nav: rgba(255, 255, 255, 0.95);
+  --border-subtle: rgba(0, 0, 0, 0.03);
+  --shadow-premium: 0 8px 30px rgba(0, 0, 0, 0.03);
   
   --text-primary: #1e1026;
   --text-secondary: #65586d;
@@ -37,10 +40,14 @@
 }
 
 [data-theme='dark'] {
+  --primary-color: #818cf8; /* Readable light indigo for dark theme */
   --bg-app: #0e0712;
   --bg-card: #190f20;
   --bg-input: #23162b;
   --border-color: #2d1b38;
+  --bg-nav: rgba(25, 15, 32, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --shadow-premium: 0 8px 30px rgba(0, 0, 0, 0.4);
   
   --text-primary: #f2ebf7;
   --text-secondary: #b6abbf;
@@ -201,7 +208,7 @@ body {
   left: 0;
   right: 0;
   height: calc(68px + var(--safe-bottom));
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: var(--bg-nav);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid rgba(0, 0, 0, 0.05);

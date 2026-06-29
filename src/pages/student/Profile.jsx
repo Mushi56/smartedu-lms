@@ -17,10 +17,10 @@ export default function Profile({ apiKey, setApiKey }) {
   };
 
   const premiumCard = {
-    background: '#ffffff',
+    background: 'var(--bg-card)',
     borderRadius: '24px',
-    border: '1px solid rgba(0,0,0,0.02)',
-    boxShadow: '0 8px 30px rgba(0,0,0,0.03)',
+    border: '1px solid var(--border-subtle)',
+    boxShadow: 'var(--shadow-premium)',
     padding: '24px',
     position: 'relative'
   };
@@ -29,8 +29,8 @@ export default function Profile({ apiKey, setApiKey }) {
     width: '100%',
     padding: '12px 16px',
     borderRadius: '12px',
-    border: '1px solid rgba(0,0,0,0.05)',
-    backgroundColor: '#f8fafc',
+    border: '1px solid var(--border-subtle)',
+    backgroundColor: 'var(--bg-app)',
     fontSize: '13px',
     fontWeight: 500,
     outline: 'none',
@@ -66,7 +66,7 @@ export default function Profile({ apiKey, setApiKey }) {
             <div style={{ position: 'relative' }}>
               <img 
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" 
-                style={{ width: '84px', height: '84px', borderRadius: '50%', border: '3px solid #fff', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', objectFit: 'cover' }}
+                style={{ width: '84px', height: '84px', borderRadius: '50%', border: '3px solid var(--bg-card)', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', objectFit: 'cover' }}
                 alt="User big profile" 
               />
               <span style={{ 
