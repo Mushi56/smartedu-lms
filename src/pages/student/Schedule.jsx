@@ -114,12 +114,9 @@ export default function Schedule({
     const formattedCell = formatDateString(cellDate);
     return classes.filter(cls => {
       if (!cls.date) {
-        // If no date field exists, display it on today's calendar cell as fallback
         return isCellToday(cellDate);
       }
-      // Standard ISO match (YYYY-MM-DD)
       if (cls.date === formattedCell) return true;
-      // Readable format match (e.g. "Jun 24")
       const monthShort = cellDate.toLocaleDateString('en-US', { month: 'short' });
       const dayNum = cellDate.getDate();
       if (cls.date === `${monthShort} ${dayNum}`) return true;
@@ -131,143 +128,148 @@ export default function Schedule({
   const calendarCells = getCalendarCells();
   const currentMonthLabel = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
+  const premiumCard = {
+    background: '#ffffff',
+    borderRadius: '24px',
+    border: '1px solid rgba(0,0,0,0.02)',
+    boxShadow: '0 8px 30px rgba(0,0,0,0.03)',
+    padding: '20px',
+    position: 'relative'
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }} className="animate-fade-in">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-fade-in">
       
       {/* Dynamic Header with Real-Time Clock */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h2 style={{ fontSize: '17px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px 0' }}>My Schedule</h2>
-          <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>Schedule</h2>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, fontWeight: 550 }}>
             Manage your classes, assignments, and test dates.
           </p>
         </div>
         <div style={{
-          background: 'rgba(124, 58, 237, 0.08)',
+          background: 'rgba(99, 102, 241, 0.06)',
           color: 'var(--primary-color)',
           fontSize: '11px',
-          fontWeight: 700,
-          padding: '6px 12px',
-          borderRadius: '12px',
-          border: '1px solid rgba(124, 58, 237, 0.12)',
+          fontWeight: 800,
+          padding: '8px 14px',
+          borderRadius: '14px',
+          border: '1px solid rgba(99, 102, 241, 0.08)',
           display: 'flex',
           alignItems: 'center',
-          gap: '4px'
+          gap: '6px'
         }}>
-          <Clock size={11} />
+          <Clock size={13} />
           <span>{currentTimeString || '--:--:--'}</span>
         </div>
       </div>
 
-      {/* Premium Tab Selector */}
+      {/* Tab Selector */}
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: '1fr 1fr', 
-        background: '#f3f0f7', 
+        background: '#f1f5f9', 
         borderRadius: '20px', 
-        padding: '3px',
-        border: '1px solid #eae5f0'
+        padding: '4px',
+        border: '1px solid rgba(0,0,0,0.02)'
       }}>
         <button
           onClick={() => setActiveSubTab('live')}
+          className="click-press"
           style={{
-            padding: '7px 0',
+            padding: '8px 0',
             borderRadius: '16px',
             border: 'none',
-            fontSize: '11px',
+            fontSize: '12px',
             fontWeight: 800,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '4px',
+            gap: '6px',
             backgroundColor: activeSubTab === 'live' ? '#fff' : 'transparent',
             color: activeSubTab === 'live' ? 'var(--primary-color)' : 'var(--text-secondary)',
-            boxShadow: activeSubTab === 'live' ? '0 2px 6px rgba(124,58,237,0.1)' : 'none',
+            boxShadow: activeSubTab === 'live' ? '0 4px 10px rgba(0,0,0,0.04)' : 'none',
             transition: 'all 0.2s ease'
           }}
         >
-          <CalendarIcon size={12} />
+          <CalendarIcon size={14} />
           <span>Classes</span>
         </button>
         <button
           onClick={() => setActiveSubTab('assignments')}
+          className="click-press"
           style={{
-            padding: '7px 0',
+            padding: '8px 0',
             borderRadius: '16px',
             border: 'none',
-            fontSize: '11px',
+            fontSize: '12px',
             fontWeight: 800,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '4px',
+            gap: '6px',
             backgroundColor: activeSubTab === 'assignments' ? '#fff' : 'transparent',
             color: activeSubTab === 'assignments' ? 'var(--primary-color)' : 'var(--text-secondary)',
-            boxShadow: activeSubTab === 'assignments' ? '0 2px 6px rgba(124,58,237,0.1)' : 'none',
+            boxShadow: activeSubTab === 'assignments' ? '0 4px 10px rgba(0,0,0,0.04)' : 'none',
             transition: 'all 0.2s ease'
           }}
         >
-          <FileText size={12} />
+          <FileText size={14} />
           <span>Assignments</span>
         </button>
       </div>
 
-      {/* ─── CLASSES & PREMIUM CALENDAR ─── */}
+      {/* CLASSES & CALENDAR */}
       {activeSubTab === 'live' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }} className="animate-fade-in">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} className="animate-fade-in">
           
-          {/* PREMIUM CALENDAR CARD */}
-          <div style={{ 
-            background: '#fff', 
-            borderRadius: '18px', 
-            border: '1px solid #ede9f4', 
-            padding: '14px',
-            boxShadow: '0 4px 16px rgba(58,32,72,0.03)'
-          }}>
-            {/* Header / Month Toggle */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-              <h3 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
+          {/* CALENDAR CARD */}
+          <div style={{ ...premiumCard }}>
+            {/* Month Selector Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                 {currentMonthLabel}
               </h3>
-              <div style={{ display: 'flex', gap: '4px' }}>
+              <div style={{ display: 'flex', gap: '6px' }}>
                 <button 
                   onClick={handlePrevMonth}
                   style={{
-                    border: '1px solid #ede9f4', background: '#fff', width: '26px', height: '26px',
-                    borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', color: 'var(--text-secondary)'
+                    border: '1px solid rgba(0,0,0,0.04)', background: '#fff', width: '30px', height: '30px',
+                    borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: 'var(--text-secondary)', boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
                   }}
                   className="click-press"
                 >
-                  <ChevronLeft size={14} />
+                  <ChevronLeft size={16} />
                 </button>
                 <button 
                   onClick={handleNextMonth}
                   style={{
-                    border: '1px solid #ede9f4', background: '#fff', width: '26px', height: '26px',
-                    borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', color: 'var(--text-secondary)'
+                    border: '1px solid rgba(0,0,0,0.04)', background: '#fff', width: '30px', height: '30px',
+                    borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: 'var(--text-secondary)', boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
                   }}
                   className="click-press"
                 >
-                  <ChevronRight size={14} />
+                  <ChevronRight size={16} />
                 </button>
               </div>
             </div>
 
-            {/* Week Headers */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', marginBottom: '8px' }}>
+            {/* Week Labels */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center', marginBottom: '10px' }}>
               {['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'].map((day, idx) => (
-                <span key={idx} style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
+                <span key={idx} style={{ fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
                   {day}
                 </span>
               ))}
             </div>
 
-            {/* Calendar dynamic days grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '6px 4px', textAlign: 'center' }}>
+            {/* Calendar Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px 6px', textAlign: 'center' }}>
               {calendarCells.map((cell, idx) => {
                 const dayClasses = getClassesForDate(cell.date);
                 const isSelected = isCellSelected(cell.date);
@@ -281,7 +283,7 @@ export default function Schedule({
                     className="click-press"
                     style={{
                       aspectRatio: '1',
-                      borderRadius: '10px',
+                      borderRadius: '12px',
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
@@ -291,9 +293,9 @@ export default function Schedule({
                       backgroundColor: isSelected 
                         ? 'var(--primary-color)' 
                         : isToday 
-                          ? 'rgba(202, 186, 97, 0.15)' 
+                          ? 'rgba(99, 102, 241, 0.08)' 
                           : 'transparent',
-                      border: isToday && !isSelected ? '1px solid var(--secondary-color)' : '1px solid transparent',
+                      border: isToday && !isSelected ? '1px solid rgba(99,102,241,0.2)' : '1px solid transparent',
                       color: isSelected 
                         ? '#fff' 
                         : !cell.isCurrentMonth 
@@ -302,27 +304,27 @@ export default function Schedule({
                       transition: 'all 0.15s ease'
                     }}
                   >
-                    <span style={{ fontSize: '10.5px', fontWeight: isToday || isSelected ? 800 : 500 }}>
+                    <span style={{ fontSize: '11px', fontWeight: isToday || isSelected ? 800 : 600 }}>
                       {cell.dayNum}
                     </span>
 
-                    {/* Dot indicators */}
+                    {/* Indicators */}
                     {dayClasses.length > 0 && (
                       <div style={{
                         position: 'absolute',
-                        bottom: '4px',
+                        bottom: '5px',
                         display: 'flex',
                         gap: '2px'
                       }}>
                         <span style={{
-                          width: '3.5px',
-                          height: '3.5px',
+                          width: '4px',
+                          height: '4px',
                           borderRadius: '50%',
                           backgroundColor: isSelected 
                             ? '#fff' 
                             : hasLive 
-                              ? '#10b981' 
-                              : 'var(--secondary-color)'
+                              ? '#ef4444' 
+                              : 'var(--primary-color)'
                         }} />
                       </div>
                     )}
@@ -332,62 +334,55 @@ export default function Schedule({
             </div>
           </div>
 
-          {/* CLASSES DETAILS FOR SELECTED DATE */}
-          <div style={{ 
-            background: '#fff', 
-            borderRadius: '18px', 
-            border: '1px solid #ede9f4', 
-            padding: '14px' 
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>
+          {/* CLASSES FOR SELECTED DAY */}
+          <div style={{ ...premiumCard }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>
                 {selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
               </span>
-              <span style={{ fontSize: '9.5px', color: 'var(--text-muted)', fontWeight: 600 }}>
+              <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700 }}>
                 {selectedDayClasses.length} Scheduled
               </span>
             </div>
 
             {selectedDayClasses.length === 0 ? (
-              <div style={{ padding: '24px 10px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
-                <AlertCircle size={22} style={{ color: 'var(--text-muted)' }} />
-                <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: 0 }}>No classes scheduled for this date.</p>
+              <div style={{ padding: '30px 10px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                  <AlertCircle size={20} />
+                </div>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, fontWeight: 550 }}>No classes scheduled for this date.</p>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {selectedDayClasses.map((cls) => (
                   <div key={cls.id} style={{
-                    border: '1px solid #ede9f4',
-                    borderRadius: '12px',
-                    padding: '12px',
-                    background: '#faf9fc',
+                    border: '1px solid rgba(0,0,0,0.03)',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    background: '#f8fafc',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '10px'
+                    gap: '12px',
+                    boxShadow: '0 2px 10px rgba(0,0,0,0.01)'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', fontWeight: 800, color: 'var(--primary-color)' }}>
-                        <Clock size={11} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: 'var(--primary-color)' }}>
+                        <Clock size={13} />
                         <span>{cls.time} {cls.ampm || 'PM'}</span>
                       </div>
                       {cls.isLive && (
-                        <span style={{
-                          fontSize: '8px',
-                          fontWeight: 800,
-                          backgroundColor: '#10b981',
-                          color: '#fff',
-                          padding: '2px 6px',
-                          borderRadius: '8px',
-                          textTransform: 'uppercase'
-                        }}>Live</span>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(239, 68, 68, 0.1)', padding: '2px 8px', borderRadius: '8px' }}>
+                          <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#ef4444', animation: 'pulse 1.5s infinite' }} />
+                          <span style={{ fontSize: '9px', color: '#ef4444', fontWeight: 800, letterSpacing: '0.5px' }}>LIVE</span>
+                        </div>
                       )}
                     </div>
 
                     <div>
-                      <h4 style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 3px 0' }}>
+                      <h4 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0', lineHeight: 1.3 }}>
                         {cls.title}
                       </h4>
-                      <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 550 }}>
                         Instructor: {cls.teacher}
                       </span>
                     </div>
@@ -397,14 +392,16 @@ export default function Schedule({
                       className="click-press"
                       style={{ 
                         width: '100%', 
-                        padding: '8px', 
-                        fontSize: '11px',
-                        fontWeight: 700,
-                        borderRadius: '8px',
+                        padding: '10px', 
+                        fontSize: '12px',
+                        fontWeight: 800,
+                        borderRadius: '12px',
                         border: 'none',
-                        background: cls.isLive ? 'var(--secondary-color)' : 'var(--primary-color)',
+                        background: cls.isLive ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 'var(--primary-color)',
                         color: '#fff',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        boxShadow: cls.isLive ? '0 4px 12px rgba(239,68,68,0.2)' : '0 4px 12px rgba(99,102,241,0.15)',
+                        transition: 'all 0.2s'
                       }}
                     >
                       {cls.isLive ? 'Join Live Lecture' : 'Open Course'}
@@ -418,7 +415,7 @@ export default function Schedule({
         </div>
       )}
 
-      {/* ─── ASSIGNMENTS VIEW ─── */}
+      {/* ASSIGNMENTS VIEW */}
       {activeSubTab === 'assignments' && (
         <div className="animate-fade-in">
           <Assignments 
@@ -428,7 +425,6 @@ export default function Schedule({
           />
         </div>
       )}
-
 
     </div>
   );
