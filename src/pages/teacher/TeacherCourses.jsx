@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Plus, Search, Edit3, Trash2, Eye, Send, Clock, CheckCircle, XCircle, Filter } from 'lucide-react';
+import { BookOpen, Plus, Search, Edit3, Trash2, Eye, Send, Clock, CheckCircle, XCircle, Filter, Star } from 'lucide-react';
 
 export default function TeacherCourses({ db, setDb, user }) {
   const [searchQuery, setSearchQuery] = useState('');
