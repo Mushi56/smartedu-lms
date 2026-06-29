@@ -34,8 +34,6 @@ export default function AppDrawer({
   // Student Bottom Nav: Home, Explore, Courses, Schedule, Profile
   const studentLinks = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
-    { id: 'live-classes', name: 'Live Classes', icon: Video },
-    { id: 'assignments', name: 'Assignments', icon: FileText },
     { id: 'resources', name: 'My Resources', icon: Notebook },
     { id: 'messages', name: 'Messages', icon: MessageCircle },
     { id: 'progress', name: 'My Progress', icon: TrendingUp },
