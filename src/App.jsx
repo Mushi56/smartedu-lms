@@ -285,6 +285,7 @@ export default function App() {
             overallProgress={db.overallProgress} 
             setActiveTab={setActiveTab} 
             onSelectCourse={handleSelectCourse} 
+            user={user}
           />
         );
       case 'courses':
