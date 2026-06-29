@@ -121,10 +121,7 @@ export default function Resources() {
         display: 'flex', 
         gap: '8px', 
         overflowX: 'auto', 
-        paddingBottom: '4px', 
-        margin: '0 -20px',
-        paddingLeft: '20px',
-        paddingRight: '20px',
+        paddingBottom: '4px',
       }} className="hide-scrollbar">
         {types.map((t) => (
           <button
@@ -137,10 +134,10 @@ export default function Resources() {
               borderRadius: '20px',
               fontSize: '11px',
               fontWeight: 750,
-              border: 'none',
-              backgroundColor: activeType === t ? 'var(--primary-color)' : '#fff',
+              border: activeType === t ? '1px solid var(--primary-color)' : '1px solid rgba(0,0,0,0.06)',
+              backgroundColor: activeType === t ? 'var(--primary-color)' : '#f8fafc',
               color: activeType === t ? '#fff' : 'var(--text-secondary)',
-              boxShadow: activeType === t ? '0 4px 12px rgba(99,102,241,0.2)' : '0 2px 8px rgba(0,0,0,0.02)',
+              boxShadow: activeType === t ? '0 4px 12px rgba(99,102,241,0.2)' : '0 2px 6px rgba(0,0,0,0.01)',
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
