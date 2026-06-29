@@ -459,7 +459,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
                   isExpanded={expandedModule === mod.id}
                   setExpandedModule={setExpandedModule}
                   onDeleteModule={id => setForm(f => ({ ...f, modules: f.modules.filter(m => m.id !== id) }))}
-                  onAddLesson={(modId, lt, ld, vn, an, at) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoName: vn, attachmentName: an, attachmentType: at }] }) }))}
+                  onAddLesson={(modId, lt, ld, vn, an, at, vp) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoName: vn, attachmentName: an, attachmentType: at, videoPreviewUrl: vp }] }) }))}
                   onDeleteLesson={(modId, lesId) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: m.lessons.filter(l => l.id !== lesId) }) }))}
                 />
               ))}
@@ -737,6 +737,7 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
   
   // Video and Attachment File Upload state
   const [lVideoFile, setLVideoFile] = useState(null);
+  const [lVideoPreviewUrl, setLVideoPreviewUrl] = useState('');
   const [lAttachmentFile, setLAttachmentFile] = useState(null);
   const [lAttachmentType, setLAttachmentType] = useState('Study Material');
 
@@ -769,7 +770,13 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
           {mod.lessons.map(les => (
             <div key={les.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '10px 12px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)', textAlign: 'left' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <PlayCircle size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
+                {les.videoPreviewUrl ? (
+                  <div style={{ width: '48px', height: '28px', borderRadius: '4px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+                    <video src={les.videoPreviewUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+                  </div>
+                ) : (
+                  <PlayCircle size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
+                )}
                 <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{les.title}</span>
                 <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 600, flexShrink: 0 }}>{les.duration}</span>
                 <button onClick={() => onDeleteLesson(mod.id, les.id)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px', flexShrink: 0 }} className="click-press">
@@ -806,12 +813,14 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
               lDuration || '10:00', 
               lVideoFile ? lVideoFile.name : '', 
               lAttachmentFile ? lAttachmentFile.name : '',
-              lAttachmentType
+              lAttachmentType,
+              lVideoPreviewUrl
             ); 
             // Reset states
             setLTitle(''); 
             setLDuration(''); 
             setLVideoFile(null);
+            setLVideoPreviewUrl('');
             setLAttachmentFile(null);
             setLAttachmentType('Study Material');
           }}
@@ -827,21 +836,35 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
                 <label className="click-press" style={{
                   display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px',
                   border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)',
-                  fontSize: '10.5px', fontWeight: 700, cursor: 'pointer'
+                  fontSize: '10.5px', fontWeight: 700, cursor: 'pointer', flexShrink: 0
                 }}>
                   <Video size={13} style={{ color: '#3b82f6' }} /> Select Video File
                   <input 
                     type="file" 
                     accept="video/*" 
-                    onChange={e => { if (e.target.files?.[0]) setLVideoFile(e.target.files[0]); }}
+                    onChange={e => { 
+                      if (e.target.files?.[0]) {
+                        const file = e.target.files[0];
+                        setLVideoFile(file); 
+                        setLVideoPreviewUrl(URL.createObjectURL(file));
+                      }
+                    }}
                     style={{ display: 'none' }} 
                   />
                 </label>
-                <span style={{ fontSize: '10px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px' }}>
-                  {lVideoFile ? `🎥 ${lVideoFile.name}` : 'No file selected (gallery/files)'}
+                
+                {/* Real-time Video Thumbnail Preview */}
+                {lVideoPreviewUrl && (
+                  <div style={{ width: '64px', height: '36px', borderRadius: '6px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+                    <video src={lVideoPreviewUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
+                  </div>
+                )}
+
+                <span style={{ fontSize: '10px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                  {lVideoFile ? lVideoFile.name : 'No file selected (gallery/files)'}
                 </span>
                 {lVideoFile && (
-                  <button type="button" onClick={() => setLVideoFile(null)} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}>
+                  <button type="button" onClick={() => { setLVideoFile(null); setLVideoPreviewUrl(''); }} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px', flexShrink: 0 }}>
                     <X size={12} />
                   </button>
                 )}
