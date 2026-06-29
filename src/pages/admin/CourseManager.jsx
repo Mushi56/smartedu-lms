@@ -52,7 +52,7 @@ const labelStyle = { fontSize: '11px', fontWeight: 700, color: 'var(--text-secon
 const cardStyle = { background: '#fff', borderRadius: '14px', border: '1px solid var(--border-color)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '14px' };
 const sectionHeaderStyle = { fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' };
 
-export default function CourseManager({ courses, setDb, initialView = 'list' }) {
+export default function CourseManager({ courses, setDb, initialView = 'list', user }) {
   const [view, setView] = useState(initialView);
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [activeStep, setActiveStep] = useState(1);
@@ -64,8 +64,14 @@ export default function CourseManager({ courses, setDb, initialView = 'list' }) 
 
   useEffect(() => {
     setView(initialView);
-    if (initialView === 'create') { setForm(emptyForm); setActiveStep(1); }
-  }, [initialView]);
+    if (initialView === 'create') {
+      setForm({
+        ...emptyForm,
+        teacher: user?.role === 'teacher' ? user.name : (TEACHERS[0]?.name || '')
+      });
+      setActiveStep(1);
+    }
+  }, [initialView, user]);
 
   // Helpers
   const setCourses = (updater) => {
@@ -310,24 +316,41 @@ export default function CourseManager({ courses, setDb, initialView = 'list' }) 
               Instructor
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {TEACHERS.map(t => (
-                <label key={t.name} onClick={() => setForm(f => ({ ...f, teacher: t.name }))}
+              {user?.role === 'teacher' ? (
+                <div
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px',
-                    borderRadius: '10px', cursor: 'pointer',
-                    border: `1.5px solid ${form.teacher === t.name ? 'var(--primary-color)' : 'var(--border-color)'}`,
-                    background: form.teacher === t.name ? 'var(--primary-glow)' : '#fafafb',
-                    transition: 'all 0.15s'
+                    borderRadius: '10px', border: '1.5px solid var(--primary-color)',
+                    background: 'var(--primary-glow)'
                   }}
                 >
-                  <img src={t.avatar} alt={t.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                  <img src={user?.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100"} alt="" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{t.name}</div>
-                    <div style={{ fontSize: '9px', color: 'var(--text-secondary)' }}>{t.specialty}</div>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{user?.name || form.teacher}</div>
+                    <div style={{ fontSize: '9px', color: 'var(--text-secondary)' }}>Course Instructor (You)</div>
                   </div>
-                  {form.teacher === t.name && <Check size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} strokeWidth={3} />}
-                </label>
-              ))}
+                  <Check size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} strokeWidth={3} />
+                </div>
+              ) : (
+                TEACHERS.map(t => (
+                  <label key={t.name} onClick={() => setForm(f => ({ ...f, teacher: t.name }))}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px',
+                      borderRadius: '10px', cursor: 'pointer',
+                      border: `1.5px solid ${form.teacher === t.name ? 'var(--primary-color)' : 'var(--border-color)'}`,
+                      background: form.teacher === t.name ? 'var(--primary-glow)' : '#fafafb',
+                      transition: 'all 0.15s'
+                    }}
+                  >
+                    <img src={t.avatar} alt={t.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{t.name}</div>
+                      <div style={{ fontSize: '9px', color: 'var(--text-secondary)' }}>{t.specialty}</div>
+                    </div>
+                    {form.teacher === t.name && <Check size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} strokeWidth={3} />}
+                  </label>
+                ))
+              )}
             </div>
           </div>
 

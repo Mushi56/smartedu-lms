@@ -480,8 +480,17 @@ export default function App() {
       case 'teacher-dashboard':
         return <TeacherDashboard db={db} user={user} setActiveTab={setActiveTab} />;
       case 'teacher-courses':
-      case 'teacher-create-course':
-        return <TeacherCourses db={db} setDb={setDb} user={user} />;
+      case 'teacher-create-course': {
+        const teacherCourses = (db?.courses || []).filter(c => c.teacher === user?.name || c.teacher === 'Instructor');
+        return (
+          <CourseManager 
+            courses={teacherCourses} 
+            setDb={setDb} 
+            user={user}
+            initialView={activeTab === 'teacher-create-course' ? 'create' : 'list'} 
+          />
+        );
+      }
       case 'teacher-live-classes':
         return <TeacherLiveClasses db={db} user={user} />;
       case 'teacher-students':
