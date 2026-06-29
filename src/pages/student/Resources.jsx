@@ -121,9 +121,9 @@ export default function Resources() {
         display: 'flex', 
         gap: '8px', 
         overflowX: 'auto', 
-        paddingTop: '6px',
-        paddingBottom: '14px', 
-        margin: '-6px -20px -10px -20px',
+        paddingTop: '4px',
+        paddingBottom: '12px', 
+        margin: '0 -20px',
         paddingLeft: '20px',
         paddingRight: '20px',
       }} className="hide-scrollbar">
