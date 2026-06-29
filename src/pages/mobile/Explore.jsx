@@ -48,7 +48,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
       return c;
     });
 
-    // Save to global reactive db state
+    // Save to global db
     setDb(prev => {
       const nextDB = { ...prev, courses: updatedCourses };
       const totalProgSum = updatedCourses.reduce((acc, cr) => acc + cr.progress, 0);
@@ -57,27 +57,51 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
     });
   };
 
+  const premiumCard = {
+    background: '#ffffff',
+    borderRadius: '20px',
+    border: '1px solid rgba(0,0,0,0.02)',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+    padding: '16px',
+    position: 'relative'
+  };
+
   // ---------------- VIEW 1: DISCOVER / LISTING ----------------
   if (viewState === 'list') {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} className="animate-fade-in">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-fade-in">
         
+        {/* Header */}
+        <div>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>Discover Courses</h2>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, fontWeight: 500 }}>
+            Find the perfect modules, lessons, and classes for you.
+          </p>
+        </div>
+
         {/* Search */}
-        <div style={{ position: 'relative' }}>
-          <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}><Search size={16} /></span>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '12px',
+          background: '#fff', border: '1px solid rgba(0,0,0,0.03)', borderRadius: '16px',
+          padding: '12px 16px', boxShadow: '0 4px 16px rgba(0,0,0,0.02)'
+        }}>
+          <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
           <input
             type="text"
-            className="mobile-input"
             placeholder="Search courses or teachers..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            style={{ paddingLeft: '38px' }}
+            style={{
+              border: 'none', background: 'none', outline: 'none',
+              fontSize: '13px', fontFamily: 'inherit', color: 'var(--text-primary)', flex: 1,
+              fontWeight: 500
+            }}
           />
         </div>
 
         {/* Level Filters */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Difficulty Level</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Difficulty Level</span>
           <div style={{ display: 'flex', gap: '8px' }}>
             {['All', 'Beginner', 'Intermediate', 'Advanced'].map((lvl) => {
               const isSelected = selectedLevel === lvl;
@@ -87,14 +111,16 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
                   onClick={() => setSelectedLevel(lvl)}
                   className="click-press"
                   style={{
-                    padding: '6px 12px',
+                    padding: '8px 14px',
                     borderRadius: '16px',
-                    backgroundColor: isSelected ? 'var(--secondary-color)' : 'var(--bg-input)',
-                    color: isSelected ? 'var(--primary-color)' : 'var(--text-primary)',
+                    backgroundColor: isSelected ? 'var(--primary-color)' : '#fff',
+                    color: isSelected ? '#fff' : 'var(--text-secondary)',
                     border: 'none',
                     fontSize: '11px',
-                    fontWeight: 700,
-                    cursor: 'pointer'
+                    fontWeight: 750,
+                    cursor: 'pointer',
+                    boxShadow: isSelected ? '0 4px 12px rgba(99,102,241,0.2)' : '0 2px 8px rgba(0,0,0,0.02)',
+                    transition: 'all 0.2s ease'
                   }}
                 >
                   {lvl}
@@ -105,8 +131,8 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
         </div>
 
         {/* Categories Selector */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
-          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Category</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Category</span>
           <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }} className="hide-scrollbar">
             {['All', 'Test Prep', 'Language', 'STEM', 'Arts'].map((cat) => {
               const isSelected = selectedCategory === cat;
@@ -116,15 +142,17 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
                   onClick={() => setSelectedCategory(cat)}
                   className="click-press"
                   style={{
-                    padding: '6px 14px',
+                    padding: '8px 16px',
                     borderRadius: '16px',
-                    backgroundColor: isSelected ? 'var(--primary-color)' : 'var(--bg-input)',
-                    color: isSelected ? '#fff' : 'var(--text-primary)',
-                    border: isSelected ? 'none' : '1px solid var(--border-color)',
+                    backgroundColor: isSelected ? 'var(--primary-color)' : '#fff',
+                    color: isSelected ? '#fff' : 'var(--text-secondary)',
+                    border: 'none',
                     fontSize: '11px',
-                    fontWeight: 700,
+                    fontWeight: 750,
                     cursor: 'pointer',
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
+                    boxShadow: isSelected ? '0 4px 12px rgba(99,102,241,0.2)' : '0 2px 8px rgba(0,0,0,0.02)',
+                    transition: 'all 0.2s ease'
                   }}
                 >
                   {cat}
@@ -135,45 +163,60 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
         </div>
 
         {/* Course Card Grid */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '10px' }}>
-          {filteredCourses.map((c) => (
-            <div
-              key={c.id}
-              onClick={() => onCourseSelect(c)}
-              className="mobile-card click-press"
-              style={{ padding: '0px', overflow: 'hidden', cursor: 'pointer', display: 'flex', flexDirection: 'row', height: '100px' }}
-            >
-              <div style={{ width: '90px', background: 'var(--primary-color)', flexShrink: 0 }}>
-                <img 
-                  src={c.thumbnail} 
-                  alt={c.title} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-
-              <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', justify: 'space-between', flex: 1, minWidth: 0, textAlign: 'left' }}>
-                <div>
-                  <h4 style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {c.title}
-                  </h4>
-                  <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>{c.teacher}</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '6px' }}>
+          {filteredCourses.map((c, idx) => {
+            const thumbnails = [
+              'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80',
+              'https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80',
+              'https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=400&q=80',
+            ];
+            return (
+              <div
+                key={c.id}
+                onClick={() => onCourseSelect(c)}
+                className="click-press"
+                style={{ 
+                  ...premiumCard,
+                  padding: '12px', 
+                  cursor: 'pointer', 
+                  display: 'flex', 
+                  flexDirection: 'row', 
+                  gap: '14px',
+                  alignItems: 'center'
+                }}
+              >
+                <div style={{ width: '84px', height: '84px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
+                  <img 
+                    src={c.thumbnail || thumbnails[idx % thumbnails.length]} 
+                    alt={c.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}>
-                  <span style={{ fontSize: '10px', background: 'rgba(202, 186, 97, 0.15)', color: 'var(--secondary-color)', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
-                    {c.progress}% done
-                  </span>
-                  
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '10.5px', color: '#f59e0b', fontWeight: 750 }}>
-                    <Star size={11} fill="#f59e0b" stroke="none" /> {c.rating}
-                  </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1, minWidth: 0 }}>
+                  <div>
+                    <h4 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {c.title}
+                    </h4>
+                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 550, marginTop: '2px', display: 'block' }}>{c.teacher}</span>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2px' }}>
+                    <span style={{ fontSize: '10px', background: 'rgba(99,102,241,0.06)', color: 'var(--primary-color)', padding: '4px 8px', borderRadius: '10px', fontWeight: 800 }}>
+                      {c.progress}% done
+                    </span>
+                    
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11px', color: '#f59e0b', fontWeight: 800 }}>
+                      <Star size={12} fill="#f59e0b" stroke="none" /> {c.rating || '4.8'}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
           {filteredCourses.length === 0 && (
-            <div style={{ padding: '40px', color: 'var(--text-muted)', textAlign: 'center' }}>
-              No courses found match filters.
+            <div style={{ padding: '40px', color: 'var(--text-secondary)', textAlign: 'center', fontWeight: 600 }}>
+              No courses found matching your filters.
             </div>
           )}
         </div>
@@ -184,51 +227,69 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
   // ---------------- VIEW 2: COURSE SYLLABUS DETAIL ----------------
   if (viewState === 'detail' && currentCourse) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} className="animate-slide-up">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-slide-up">
         {/* Back navigation */}
-        <button
-          onClick={() => setViewState('list')}
-          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', color: 'var(--text-primary)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '12.5px' }}
-        >
-          <ArrowLeft size={16} /> Back to Courses
-        </button>
+        <div>
+          <button
+            onClick={() => setViewState('list')}
+            className="click-press"
+            style={{ 
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+              background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', 
+              padding: '8px 16px', borderRadius: '14px', fontSize: '12px',
+              fontWeight: 800, color: 'var(--text-secondary)', cursor: 'pointer',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+            }}
+          >
+            <ArrowLeft size={14} /> <span>Back to Courses</span>
+          </button>
+        </div>
 
         {/* Thumbnail Hero */}
-        <div className="mobile-card" style={{ padding: '0px', overflow: 'hidden' }}>
-          <div style={{ height: '140px', position: 'relative' }}>
+        <div style={{ ...premiumCard, padding: '0px', overflow: 'hidden' }}>
+          <div style={{ height: '150px', position: 'relative' }}>
             <img 
               src={currentCourse.thumbnail} 
               alt={currentCourse.title} 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)' }} />
-            <h3 style={{ position: 'absolute', bottom: '12px', left: '16px', right: '16px', color: '#fff', fontSize: '15px', fontWeight: 800, textAlign: 'left' }}>
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)' }} />
+            <h3 style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px', color: '#fff', fontSize: '18px', fontWeight: 800, margin: 0, lineHeight: 1.3, letterSpacing: '-0.5px' }}>
               {currentCourse.title}
             </h3>
           </div>
 
-          <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+          <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 700 }}>
               <span>Instructor: <strong>{currentCourse.teacher}</strong></span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: '#f59e0b', fontWeight: 700 }}>
-                <Star size={11} fill="#f59e0b" stroke="none" /> {currentCourse.rating} ({currentCourse.reviews} reviews)
+              <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: '#f59e0b', fontWeight: 800 }}>
+                <Star size={12} fill="#f59e0b" stroke="none" /> {currentCourse.rating || '4.8'} <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>({currentCourse.reviews || '840'})</span>
               </span>
             </div>
 
-            <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5, fontWeight: 550, margin: 0 }}>
               {currentCourse.description}
             </p>
           </div>
         </div>
 
         {/* Curriculum Modules list */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
-          <h4 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Course Syllabus</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <h4 style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Course Syllabus</h4>
 
           {currentCourse.modules?.map((mod) => {
             const isExpanded = expandedModuleId === mod.id;
             return (
-              <div key={mod.id} className="mobile-card" style={{ padding: '0px', overflow: 'hidden' }}>
+              <div 
+                key={mod.id} 
+                style={{ 
+                  border: '1px solid rgba(0,0,0,0.03)', 
+                  borderRadius: '16px', 
+                  overflow: 'hidden',
+                  background: '#ffffff',
+                  boxShadow: '0 2px 12px rgba(0,0,0,0.01)'
+                }}
+              >
                 {/* Header accordion */}
                 <button
                   onClick={() => toggleModule(mod.id)}
@@ -239,18 +300,19 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     border: 'none',
-                    background: 'none',
+                    background: isExpanded ? 'rgba(99,102,241,0.03)' : '#fcfcfd',
                     cursor: 'pointer',
-                    textAlign: 'left'
+                    textAlign: 'left',
+                    transition: 'all 0.2s'
                   }}
                 >
-                  <span style={{ fontSize: '12.5px', fontWeight: 800, color: 'var(--text-primary)' }}>{mod.title}</span>
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)' }}>{mod.title}</span>
+                  {isExpanded ? <ChevronUp size={16} style={{ color: 'var(--text-secondary)' }} /> : <ChevronDown size={16} style={{ color: 'var(--text-secondary)' }} />}
                 </button>
 
-                {/* Lesson collapse grid */}
+                {/* Lesson collapse list */}
                 {isExpanded && (
-                  <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--border-color)', background: 'var(--bg-app)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid rgba(0,0,0,0.03)', background: '#ffffff' }}>
                     {mod.lessons.map((lesson) => (
                       <div
                         key={lesson.id}
@@ -260,32 +322,33 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          borderBottom: '1px solid var(--border-color)',
+                          borderBottom: '1px solid rgba(0,0,0,0.02)',
                           cursor: 'pointer'
                         }}
                         className="click-press"
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                           <div style={{
-                            width: '24px',
-                            height: '24px',
+                            width: '28px',
+                            height: '28px',
                             borderRadius: '50%',
-                            backgroundColor: lesson.completed ? 'var(--secondary-color)' : 'rgba(255,255,255,0.2)',
-                            color: lesson.completed ? 'var(--primary-color)' : 'var(--text-muted)',
+                            backgroundColor: lesson.completed ? 'rgba(16,185,129,0.1)' : 'rgba(99,102,241,0.08)',
+                            color: lesson.completed ? '#10b981' : 'var(--primary-color)',
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            flexShrink: 0
                           }}>
-                            <Play size={10} fill="currentColor" />
+                            <Play size={10} fill="currentColor" style={{ marginLeft: '1px' }} />
                           </div>
                           <div>
-                            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{lesson.title}</span>
-                            <span style={{ display: 'block', fontSize: '9.5px', color: 'var(--text-muted)' }}>{lesson.duration}</span>
+                            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', display: 'block' }}>{lesson.title}</span>
+                            <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 550 }}>{lesson.duration}</span>
                           </div>
                         </div>
 
                         {lesson.completed && (
-                          <span style={{ fontSize: '9px', background: 'rgba(43,168,74,0.12)', color: 'var(--accent-green)', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
+                          <span style={{ fontSize: '9px', background: 'rgba(16,185,129,0.1)', color: '#10b981', padding: '2px 8px', borderRadius: '10px', fontWeight: 800 }}>
                             Done
                           </span>
                         )}
@@ -304,17 +367,26 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
   // ---------------- VIEW 3: MODULAR VIDEO PLAYER ----------------
   if (viewState === 'player' && currentCourse && activeLesson) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} className="animate-slide-up">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-slide-up">
         {/* Back navigation */}
-        <button
-          onClick={() => setViewState('detail')}
-          style={{ alignSelf: 'flex-start', background: 'none', border: 'none', color: 'var(--text-primary)', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '12.5px' }}
-        >
-          <ArrowLeft size={16} /> Exit Player
-        </button>
+        <div>
+          <button
+            onClick={() => setViewState('detail')}
+            className="click-press"
+            style={{ 
+              display: 'inline-flex', alignItems: 'center', gap: '8px',
+              background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', 
+              padding: '8px 16px', borderRadius: '14px', fontSize: '12px',
+              fontWeight: 800, color: 'var(--text-secondary)', cursor: 'pointer',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+            }}
+          >
+            <ArrowLeft size={14} /> <span>Exit Player</span>
+          </button>
+        </div>
 
         {/* Video Player view */}
-        <div className="mobile-card" style={{ padding: '0px', overflow: 'hidden', background: '#000' }}>
+        <div style={{ ...premiumCard, padding: '0px', overflow: 'hidden', background: '#000' }}>
           <div style={{ position: 'relative', width: '100%', height: '190px' }}>
             <video
               src={activeLesson.videoUrl}
@@ -323,10 +395,10 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
               poster={currentCourse.thumbnail}
             />
           </div>
-          <div style={{ padding: '16px', textAlign: 'left', background: 'var(--bg-card)' }}>
-            <span style={{ fontSize: '9.5px', color: 'var(--secondary-color)', fontWeight: 700, textTransform: 'uppercase' }}>NOW WATCHING</span>
-            <h3 style={{ fontSize: '14px', fontWeight: 850, color: 'var(--text-primary)', marginTop: '2px' }}>{activeLesson.title}</h3>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginTop: '2px' }}>Course: {currentCourse.title}</span>
+          <div style={{ padding: '16px', background: '#ffffff' }}>
+            <span style={{ fontSize: '9px', color: 'var(--primary-color)', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase' }}>NOW PLAYING</span>
+            <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '4px', marginBottom: '2px', lineHeight: 1.3 }}>{activeLesson.title}</h3>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', fontWeight: 550 }}>Course: {currentCourse.title}</span>
           </div>
         </div>
 
@@ -338,25 +410,35 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
               alert("Lesson marked completed! Overall progress updated.");
               setViewState('detail');
             }}
-            className="mobile-btn-primary click-press"
-            style={{ flex: 1, backgroundColor: 'var(--accent-green)', color: '#fff' }}
+            className="click-press"
+            style={{ 
+              flex: 1, backgroundColor: '#10b981', color: '#fff', border: 'none',
+              padding: '12px', borderRadius: '16px', fontSize: '12px', fontWeight: 800,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              boxShadow: '0 4px 12px rgba(16,185,129,0.2)'
+            }}
           >
             <ShieldCheck size={16} /> Mark Complete
           </button>
           
           <button
             onClick={() => alert("Mock study slides PDF downloaded to device.")}
-            className="mobile-btn-secondary click-press"
-            style={{ flex: 0.8 }}
+            className="click-press"
+            style={{ 
+              flex: 0.8, backgroundColor: '#ffffff', color: 'var(--text-secondary)', border: '1px solid rgba(0,0,0,0.04)',
+              padding: '12px', borderRadius: '16px', fontSize: '12px', fontWeight: 800,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.02)'
+            }}
           >
             <Download size={14} /> Slides
           </button>
         </div>
 
         {/* Description tabs */}
-        <div className="mobile-card" style={{ textAlign: 'left', gap: '8px' }}>
-          <h4 style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Lesson Notes</h4>
-          <p style={{ fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+        <div style={{ ...premiumCard }}>
+          <h4 style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', margin: '0 0 6px 0' }}>Lesson Notes</h4>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5, fontWeight: 550, margin: 0 }}>
             This class covers core concepts of the module. Watch the video, review the study formulas PDF attached above, and test your skills in the AI Tutor companion tab.
           </p>
         </div>
