@@ -459,7 +459,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
                   isExpanded={expandedModule === mod.id}
                   setExpandedModule={setExpandedModule}
                   onDeleteModule={id => setForm(f => ({ ...f, modules: f.modules.filter(m => m.id !== id) }))}
-                  onAddLesson={(modId, lt, ld) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoUrl: '' }] }) }))}
+                  onAddLesson={(modId, lt, ld, lv, la) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoUrl: lv || '', attachmentUrl: la || '' }] }) }))}
                   onDeleteLesson={(modId, lesId) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: m.lessons.filter(l => l.id !== lesId) }) }))}
                 />
               ))}
@@ -734,6 +734,8 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
 function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteModule, onAddLesson, onDeleteLesson }) {
   const [lTitle, setLTitle] = useState('');
   const [lDuration, setLDuration] = useState('');
+  const [lVideoUrl, setLVideoUrl] = useState('');
+  const [lAttachmentUrl, setLAttachmentUrl] = useState('');
 
   return (
     <div style={{ background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
@@ -760,23 +762,56 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
       {isExpanded && (
         <div style={{ padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid var(--border-color)', background: 'var(--bg-input)' }}>
           {mod.lessons.map(les => (
-            <div key={les.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
-              <PlayCircle size={12} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
-              <span style={{ fontSize: '11px', color: 'var(--text-primary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{les.title}</span>
-              <span style={{ fontSize: '9px', color: 'var(--text-muted)', flexShrink: 0 }}>{les.duration}</span>
-              <button onClick={() => onDeleteLesson(mod.id, les.id)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px', flexShrink: 0 }}>
-                <X size={11} />
-              </button>
+            <div key={les.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '10px 12px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <PlayCircle size={14} style={{ color: 'var(--primary-color)', flexShrink: 0 }} />
+                <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{les.title}</span>
+                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 600, flexShrink: 0 }}>{les.duration}</span>
+                <button onClick={() => onDeleteLesson(mod.id, les.id)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '2px', flexShrink: 0 }} className="click-press">
+                  <X size={13} />
+                </button>
+              </div>
+              {(les.videoUrl || les.attachmentUrl) && (
+                <div style={{ display: 'flex', gap: '12px', paddingLeft: '22px', marginTop: '2px', fontSize: '10px', color: 'var(--text-muted)' }}>
+                  {les.videoUrl && (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Video size={10} /> Video Linked
+                    </span>
+                  )}
+                  {les.attachmentUrl && (
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Link size={10} /> Attachment Attached
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           ))}
 
           {/* Add lesson form */}
-          <form onSubmit={e => { e.preventDefault(); if (!lTitle.trim()) return; onAddLesson(mod.id, lTitle.trim(), lDuration); setLTitle(''); setLDuration(''); }}
-            style={{ display: 'flex', gap: '6px', marginTop: '4px' }}
+          <form onSubmit={e => { 
+            e.preventDefault(); 
+            if (!lTitle.trim()) return; 
+            onAddLesson(mod.id, lTitle.trim(), lDuration || '10:00', lVideoUrl.trim(), lAttachmentUrl.trim()); 
+            setLTitle(''); 
+            setLDuration(''); 
+            setLVideoUrl('');
+            setLAttachmentUrl('');
+          }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px', padding: '12px', borderRadius: '12px', border: '1px dashed var(--border-color)', background: 'var(--bg-card)' }}
           >
-            <input type="text" value={lTitle} onChange={e => setLTitle(e.target.value)} placeholder="Lesson title..." style={{ flex: 1, padding: '7px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', fontFamily: 'inherit' }} />
-            <input type="text" value={lDuration} onChange={e => setLDuration(e.target.value)} placeholder="mm:ss" style={{ width: '54px', padding: '7px 8px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', fontFamily: 'inherit' }} />
-            <button type="submit" style={{ padding: '7px 10px', background: 'var(--primary-color)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontSize: '11px', cursor: 'pointer', flexShrink: 0 }}>+</button>
+            <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)' }}>Add New Lesson</div>
+            <input type="text" value={lTitle} onChange={e => setLTitle(e.target.value)} placeholder="Lesson title..." style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} required />
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <input type="text" value={lVideoUrl} onChange={e => setLVideoUrl(e.target.value)} placeholder="Video URL (e.g. YouTube/Vimeo)" style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} />
+              <input type="text" value={lAttachmentUrl} onChange={e => setLAttachmentUrl(e.target.value)} placeholder="Attachment Link (PDF, ZIP, Slides)" style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} />
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input type="text" value={lDuration} onChange={e => setLDuration(e.target.value)} placeholder="Duration (e.g. 10:00)" style={{ flex: 1, padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} />
+              <button type="submit" style={{ padding: '8px 20px', background: 'var(--primary-gradient)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '11px', cursor: 'pointer' }}>Add Lesson</button>
+            </div>
           </form>
         </div>
       )}
