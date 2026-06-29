@@ -76,6 +76,11 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState('home');
   const [theme, setTheme] = useState('light');
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    setScrolled(false);
+  }, [activeTab]);
   
   // App Drawer & Portal State
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -484,7 +489,7 @@ export default function App() {
   const unreadCount = db.notifications?.filter(n => !n.read).length || 0;
 
   return (
-    <MobileDeviceFrame>
+    <MobileDeviceFrame activeTab={activeTab} currentPortal={currentPortal} scrolled={scrolled}>
       <div className="mobile-app-viewport">
         
         {/* Onboarding Flow */}
@@ -517,13 +522,13 @@ export default function App() {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '12px 20px',
-                background: activeTab === 'home' 
+                background: activeTab === 'home' && !scrolled
                   ? (currentPortal === 'admin' || currentPortal === 'super-admin' ? '#1e1b4b' : '#4f46e5') 
                   : '#ffffff',
-                borderBottom: activeTab === 'home' ? 'none' : '1px solid rgba(0,0,0,0.04)',
+                borderBottom: activeTab === 'home' && !scrolled ? 'none' : '1px solid rgba(0,0,0,0.04)',
                 height: '64px',
                 zIndex: 90,
-                boxShadow: activeTab === 'home' ? 'none' : '0 4px 20px rgba(0,0,0,0.02)',
+                boxShadow: activeTab === 'home' && !scrolled ? 'none' : '0 4px 20px rgba(0,0,0,0.02)',
                 transition: 'all 0.3s ease'
               }}>
                 {/* Profile photo opens drawer */}
@@ -538,8 +543,8 @@ export default function App() {
                     alt="Avatar" 
                     style={{ 
                       width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', 
-                      border: activeTab === 'home' ? '2px solid rgba(255,255,255,0.2)' : '2px solid #f1f5f9', 
-                      boxShadow: activeTab === 'home' ? 'none' : '0 2px 8px rgba(0,0,0,0.05)' 
+                      border: activeTab === 'home' && !scrolled ? '2px solid rgba(255,255,255,0.2)' : '2px solid #f1f5f9', 
+                      boxShadow: activeTab === 'home' && !scrolled ? 'none' : '0 2px 8px rgba(0,0,0,0.05)' 
                     }}
                   />
                 </button>
@@ -554,10 +559,10 @@ export default function App() {
                     }}
                     className="click-press"
                     style={{ 
-                      background: activeTab === 'home' ? 'rgba(255,255,255,0.1)' : '#f8fafc', 
-                      border: activeTab === 'home' ? 'none' : '1px solid rgba(0,0,0,0.04)', 
+                      background: activeTab === 'home' && !scrolled ? 'rgba(255,255,255,0.1)' : '#f8fafc', 
+                      border: activeTab === 'home' && !scrolled ? 'none' : '1px solid rgba(0,0,0,0.04)', 
                       cursor: 'pointer', position: 'relative', 
-                      color: activeTab === 'home' ? '#ffffff' : '#475569',
+                      color: activeTab === 'home' && !scrolled ? '#ffffff' : '#475569',
                       width: '38px', height: '38px', borderRadius: '50%',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       transition: 'all 0.2s'
@@ -579,7 +584,7 @@ export default function App() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        border: activeTab === 'home' ? '2px solid transparent' : '2px solid #ffffff'
+                        border: activeTab === 'home' && !scrolled ? '2px solid transparent' : '2px solid #ffffff'
                       }}>
                         {unreadCount}
                       </span>
@@ -592,7 +597,7 @@ export default function App() {
                     className="click-press"
                     style={{ 
                       background: 'none', border: 'none', cursor: 'pointer', 
-                      color: activeTab === 'home' ? 'rgba(255,255,255,0.8)' : '#94a3b8',
+                      color: activeTab === 'home' && !scrolled ? 'rgba(255,255,255,0.8)' : '#94a3b8',
                       display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}
                     title="Sign Out"
@@ -603,7 +608,13 @@ export default function App() {
               </header>
 
               {/* Core scrollable panel views */}
-              <main className="mobile-content-container">
+              <main className="mobile-content-container" onScroll={(e) => {
+                if (e.target.scrollTop > 10) {
+                  setScrolled(true);
+                } else {
+                  setScrolled(false);
+                }
+              }}>
                 {renderTabContent()}
               </main>
 
