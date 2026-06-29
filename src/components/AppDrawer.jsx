@@ -3,7 +3,7 @@ import {
   LayoutDashboard, BookOpen, Video, Calendar, FileText, Notebook, 
   MessageCircle, TrendingUp, CreditCard, Award, Heart, Crown, Settings,
   Users, CheckSquare, BarChart2, Star, Ticket, Volume2, ChevronRight, ChevronDown, X,
-  Sun, Moon, ShieldAlert, DollarSign, Shield, User, Eye
+  Sun, Moon, ShieldAlert, DollarSign, Shield, User, Plus, Tag
 } from 'lucide-react';
 import VerificationBadge from './VerificationBadge';
 import { getAvailablePortals } from '../data/permissions';
@@ -30,12 +30,11 @@ export default function AppDrawer({
   const availablePortals = getAvailablePortals(user?.role);
   const canSwitchPortal = availablePortals.length > 1;
 
-  // ─── Navigation Link Arrays ──────────────────────────────────
+  // ─── Filtered Navigation Links (Removing tabs that exist in bottom nav) ───
+  // Student Bottom Nav: Home, Explore, Courses, Schedule, Profile
   const studentLinks = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
-    { id: 'courses', name: 'My Courses', icon: BookOpen },
     { id: 'live-classes', name: 'Live Classes', icon: Video },
-    { id: 'schedule', name: 'Schedule', icon: Calendar },
     { id: 'assignments', name: 'Assignments', icon: FileText },
     { id: 'resources', name: 'My Resources', icon: Notebook },
     { id: 'messages', name: 'Messages', icon: MessageCircle },
@@ -47,36 +46,26 @@ export default function AppDrawer({
     { id: 'settings', name: 'Settings', icon: Settings }
   ];
 
+  // Teacher Bottom Nav: Home, Courses (teacher-courses), Students (teacher-students), Earnings (teacher-earnings)
   const teacherLinks = [
     { id: 'teacher-dashboard', name: 'Dashboard', icon: LayoutDashboard },
     { id: 'teacher-profile', name: 'My Profile', icon: User },
-    { 
-      id: 'teacher-courses-parent', 
-      name: 'My Courses', 
-      icon: BookOpen,
-      submenu: [
-        { id: 'teacher-courses', name: 'All Courses' },
-        { id: 'teacher-create-course', name: 'Create Course' }
-      ]
-    },
+    { id: 'teacher-create-course', name: 'Create Course', icon: Plus },
     { id: 'teacher-live-classes', name: 'Live Classes', icon: Video },
-    { id: 'teacher-students', name: 'My Students', icon: Users },
-    { id: 'teacher-earnings', name: 'Earnings', icon: DollarSign },
     { id: 'teacher-reviews', name: 'Reviews', icon: Star },
     { id: 'teacher-messages', name: 'Messages', icon: MessageCircle },
     { id: 'teacher-settings', name: 'Settings', icon: Settings }
   ];
 
+  // Admin Bottom Nav: Home, Courses (courses), Users (users), Orders (orders)
   const adminLinks = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
-    { id: 'users', name: 'Users', icon: Users, hasChevron: true },
     { id: 'teachers', name: 'Teachers', icon: Users, hasChevron: true },
     { 
-      id: 'courses-parent', 
-      name: 'Courses', 
+      id: 'courses-setup-parent', 
+      name: 'Course Setup', 
       icon: BookOpen,
       submenu: [
-        { id: 'courses', name: 'All Courses' },
         { id: 'add-course', name: 'Add New Course' },
         { id: 'categories', name: 'Categories' },
         { id: 'tags', name: 'Tags' },
@@ -96,20 +85,17 @@ export default function AppDrawer({
       ]
     },
     { id: 'exams', name: 'Exams', icon: CheckSquare },
-    { id: 'orders', name: 'Orders & Payments', icon: CreditCard },
     { id: 'reports', name: 'Reports', icon: BarChart2, hasChevron: true },
     { id: 'reviews', name: 'Reviews', icon: Star },
     { id: 'coupons', name: 'Coupons', icon: Ticket },
     { id: 'resources', name: 'Resources', icon: Notebook },
     { id: 'announcements', name: 'Announcements', icon: Volume2 },
     { id: 'settings', name: 'Settings', icon: Settings },
-    // Super Admin exclusive
     ...(isSuperAdmin ? [{ id: 'super-admin-panel', name: 'Platform Control', icon: Shield }] : [])
   ];
 
-  // Pick links based on active portal
   const activeLinks = isStudent ? studentLinks : isTeacher ? teacherLinks : adminLinks;
-  const sectionTitle = isStudent ? 'Student Dashboard' : isTeacher ? 'Teacher Dashboard' : (isSuperAdmin ? 'Super Admin Panel' : 'Admin Operations');
+  const sectionTitle = isStudent ? 'Student Menu' : isTeacher ? 'Teacher Menu' : (isSuperAdmin ? 'Platform Management' : 'Admin Operations');
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
@@ -122,7 +108,6 @@ export default function AppDrawer({
 
   const handlePortalSwitch = (targetPortal) => {
     setCurrentPortal(targetPortal);
-    // Set default tab for the target portal
     if (targetPortal === 'teacher') setActiveTab('teacher-dashboard');
     else if (targetPortal === 'admin' || targetPortal === 'super-admin') setActiveTab('dashboard');
     else setActiveTab('home');
@@ -144,7 +129,7 @@ export default function AppDrawer({
       case 'teacher': return '#3b82f6';
       case 'admin': return '#ec4899';
       case 'super-admin': return '#eab308';
-      default: return '#7c3aed';
+      default: return '#6366f1';
     }
   };
 
@@ -153,112 +138,184 @@ export default function AppDrawer({
       {/* Backdrop overlay */}
       {isOpen && (
         <div 
-          className="drawer-overlay" 
           onClick={onClose}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(15, 23, 42, 0.4)',
+            backdropFilter: 'blur(6px)',
+            zIndex: 98,
+            transition: 'opacity 0.3s ease'
+          }}
         />
       )}
 
       {/* Sliding app drawer */}
-      <div className={`app-drawer ${isOpen ? 'drawer-open' : ''}`}>
+      <div 
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          bottom: 0,
+          width: '280px',
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '10px 0 30px rgba(0, 0, 0, 0.05)',
+          zIndex: 99,
+          display: 'flex',
+          flexDirection: 'column',
+          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+          borderTopRightRadius: '24px',
+          borderBottomRightRadius: '24px',
+          overflow: 'hidden'
+        }}
+      >
         
         {/* Drawer Header & Profile Summary */}
-        <div className="drawer-header">
+        <div style={{
+          padding: '24px 20px',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.03)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #fff 100%)'
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
             <img 
               src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100"} 
               alt="Profile" 
-              style={{ width: '38px', height: '38px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--border-color)' }}
+              style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}
             />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
-                  {user?.name || 'User'}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                  {user?.name || 'Aisha Rahman'}
                 </span>
-                <VerificationBadge 
-                  status={user?.verificationStatus || user?.role} 
-                  size={12} 
-                  style={{ marginLeft: '4px' }}
-                />
+                <VerificationBadge status={user?.verificationStatus || user?.role} size={13} />
               </div>
-              <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600, textAlign: 'left' }}>
+              <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 600 }}>
                 {user?.role === 'super-admin' ? 'Super Admin' : user?.role === 'admin' ? 'Admin' : user?.role === 'teacher' ? 'Teacher' : 'Student'}
-                {isStudent ? '' : isTeacher ? ' Portal' : ' Portal'}
               </span>
             </div>
           </div>
           <button 
             onClick={onClose}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '4px' }}
-            className="drawer-close-btn"
+            className="click-press"
+            style={{ 
+              background: '#f1f5f9', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', 
+              width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+            }}
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         {/* Navigation Body */}
-        <div className="drawer-body hide-scrollbar">
+        <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }} className="hide-scrollbar">
           
+          <div style={{ 
+            fontSize: '10px', fontWeight: 800, color: 'var(--text-muted)', 
+            textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px', paddingLeft: '8px' 
+          }}>
+            {sectionTitle}
+          </div>
 
-          {/* Main Portal Specific Options */}
-          <div className="drawer-section-title">{sectionTitle}</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {activeLinks.map((link) => {
+              const Icon = link.icon;
+              const hasSubmenu = !!link.submenu;
+              const isSubmenuOpen = openSubmenu === link.id || (hasSubmenu && link.submenu.some(sub => sub.id === activeTab));
+              const isActiveParent = !hasSubmenu && activeTab === link.id;
 
-          {activeLinks.map((link) => {
-            const Icon = link.icon;
-            const hasSubmenu = !!link.submenu;
-            const isSubmenuOpen = openSubmenu === link.id || (hasSubmenu && link.submenu.some(sub => sub.id === activeTab));
-            const isActiveParent = !hasSubmenu && activeTab === link.id;
+              return (
+                <div key={link.id} style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                  <button
+                    onClick={() => {
+                      if (hasSubmenu) {
+                        toggleSubmenu(link.id);
+                      } else {
+                        handleTabClick(link.id);
+                      }
+                    }}
+                    className="click-press"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      border: 'none',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      fontSize: '12.5px',
+                      fontWeight: isActiveParent || isSubmenuOpen ? 800 : 600,
+                      backgroundColor: isActiveParent ? 'rgba(99, 102, 241, 0.08)' : 'transparent',
+                      color: isActiveParent ? 'var(--primary-color)' : 'var(--text-secondary)',
+                      transition: 'all 0.2s',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <Icon size={16} style={{ color: isActiveParent ? 'var(--primary-color)' : 'var(--text-secondary)' }} />
+                      <span>{link.name}</span>
+                    </div>
+                    {hasSubmenu ? (
+                      isSubmenuOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />
+                    ) : (
+                      link.hasChevron && <ChevronRight size={14} />
+                    )}
+                  </button>
 
-            return (
-              <div key={link.id} style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                <button
-                  onClick={() => {
-                    if (hasSubmenu) {
-                      toggleSubmenu(link.id);
-                    } else {
-                      handleTabClick(link.id);
-                    }
-                  }}
-                  className={`drawer-link ${isActiveParent || isSubmenuOpen ? 'active' : ''}`}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Icon size={16} />
-                    <span>{link.name}</span>
-                  </div>
-                  {hasSubmenu ? (
-                    isSubmenuOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />
-                  ) : (
-                    link.hasChevron && <ChevronRight size={14} />
+                  {/* Submenu */}
+                  {hasSubmenu && isSubmenuOpen && (
+                    <div style={{ 
+                      display: 'flex', flexDirection: 'column', gap: '2px', 
+                      paddingLeft: '32px', margin: '4px 0 8px 0', borderLeft: '1px solid rgba(0,0,0,0.04)' 
+                    }}>
+                      {link.submenu.map((sub) => {
+                        const isSubActive = activeTab === sub.id;
+                        return (
+                          <button
+                            key={sub.id}
+                            onClick={() => handleTabClick(sub.id)}
+                            className="click-press"
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              textAlign: 'left',
+                              border: 'none',
+                              borderRadius: '8px',
+                              background: isSubActive ? 'rgba(99, 102, 241, 0.06)' : 'transparent',
+                              color: isSubActive ? 'var(--primary-color)' : 'var(--text-secondary)',
+                              fontSize: '12px',
+                              fontWeight: isSubActive ? 800 : 550,
+                              cursor: 'pointer',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            {sub.name}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
-                </button>
-
-                {/* Submenu renders */}
-                {hasSubmenu && isSubmenuOpen && (
-                  <div className="drawer-submenu">
-                    {link.submenu.map((sub) => {
-                      const isSubActive = activeTab === sub.id;
-                      return (
-                        <button
-                          key={sub.id}
-                          onClick={() => handleTabClick(sub.id)}
-                          className={`drawer-sublink ${isSubActive ? 'active' : ''}`}
-                        >
-                          {sub.name}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Drawer Footer Actions */}
-        <div className="drawer-footer">
-          {/* Portal Quick Switcher (If allowed) */}
+        <div style={{
+          padding: '20px',
+          borderTop: '1px solid rgba(0, 0, 0, 0.03)',
+          background: 'linear-gradient(to top, #f8fafc 0%, #fff 100%)'
+        }}>
+          {/* Portal Switcher */}
           {canSwitchPortal && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '8px' }}>
-              <span style={{ fontSize: '9px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Switch Portal</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+              <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Switch Portal</span>
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 {availablePortals.map(portal => {
                   const isActive = currentPortal === portal;
@@ -269,19 +326,20 @@ export default function AppDrawer({
                       onClick={() => !isActive && handlePortalSwitch(portal)}
                       style={{
                         flex: '1 0 auto',
-                        padding: '7px 12px',
-                        borderRadius: '8px',
-                        backgroundColor: isActive ? `${pColor}15` : 'var(--bg-input)',
+                        padding: '6px 12px',
+                        borderRadius: '10px',
+                        backgroundColor: isActive ? `${pColor}12` : '#fff',
                         color: isActive ? pColor : 'var(--text-secondary)',
-                        border: isActive ? `1.5px solid ${pColor}` : '1px solid var(--border-color)',
-                        fontWeight: 700,
-                        fontSize: '10px',
+                        border: isActive ? `1.5px solid ${pColor}` : '1px solid rgba(0,0,0,0.05)',
+                        fontWeight: 800,
+                        fontSize: '10.5px',
                         cursor: isActive ? 'default' : 'pointer',
-                        opacity: isActive ? 1 : 0.8,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '4px'
+                        gap: '4px',
+                        boxShadow: isActive ? 'none' : '0 2px 6px rgba(0,0,0,0.02)',
+                        transition: 'all 0.2s'
                       }}
                       className={isActive ? '' : 'click-press'}
                     >
@@ -293,49 +351,51 @@ export default function AppDrawer({
             </div>
           )}
 
-          <div className="drawer-footer-actions">
-            {/* Sign Out Button */}
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            {/* Sign Out */}
             <button 
               onClick={() => {
                 logout();
                 onClose();
               }}
+              className="click-press"
               style={{
                 flex: 1,
                 fontSize: '12px',
-                fontWeight: 700,
-                padding: '10px 14px',
-                borderRadius: '20px',
-                backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                fontWeight: 800,
+                padding: '10px 16px',
+                borderRadius: '14px',
+                backgroundColor: 'rgba(239, 68, 68, 0.06)',
                 color: '#ef4444',
-                border: '1px solid rgba(239, 68, 68, 0.15)',
-                cursor: 'pointer'
+                border: '1px solid rgba(239, 68, 68, 0.1)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px'
               }}
-              className="click-press"
             >
               Sign Out
             </button>
 
             {/* Theme Toggle */}
             <button 
-              onClick={() => {
-                const nextTheme = theme === 'light' ? 'dark' : 'light';
-                setTheme(nextTheme);
-              }} 
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} 
+              className="click-press"
               style={{
                 width: '38px',
                 height: '38px',
                 borderRadius: '50%',
-                backgroundColor: 'var(--bg-input)',
+                backgroundColor: '#fff',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border-color)',
+                color: 'var(--text-secondary)',
+                border: '1px solid rgba(0,0,0,0.04)',
                 flexShrink: 0,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
               }}
-              className="click-press"
               title="Toggle Dark/Light Mode"
             >
               {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
