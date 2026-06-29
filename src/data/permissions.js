@@ -111,8 +111,8 @@ export const getAvailablePortals = (role) => {
  */
 export const VERIFICATION_STATUSES = {
   pending:       { label: 'Pending Verification', color: '#eab308', bgColor: 'rgba(234, 179, 8, 0.1)',  icon: '🟡' },
-  verified:      { label: 'Verified Teacher',     color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.1)', icon: '🔵' },
-  premium:       { label: 'Premium Instructor',   color: '#10b981', bgColor: 'rgba(16, 185, 129, 0.1)', icon: '🟢' },
+  verified:      { label: 'Verified Teacher',     color: '#22c55e', bgColor: 'rgba(34, 197, 94, 0.1)',  icon: '🟢' },
+  premium:       { label: 'Premium Instructor',   color: '#3b82f6', bgColor: 'rgba(59, 130, 246, 0.1)', icon: '🔵' },
   'top-educator':{ label: 'Top Educator',         color: '#a855f7', bgColor: 'rgba(168, 85, 247, 0.1)', icon: '🟣' },
   suspended:     { label: 'Suspended',            color: '#ef4444', bgColor: 'rgba(239, 68, 68, 0.1)',  icon: '🔴' }
 };

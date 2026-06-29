@@ -44,8 +44,8 @@ export default function VerificationBadge({ status, size = 14, showLabel = false
     label = legacyRoles[status].label;
     IconComponent = Shield;
   } else if (status === 'teacher') {
-    // Default teacher badge → verified blue
-    badgeColor = '#3b82f6';
+    // Default teacher badge → verified green
+    badgeColor = '#22c55e';
     label = 'Verified Teacher';
     IconComponent = Check;
   } else {

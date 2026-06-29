@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { Search, ChevronDown, ChevronUp, Play, BookOpen, Clock, Star, ArrowLeft, Download, ShieldCheck } from 'lucide-react';
-import VerificationBadge from '../../components/VerificationBadge';
 
 export default function Explore({ db, setDb, onCourseSelect, currentCourse, viewState, setViewState }) {
   const { courses = [] } = db;
-
-  const getTeacherStatus = (teacherName) => {
-    const teacher = db.teachers?.find(t => t.name === teacherName);
-    return teacher ? teacher.verificationStatus : 'teacher';
-  };
   const [search, setSearch] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -162,10 +156,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
                   <h4 style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {c.title}
                   </h4>
-                  <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    {c.teacher}
-                    <VerificationBadge status={getTeacherStatus(c.teacher)} size={11} />
-                  </span>
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>{c.teacher}</span>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}>
@@ -218,10 +209,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
 
           <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                Instructor: <strong>{currentCourse.teacher}</strong>
-                <VerificationBadge status={getTeacherStatus(currentCourse.teacher)} size={11} />
-              </span>
+              <span>Instructor: <strong>{currentCourse.teacher}</strong></span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '3px', color: '#f59e0b', fontWeight: 700 }}>
                 <Star size={11} fill="#f59e0b" stroke="none" /> {currentCourse.rating} ({currentCourse.reviews} reviews)
               </span>

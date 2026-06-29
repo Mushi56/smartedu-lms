@@ -11,15 +11,6 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
   const isAdmin = currentPortal === 'admin' || currentPortal === 'super-admin';
   const isTeacher = currentPortal === 'teacher';
 
-  const getTeacherStatus = (teacherName) => {
-    if (!teacherName) return 'teacher';
-    const teacher = db.teachers?.find(t => t.name === teacherName || t.name.includes(teacherName) || teacherName.includes(t.name.replace(/^(Dr\.|Ms\.|Mr\.)\s*/, '')));
-    if (teacher) return teacher.verificationStatus;
-    const cleanName = teacherName.replace(/^(Dr\.|Ms\.|Mr\.)\s*/, '');
-    const firstName = cleanName.split(' ')[0];
-    const partialTeacher = db.teachers?.find(t => t.name.includes(firstName));
-    return partialTeacher ? partialTeacher.verificationStatus : 'verified';
-  };
 
 
   // ----------------------------------------------------
@@ -99,6 +90,13 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
         <div className="custom-home-purple-bg">
           {/* User Welcome Row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
+            <img 
+              onClick={onOpenDrawer}
+              src={user?.avatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100"} 
+              alt="Avatar" 
+              style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2.5px solid #caba61', cursor: 'pointer', flexShrink: 0 }}
+              className="click-press"
+            />
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
@@ -305,10 +303,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                         alt="Teacher" 
                         style={{ width: '20px', height: '20px', borderRadius: '50%' }}
                       />
-                      <span style={{ fontSize: '10.5px', color: '#8c7f94', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                        By {classes[0].teacher}
-                        <VerificationBadge status={getTeacherStatus(classes[0].teacher)} size={11} />
-                      </span>
+                      <span style={{ fontSize: '10.5px', color: '#8c7f94', fontWeight: 600 }}>By {classes[0].teacher}</span>
                     </div>
                   </div>
 
@@ -358,10 +353,7 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
               {recommendedTeachers.map((teacher, index) => (
                 <div key={index} className="teacher-card">
                   <img src={teacher.avatar} alt={teacher.name} className="teacher-avatar" />
-                  <span className="teacher-name" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', justifyContent: 'center' }}>
-                    {teacher.name}
-                    <VerificationBadge status={getTeacherStatus(teacher.name)} size={11} />
-                  </span>
+                  <span className="teacher-name">{teacher.name}</span>
                   <span className="teacher-title">{teacher.title}</span>
                   <div className="teacher-rating-badge">
                     <Star size={8} fill="#caba61" stroke="none" />

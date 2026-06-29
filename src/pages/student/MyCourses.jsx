@@ -123,93 +123,86 @@ export default function MyCourses({ courses = [], onSelectCourse }) {
                 style={{
                   background: '#fff', borderRadius: '16px',
                   border: '1px solid #ede9f4', overflow: 'hidden',
-                  cursor: 'pointer', display: 'flex', flexDirection: 'column'
+                  cursor: 'pointer', display: 'flex', flexDirection: 'row',
+                  alignItems: 'stretch'
                 }}
               >
                 {/* Thumbnail */}
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: '#3A2048', flexShrink: 0 }}>
+                <div style={{ position: 'relative', width: '120px', aspectRatio: '16/9', background: '#3A2048', flexShrink: 0 }}>
                   <img
                     src={course.thumbnail || thumbnails[idx % thumbnails.length]}
                     alt={course.title}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                   />
                   <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {isCompleted
-                        ? <CheckCircle size={16} style={{ color: '#10b981' }} />
-                        : <Play size={15} fill="#311442" stroke="none" />
+                        ? <CheckCircle size={14} style={{ color: '#10b981' }} />
+                        : <Play size={12} fill="#311442" stroke="none" />
                       }
                     </div>
                   </div>
                   {/* Badge */}
                   {isCompleted && (
-                    <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#10b981', color: '#fff', fontSize: '8px', fontWeight: 800, padding: '3px 8px', borderRadius: '10px' }}>
-                      ✓ Completed
+                    <div style={{ position: 'absolute', top: '6px', right: '6px', background: '#10b981', color: '#fff', fontSize: '7px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px' }}>
+                      ✓
                     </div>
                   )}
                   {!isCompleted && course.progress > 0 && (
-                    <div style={{ position: 'absolute', top: '8px', right: '8px', background: '#f59e0b', color: '#fff', fontSize: '8px', fontWeight: 800, padding: '3px 8px', borderRadius: '10px' }}>
-                      In Progress
+                    <div style={{ position: 'absolute', top: '6px', right: '6px', background: '#f59e0b', color: '#fff', fontSize: '7px', fontWeight: 800, padding: '2px 6px', borderRadius: '8px' }}>
+                      In Prog.
                     </div>
                   )}
                 </div>
 
                 {/* Info */}
-                <div style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
-                    {course.title}
-                  </h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-secondary)' }}>
-                    <div style={{ width: '18px', height: '18px', borderRadius: '50%', background: '#ede9f4', overflow: 'hidden', flexShrink: 0 }}>
-                      <img
-                        src={`https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=40&q=80`}
-                        alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                    </div>
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.teacher}</span>
-                    <span style={{ color: '#e2e8f0' }}>•</span>
-                    <Star size={10} fill="#f59e0b" stroke="none" />
-                    <span style={{ fontWeight: 700, color: '#f59e0b' }}>{course.rating || '4.8'}</span>
-                  </div>
-
-                  {/* Progress Bar */}
+                <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '6px', flex: 1, justifyContent: 'space-between' }}>
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: 'var(--text-muted)', marginBottom: '5px' }}>
-                      <span>{course.chaptersCount || 0} lessons</span>
-                      <span style={{ fontWeight: 700, color: isCompleted ? '#10b981' : 'var(--text-primary)' }}>
-                        {course.progress}%
-                      </span>
-                    </div>
-                    <div style={{ height: '5px', background: '#ede9f4', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{
-                        width: `${course.progress}%`,
-                        height: '100%',
-                        background: isCompleted ? '#10b981' : 'var(--secondary-color)',
-                        borderRadius: '3px',
-                        transition: 'width 0.3s ease'
-                      }} />
+                    <h3 style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {course.title}
+                    </h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80px' }}>{course.teacher}</span>
+                      <span style={{ color: '#e2e8f0' }}>•</span>
+                      <Star size={9} fill="#f59e0b" stroke="none" />
+                      <span style={{ fontWeight: 700, color: '#f59e0b' }}>{course.rating || '4.8'}</span>
                     </div>
                   </div>
 
-                  {/* Footer */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '6px', borderTop: '1px solid #f5f3f9' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: 'var(--text-muted)' }}>
-                      <Clock size={10} />
-                      <span>Enrolled: {course.enrolledDate || 'Recent'}</span>
+                  {/* Progress Bar & Footer */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: 'var(--text-muted)', marginBottom: '3px' }}>
+                        <span>{course.chaptersCount || 0} lessons</span>
+                        <span style={{ fontWeight: 700, color: isCompleted ? '#10b981' : 'var(--text-primary)' }}>
+                          {course.progress}%
+                        </span>
+                      </div>
+                      <div style={{ height: '4px', background: '#ede9f4', borderRadius: '2px', overflow: 'hidden' }}>
+                        <div style={{
+                          width: `${course.progress}%`,
+                          height: '100%',
+                          background: isCompleted ? '#10b981' : 'var(--secondary-color)',
+                          borderRadius: '2px',
+                          transition: 'width 0.3s ease'
+                        }} />
+                      </div>
                     </div>
-                    <button
-                      onClick={e => { e.stopPropagation(); onSelectCourse(course.id); }}
-                      style={{
-                        padding: '5px 14px', borderRadius: '20px', border: 'none',
-                        background: isCompleted ? 'rgba(16,185,129,0.1)' : 'var(--primary-color)',
-                        color: isCompleted ? '#10b981' : '#fff',
-                        fontSize: '10px', fontWeight: 700, cursor: 'pointer'
-                      }}
-                      className="click-press"
-                    >
-                      {isCompleted ? 'Review' : course.progress > 0 ? 'Continue' : 'Start'}
-                    </button>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <button
+                        onClick={e => { e.stopPropagation(); onSelectCourse(course.id); }}
+                        style={{
+                          padding: '4px 12px', borderRadius: '16px', border: 'none',
+                          background: isCompleted ? 'rgba(16,185,129,0.1)' : 'var(--primary-color)',
+                          color: isCompleted ? '#10b981' : '#fff',
+                          fontSize: '9px', fontWeight: 700, cursor: 'pointer'
+                        }}
+                        className="click-press"
+                      >
+                        {isCompleted ? 'Review' : course.progress > 0 ? 'Continue' : 'Start'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

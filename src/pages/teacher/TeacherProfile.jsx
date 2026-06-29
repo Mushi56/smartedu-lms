@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   User, Mail, Phone, MapPin, Globe, Briefcase, GraduationCap,
   Award, Shield, Camera, Save, Edit3, Languages, DollarSign, 
-  Check, X
+  Link, Play, Check, X
 } from 'lucide-react';
 import VerificationBadge from '../../components/VerificationBadge';
 

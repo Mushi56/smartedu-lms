@@ -198,26 +198,6 @@ export default function AppDrawer({
         {/* Navigation Body */}
         <div className="drawer-body hide-scrollbar">
           
-          {/* Quick Tab Options for Mobile Compatibility */}
-          <div className="drawer-section-title">Quick Views</div>
-          <button
-            onClick={() => handleTabClick('home')}
-            className={`drawer-link ${activeTab === 'home' ? 'active' : ''}`}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <LayoutDashboard size={16} />
-              <span>Mobile Home</span>
-            </div>
-          </button>
-          <button
-            onClick={() => handleTabClick('explore')}
-            className={`drawer-link ${activeTab === 'explore' ? 'active' : ''}`}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <BookOpen size={16} />
-              <span>Mobile Discover</span>
-            </div>
-          </button>
 
           {/* Main Portal Specific Options */}
           <div className="drawer-section-title">{sectionTitle}</div>
