@@ -167,6 +167,23 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', savedTheme);
   }, []);
 
+  // Sync native mobile status bar theme-color meta tag
+  useEffect(() => {
+    const isHomeHeaderDark = activeTab === 'home' && !scrolled;
+    const isPurpleTheme = currentPortal !== 'admin' && currentPortal !== 'super-admin';
+    const color = isHomeHeaderDark 
+      ? (isPurpleTheme ? '#4f46e5' : '#1e1b4b') 
+      : '#ffffff';
+
+    let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (!metaThemeColor) {
+      metaThemeColor = document.createElement('meta');
+      metaThemeColor.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaThemeColor);
+    }
+    metaThemeColor.setAttribute('content', color);
+  }, [activeTab, currentPortal, scrolled]);
+
   const handleSetTheme = (nextTheme) => {
     setTheme(nextTheme);
     localStorage.setItem('suriatech_mobile_theme', nextTheme);

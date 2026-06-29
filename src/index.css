@@ -141,9 +141,10 @@ body {
     border-radius: 0;
     box-shadow: none;
   }
-  .device-status-bar {
-    padding-top: var(--safe-top);
-    height: calc(34px + var(--safe-top));
+  .device-status-bar,
+  .simulated-status-bar,
+  .simulated-home-bar {
+    display: none !important;
   }
 }
 
