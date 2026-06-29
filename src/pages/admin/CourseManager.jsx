@@ -459,7 +459,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
                   isExpanded={expandedModule === mod.id}
                   setExpandedModule={setExpandedModule}
                   onDeleteModule={id => setForm(f => ({ ...f, modules: f.modules.filter(m => m.id !== id) }))}
-                  onAddLesson={(modId, lt, ld, vn, an, at, vp) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoName: vn, attachmentName: an, attachmentType: at, videoPreviewUrl: vp }] }) }))}
+                  onAddLesson={(modId, lt, ld, vn, attachments, vp) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: [...m.lessons, { id: `l-${Date.now()}`, title: lt, duration: ld || '10:00', videoName: vn, attachments: attachments || [], videoPreviewUrl: vp }] }) }))}
                   onDeleteLesson={(modId, lesId) => setForm(f => ({ ...f, modules: f.modules.map(m => m.id !== modId ? m : { ...m, lessons: m.lessons.filter(l => l.id !== lesId) }) }))}
                 />
               ))}
@@ -735,13 +735,40 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
   const [lTitle, setLTitle] = useState('');
   const [lDuration, setLDuration] = useState('');
   
-  // Video and Attachment File Upload state
+  // Video File state
   const [lVideoFile, setLVideoFile] = useState(null);
   const [lVideoPreviewUrl, setLVideoPreviewUrl] = useState('');
-  const [lAttachmentFile, setLAttachmentFile] = useState(null);
+
+  // Multiple Attachments state
+  const [lAttachments, setLAttachments] = useState([]);
   const [lAttachmentType, setLAttachmentType] = useState('Study Material');
 
   const ATTACHMENT_TYPES = ['Study Material', 'Practice Material', 'Assignment', 'Slides', 'Syllabus'];
+
+  const handleUploadAttachment = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
+      setLAttachments(prev => [
+        ...prev,
+        {
+          id: `att-${Date.now()}-${Math.random()}`,
+          name: nameWithoutExt,
+          type: lAttachmentType,
+          fileName: file.name
+        }
+      ]);
+      e.target.value = '';
+    }
+  };
+
+  const updateAttachment = (id, key, val) => {
+    setLAttachments(prev => prev.map(att => att.id === id ? { ...att, [key]: val } : att));
+  };
+
+  const deleteAttachment = (id) => {
+    setLAttachments(prev => prev.filter(att => att.id !== id));
+  };
 
   return (
     <div style={{ background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)', overflow: 'hidden' }}>
@@ -771,7 +798,7 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
             <div key={les.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '10px 12px', background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border-subtle)', textAlign: 'left' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {les.videoPreviewUrl ? (
-                  <div style={{ width: '48px', height: '28px', borderRadius: '4px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
+                  <div style={{ width: '56px', height: '32px', borderRadius: '4px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
                     <video src={les.videoPreviewUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
                   </div>
                 ) : (
@@ -785,19 +812,19 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
               </div>
               
               {/* Media & Attachment tags inside lessons list */}
-              {(les.videoName || les.videoUrl || les.attachmentName || les.attachmentUrl) && (
+              {((les.videoName || les.videoUrl) || (les.attachments && les.attachments.length > 0)) && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '22px', marginTop: '4px', fontSize: '10px', color: 'var(--text-muted)' }}>
                   {(les.videoName || les.videoUrl) && (
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Video size={12} style={{ color: '#3b82f6' }} /> Video: {les.videoName || 'Uploaded Lecture'}
                     </span>
                   )}
-                  {(les.attachmentName || les.attachmentUrl) && (
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {les.attachments && les.attachments.map(att => (
+                    <span key={att.id} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <FileText size={12} style={{ color: '#10b981' }} />
-                      <strong style={{ color: 'var(--text-secondary)' }}>{les.attachmentType || 'Attachment'}:</strong> {les.attachmentName || 'Downloadable File'}
+                      <strong style={{ color: 'var(--text-secondary)' }}>{att.type || 'Attachment'}:</strong> {att.name || att.fileName}
                     </span>
-                  )}
+                  ))}
                 </div>
               )}
             </div>
@@ -812,8 +839,7 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
               lTitle.trim(), 
               lDuration || '10:00', 
               lVideoFile ? lVideoFile.name : '', 
-              lAttachmentFile ? lAttachmentFile.name : '',
-              lAttachmentType,
+              lAttachments,
               lVideoPreviewUrl
             ); 
             // Reset states
@@ -821,7 +847,7 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
             setLDuration(''); 
             setLVideoFile(null);
             setLVideoPreviewUrl('');
-            setLAttachmentFile(null);
+            setLAttachments([]);
             setLAttachmentType('Study Material');
           }}
             style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', padding: '12px', borderRadius: '12px', border: '1px dashed var(--border-color)', background: 'var(--bg-card)', textAlign: 'left' }}
@@ -830,8 +856,19 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
             <input type="text" value={lTitle} onChange={e => setLTitle(e.target.value)} placeholder="Lesson title (e.g. Intro to SAT Functions)..." style={{ padding: '8px 10px', fontSize: '11px', border: '1px solid var(--border-subtle)', borderRadius: '8px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }} required />
             
             {/* Custom Video File Selector */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)' }}>Lesson Video</div>
+              
+              {/* Bigger Video Preview Player */}
+              {lVideoPreviewUrl && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <div style={{ position: 'relative', width: '100%', height: '120px', borderRadius: '8px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)' }}>
+                    <video src={lVideoPreviewUrl} controls style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  </div>
+                  <span style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Tap play to preview video</span>
+                </div>
+              )}
+
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <label className="click-press" style={{
                   display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px',
@@ -853,13 +890,6 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
                   />
                 </label>
                 
-                {/* Real-time Video Thumbnail Preview */}
-                {lVideoPreviewUrl && (
-                  <div style={{ width: '64px', height: '36px', borderRadius: '6px', overflow: 'hidden', background: '#000', border: '1px solid var(--border-subtle)', flexShrink: 0 }}>
-                    <video src={lVideoPreviewUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
-                  </div>
-                )}
-
                 <span style={{ fontSize: '10px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                   {lVideoFile ? lVideoFile.name : 'No file selected (gallery/files)'}
                 </span>
@@ -873,8 +903,9 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
 
             {/* Custom Document Attachment Selector */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px solid var(--border-color)', paddingTop: '8px' }}>
-              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)' }}>Lesson Attachment</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)' }}>Lesson Attachments</div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '8px', alignItems: 'center' }}>
                 <select 
                   value={lAttachmentType} 
                   onChange={e => setLAttachmentType(e.target.value)}
@@ -883,30 +914,55 @@ function MobileModuleItem({ mod, idx, isExpanded, setExpandedModule, onDeleteMod
                   {ATTACHMENT_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
                 </select>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <label className="click-press" style={{
-                    display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px',
-                    border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)',
-                    fontSize: '10.5px', fontWeight: 700, cursor: 'pointer', flexShrink: 0
-                  }}>
-                    <FileText size={13} style={{ color: '#10b981' }} /> Upload Document
-                    <input 
-                      type="file" 
-                      accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" 
-                      onChange={e => { if (e.target.files?.[0]) setLAttachmentFile(e.target.files[0]); }}
-                      style={{ display: 'none' }} 
-                    />
-                  </label>
-                  {lAttachmentFile && (
-                    <button type="button" onClick={() => setLAttachmentFile(null)} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}>
-                      <X size={12} />
-                    </button>
-                  )}
+                <label className="click-press" style={{
+                  display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px',
+                  border: '1px solid var(--border-color)', background: 'var(--bg-input)', color: 'var(--text-primary)',
+                  fontSize: '10.5px', fontWeight: 700, cursor: 'pointer'
+                }}>
+                  <FileText size={13} style={{ color: '#10b981' }} /> Add Document
+                  <input 
+                    type="file" 
+                    accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" 
+                    onChange={handleUploadAttachment}
+                    style={{ display: 'none' }} 
+                  />
+                </label>
+              </div>
+
+              {/* Multiple Uploaded Documents with Rename fields */}
+              {lAttachments.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px', background: 'var(--bg-input)', padding: '10px', borderRadius: '10px' }}>
+                  <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Upload Queue ({lAttachments.length})</span>
+                  {lAttachments.map(att => (
+                    <div key={att.id} style={{ display: 'flex', flexDirection: 'column', gap: '6px', background: 'var(--bg-card)', padding: '8px', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', color: 'var(--text-muted)' }}>
+                        <FileText size={10} style={{ color: '#10b981' }} />
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{att.fileName}</span>
+                        <button type="button" onClick={() => deleteAttachment(att.id)} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', padding: '2px' }}>
+                          <X size={12} />
+                        </button>
+                      </div>
+                      
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                        <input 
+                          type="text" 
+                          value={att.name} 
+                          onChange={e => updateAttachment(att.id, 'name', e.target.value)}
+                          placeholder="Rename attachment..."
+                          style={{ padding: '4px 8px', fontSize: '10.5px', border: '1px solid var(--border-subtle)', borderRadius: '6px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit' }}
+                        />
+                        <select 
+                          value={att.type} 
+                          onChange={e => updateAttachment(att.id, 'type', e.target.value)}
+                          style={{ padding: '4px 6px', fontSize: '10.5px', border: '1px solid var(--border-subtle)', borderRadius: '6px', outline: 'none', background: 'var(--bg-input)', color: 'var(--text-primary)', fontFamily: 'inherit', cursor: 'pointer' }}
+                        >
+                          {ATTACHMENT_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {lAttachmentFile ? `📎 [${lAttachmentType}] ${lAttachmentFile.name}` : 'No attachment file selected (PDF, slides, etc.)'}
-              </div>
+              )}
             </div>
 
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '8px' }}>
