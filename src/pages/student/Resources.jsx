@@ -123,7 +123,10 @@ export default function Resources() {
         overflowX: 'auto', 
         overflowY: 'hidden',
         height: '48px',
-        alignItems: 'center'
+        alignItems: 'center',
+        margin: '0 -20px',
+        paddingLeft: '20px',
+        paddingRight: '20px'
       }} className="hide-scrollbar">
         {types.map((t) => (
           <button
