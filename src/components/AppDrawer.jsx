@@ -3,7 +3,7 @@ import {
   LayoutDashboard, BookOpen, Video, Calendar, FileText, Notebook, 
   MessageCircle, TrendingUp, CreditCard, Award, Heart, Crown, Settings,
   Users, CheckSquare, BarChart2, Star, Ticket, Volume2, ChevronRight, ChevronDown, X,
-  Sun, Moon, ShieldAlert, DollarSign, Shield, User, Plus, Tag
+  Sun, Moon, ShieldAlert, DollarSign, Shield, User, Plus, Tag, Monitor
 } from 'lucide-react';
 import VerificationBadge from './VerificationBadge';
 import { getAvailablePortals } from '../data/permissions';
@@ -347,7 +347,47 @@ export default function AppDrawer({
                 })}
               </div>
             </div>
-          )}
+            {/* Appearance Segmented Selector */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Appearance</span>
+            <div style={{ display: 'flex', background: '#f1f5f9', borderRadius: '12px', padding: '3px', gap: '2px' }}>
+              {[
+                { id: 'light', label: 'Light', icon: Sun },
+                { id: 'dark', label: 'Dark', icon: Moon },
+                { id: 'auto', label: 'System', icon: Monitor }
+              ].map(t => {
+                const IconComponent = t.icon;
+                const isActive = theme === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setTheme(t.id)}
+                    className="click-press"
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '4px',
+                      padding: '7px 0',
+                      borderRadius: '9px',
+                      border: 'none',
+                      fontSize: '11px',
+                      fontWeight: isActive ? 800 : 600,
+                      cursor: 'pointer',
+                      backgroundColor: isActive ? '#ffffff' : 'transparent',
+                      color: isActive ? 'var(--primary-color)' : 'var(--text-secondary)',
+                      boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.03)' : 'none',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <IconComponent size={13} style={{ color: isActive ? 'var(--primary-color)' : 'var(--text-secondary)' }} />
+                    <span>{t.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
 
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
             {/* Sign Out */}
@@ -374,29 +414,6 @@ export default function AppDrawer({
               }}
             >
               Sign Out
-            </button>
-
-            {/* Theme Toggle */}
-            <button 
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} 
-              className="click-press"
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                backgroundColor: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--text-secondary)',
-                border: '1px solid rgba(0,0,0,0.04)',
-                flexShrink: 0,
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-              }}
-              title="Toggle Dark/Light Mode"
-            >
-              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             </button>
           </div>
         </div>
