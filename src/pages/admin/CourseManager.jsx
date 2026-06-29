@@ -62,7 +62,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
     if (initialView === 'create') {
       setForm({
         ...emptyForm,
-        teacher: user?.role === 'teacher' ? user.name : (TEACHERS[0]?.name || '')
+        teacher: user?.role?.toLowerCase() === 'teacher' ? user.name : (TEACHERS[0]?.name || '')
       });
       setActiveStep(1);
     }
@@ -83,6 +83,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
       price: parseFloat(form.price) || 0, description: form.description,
       level: form.level, language: form.language, thumbnail: form.thumbnail,
       modules: form.modules, progress: 0,
+      publishStatus: form.publishImmediately ? 'published' : 'draft',
       enrolledDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       chaptersCount: form.modules.length, studentsCount: 0, rating: 0,
     };
@@ -311,7 +312,7 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
               Instructor
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {user?.role === 'teacher' ? (
+              {user?.role?.toLowerCase() === 'teacher' ? (
                 <div
                   style={{
                     display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px',
