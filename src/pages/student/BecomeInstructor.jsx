@@ -9,7 +9,33 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const QUALIFICATIONS = ['Bachelor\'s Degree', 'Master\'s Degree', 'Ph.D.', 'Diploma / Professional Certificate', 'Other'];
 const CATEGORIES = ['Scholarship Exams', 'Academic', 'Language', 'STEM', 'Arts', 'Business', 'Technology'];
-const LANGUAGES_LIST = ['English', 'Arabic', 'Spanish', 'French', 'German', 'Mandarin', 'Malay', 'Urdu', 'Turkish', 'Japanese'];
+const LANGUAGES_LIST = [
+  'Afrikaans', 'Albanian', 'Amharic', 'Arabic', 'Armenian', 'Azerbaijani', 'Basque', 'Belarusian', 'Bengali', 'Bosnian', 
+  'Bulgarian', 'Burmese', 'Catalan', 'Cebuano', 'Chichewa', 'Chinese (Mandarin)', 'Chinese (Cantonese)', 'Corsican', 'Croatian', 'Czech', 
+  'Danish', 'Dutch', 'English', 'Esperanto', 'Estonian', 'Filipino', 'Finnish', 'French', 'Frisian', 'Galician', 
+  'Georgian', 'German', 'Greek', 'Gujarati', 'Haitian Creole', 'Hausa', 'Hawaiian', 'Hebrew', 'Hindi', 'Hmong', 
+  'Hungarian', 'Icelandic', 'Igbo', 'Indonesian', 'Irish', 'Italian', 'Japanese', 'Javanese', 'Kannada', 'Kazakh', 
+  'Khmer', 'Kinyarwanda', 'Korean', 'Kurdish', 'Kyrgyz', 'Lao', 'Latin', 'Latvian', 'Lithuanian', 'Luxembourgish', 
+  'Macedonian', 'Malagasy', 'Malay', 'Malayalam', 'Maltese', 'Maori', 'Marathi', 'Mongolian', 'Nepali', 'Norwegian', 
+  'Odia (Oriya)', 'Pashto', 'Persian', 'Polish', 'Portuguese', 'Punjabi', 'Romanian', 'Russian', 'Samoan', 'Scots Gaelic', 
+  'Serbian', 'Sesotho', 'Shona', 'Sindhi', 'Sinhala', 'Slovak', 'Slovenian', 'Somali', 'Spanish', 'Sundanese', 
+  'Swahili', 'Swedish', 'Tajik', 'Tamil', 'Tatar', 'Telugu', 'Thai', 'Turkish', 'Turkmen', 'Ukrainian', 
+  'Urdu', 'Uyghur', 'Uzbek', 'Vietnamese', 'Welsh', 'Xhosa', 'Yiddish', 'Yoruba', 'Zulu'
+];
+const COUNTRY_CODES = [
+  { flag: '🇲🇾', code: '+60', name: 'Malaysia' },
+  { flag: '🇸🇬', code: '+65', name: 'Singapore' },
+  { flag: '🇬🇧', code: '+44', name: 'United Kingdom' },
+  { flag: '🇺🇸', code: '+1', name: 'United States' },
+  { flag: '🇨🇦', code: '+1', name: 'Canada' },
+  { flag: '🇦🇺', code: '+61', name: 'Australia' },
+  { flag: '🇮🇳', code: '+91', name: 'India' },
+  { flag: '🇵🇰', code: '+92', name: 'Pakistan' },
+  { flag: '🇸🇦', code: '+966', name: 'Saudi Arabia' },
+  { flag: '🇦🇪', code: '+971', name: 'United Arab Emirates' },
+  { flag: '🇹🇷', code: '+90', name: 'Turkey' },
+  { flag: '🇧🇩', code: '+880', name: 'Bangladesh' }
+];
 
 // ── Shared Styles ─────────────────────────────────────────────────
 const cardStyle = {
@@ -46,6 +72,7 @@ export default function BecomeInstructor({ db, setDb }) {
     fullName: user?.name || '',
     email: user?.email || '',
     phone: '',
+    countryCode: '+60',
     location: '',
     bio: '',
     avatar: user?.avatar || '',
@@ -121,7 +148,7 @@ export default function BecomeInstructor({ db, setDb }) {
         studentId: user?.id || 'guest',
         studentName: form.fullName,
         email: form.email,
-        phone: form.phone,
+        phone: `${form.countryCode} ${form.phone}`,
         location: form.location,
         bio: form.bio,
         qualification: form.qualification,
@@ -287,58 +314,97 @@ export default function BecomeInstructor({ db, setDb }) {
             <label style={labelStyle}>Full Name *</label>
             <input style={inputStyle} type="text" value={form.fullName}
               onChange={e => setForm(f => ({ ...f, fullName: e.target.value }))}
-              placeholder="e.g. Dr. Ahmed Hassan" />
+              placeholder="Enter your full name" />
           </div>
 
           <div>
             <label style={labelStyle}>Email Address *</label>
             <input style={inputStyle} type="email" value={form.email}
               onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-              placeholder="email@example.com" />
+              placeholder="Enter your email address" />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
             <div>
               <label style={labelStyle}>Phone *</label>
-              <input style={inputStyle} type="text" value={form.phone}
-                onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                placeholder="+60 12-345 6789" />
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <select 
+                  value={form.countryCode}
+                  onChange={e => setForm(f => ({ ...f, countryCode: e.target.value }))}
+                  style={{ 
+                    padding: '10px 4px', 
+                    fontSize: '12px', 
+                    border: '1px solid #ede9f4', 
+                    borderRadius: '10px', 
+                    background: '#faf9fc', 
+                    color: 'var(--text-primary)',
+                    outline: 'none', 
+                    fontFamily: 'inherit',
+                    width: '74px',
+                    flexShrink: 0
+                  }}
+                >
+                  {COUNTRY_CODES.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.flag} {c.code}
+                    </option>
+                  ))}
+                </select>
+                <input style={inputStyle} type="text" value={form.phone}
+                  onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                  placeholder="Phone number" />
+              </div>
             </div>
             <div>
               <label style={labelStyle}>Location *</label>
               <input style={inputStyle} type="text" value={form.location}
                 onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
-                placeholder="Kuala Lumpur, MY" />
+                placeholder="Enter city, country" />
             </div>
           </div>
 
-          {/* Avatar URL */}
+          {/* Profile Picture Upload */}
           <div>
-            <label style={labelStyle}>Profile Picture URL</label>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input style={{ ...inputStyle, flex: 1 }} type="text" value={form.avatar}
-                onChange={e => setForm(f => ({ ...f, avatar: e.target.value }))}
-                placeholder="Paste image URL" />
-              <button
-                type="button"
-                onClick={() => {
-                  const demos = [
-                    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200',
-                    'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=200',
-                    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200'
-                  ];
-                  setForm(f => ({ ...f, avatar: demos[Math.floor(Math.random() * demos.length)] }));
-                }}
-                className="click-press"
-                style={{
-                  padding: '8px 12px', borderRadius: '10px', border: '1px solid #ede9f4',
-                  background: 'rgba(124,58,237,0.06)', color: 'var(--primary-color)',
-                  fontSize: '10px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap'
-                }}
-              >
-                Random
-              </button>
-            </div>
+            <label style={labelStyle}>Profile Picture *</label>
+            {form.avatar ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px', border: '1px solid #ede9f4', borderRadius: '12px', background: '#faf9fc' }}>
+                <img 
+                  src={form.avatar} 
+                  alt="Profile Preview" 
+                  style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-color)' }} 
+                />
+                <span style={{ fontSize: '11px', flex: 1, color: 'var(--text-primary)', fontWeight: 600 }}>Avatar Uploaded</span>
+                <button 
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, avatar: '' }))} 
+                  style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px' }}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ) : (
+              <div style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                border: '1.5px dashed #ede9f4', borderRadius: '12px', padding: '20px',
+                cursor: 'pointer', background: '#faf9fc', position: 'relative', textAlign: 'center'
+              }}>
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const localUrl = URL.createObjectURL(file);
+                      setForm(f => ({ ...f, avatar: localUrl }));
+                    }
+                  }}
+                  style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }}
+                />
+                <Upload size={18} style={{ color: 'var(--text-muted)', marginBottom: '6px' }} />
+                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-primary)' }}>Upload Profile Image</span>
+                <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '2px' }}>PNG, JPG, or GIF up to 2MB</span>
+              </div>
+            )}
           </div>
 
           <div>
@@ -377,7 +443,7 @@ export default function BecomeInstructor({ db, setDb }) {
             <label style={labelStyle}>University / Institution *</label>
             <input style={inputStyle} type="text" value={form.university}
               onChange={e => setForm(f => ({ ...f, university: e.target.value }))}
-              placeholder="e.g. University of Malaya" />
+              placeholder="Enter university or institution name" />
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -405,40 +471,79 @@ export default function BecomeInstructor({ db, setDb }) {
             <label style={labelStyle}>LinkedIn Profile (Optional)</label>
             <input style={inputStyle} type="text" value={form.linkedin}
               onChange={e => setForm(f => ({ ...f, linkedin: e.target.value }))}
-              placeholder="https://linkedin.com/in/username" />
+              placeholder="Enter LinkedIn profile link" />
           </div>
 
           <div>
             <label style={labelStyle}>Website / Portfolio (Optional)</label>
             <input style={inputStyle} type="text" value={form.website}
               onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
-              placeholder="https://yourportfolio.com" />
+              placeholder="Enter website or portfolio link" />
           </div>
 
           {/* Languages */}
           <div>
             <label style={labelStyle}>Languages Spoken *</label>
-            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {LANGUAGES_LIST.map((lang) => {
-                const isSelected = form.languages.includes(lang);
-                return (
-                  <button
-                    key={lang} type="button"
-                    onClick={() => toggleLanguage(lang)}
-                    className="click-press"
+            
+            {/* Selected Language Tags */}
+            {form.languages.length > 0 && (
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                {form.languages.map((lang) => (
+                  <span
+                    key={lang}
                     style={{
-                      padding: '5px 10px', borderRadius: '16px', fontSize: '10px', fontWeight: 700,
-                      border: isSelected ? '1.5px solid var(--secondary-color)' : '1px solid #ede9f4',
-                      background: isSelected ? 'rgba(202,186,97,0.1)' : '#fff',
-                      color: isSelected ? 'var(--text-primary)' : 'var(--text-secondary)',
-                      cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px'
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '4px 10px',
+                      borderRadius: '16px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      backgroundColor: 'rgba(202,186,97,0.12)',
+                      color: 'var(--text-primary)',
+                      border: '1px solid rgba(202, 186, 97, 0.3)'
                     }}
                   >
-                    {lang} {isSelected && <Check size={10} />}
-                  </button>
-                );
-              })}
-            </div>
+                    {lang}
+                    <button
+                      type="button"
+                      onClick={() => toggleLanguage(lang)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--text-secondary)',
+                        cursor: 'pointer',
+                        padding: '1px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <X size={10} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Selector Dropdown */}
+            <select
+              value=""
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val && !form.languages.includes(val)) {
+                  toggleLanguage(val);
+                }
+              }}
+              style={inputStyle}
+            >
+              <option value="" disabled>Select languages to add...</option>
+              {LANGUAGES_LIST.map((lang) => (
+                <option key={lang} value={lang} disabled={form.languages.includes(lang)}>
+                  {lang} {form.languages.includes(lang) ? '✓' : ''}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       )}
@@ -547,7 +652,7 @@ export default function BecomeInstructor({ db, setDb }) {
             )}
             <form onSubmit={addCertification} style={{ display: 'flex', gap: '8px' }}>
               <input style={{ ...inputStyle, flex: 1 }} type="text"
-                placeholder="e.g. Certified IELTS Trainer"
+                placeholder="Enter certification name"
                 value={form.certName}
                 onChange={e => setForm(f => ({ ...f, certName: e.target.value }))} />
               <button type="submit" className="click-press"
@@ -576,7 +681,7 @@ export default function BecomeInstructor({ db, setDb }) {
             <label style={labelStyle}>Instructor Headline *</label>
             <input style={inputStyle} type="text" value={form.headline}
               onChange={e => setForm(f => ({ ...f, headline: e.target.value }))}
-              placeholder="e.g. Senior SAT Math Coach" />
+              placeholder="Enter your professional title or headline" />
             <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '3px', display: 'block' }}>
               A short catchy tagline describing your expertise.
             </span>
@@ -590,14 +695,14 @@ export default function BecomeInstructor({ db, setDb }) {
                 <input style={{ ...inputStyle, paddingLeft: '24px' }} type="number"
                   value={form.hourlyRate}
                   onChange={e => setForm(f => ({ ...f, hourlyRate: e.target.value }))}
-                  placeholder="35" />
+                  placeholder="Enter hourly rate" />
               </div>
             </div>
             <div>
               <label style={labelStyle}>Intro Video URL</label>
               <input style={inputStyle} type="text" value={form.videoUrl}
                 onChange={e => setForm(f => ({ ...f, videoUrl: e.target.value }))}
-                placeholder="YouTube / Vimeo link" />
+                placeholder="Enter YouTube or Vimeo video link" />
             </div>
           </div>
 

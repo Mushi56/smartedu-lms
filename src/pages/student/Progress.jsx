@@ -1,226 +1,360 @@
 import React, { useState } from 'react';
-import { Award, Target, Flame, CheckCircle2, Star, ShieldAlert, Download, X } from 'lucide-react';
+import { Award, Target, Flame, CheckCircle, Star, Download, X, Clock, BarChart2, ShieldCheck, Check, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function Progress({ courses, streak, overallProgress }) {
+export default function Progress({ courses = [], streak = 14, overallProgress = 67 }) {
   const [showCertificate, setShowCertificate] = useState(false);
   const [activeCert, setActiveCert] = useState(null);
+  const [downloadingId, setDownloadingId] = useState(null);
 
-  const completedCourses = courses.filter(c => c.progress === 100 || c.id === 'course-1'); // simulate some completed
+  // Completed courses
+  const completedCourses = courses.filter(c => c.progress === 100 || c.id === 'course-1'); // ensure at least 1 completed
 
-  const achievements = [
-    { id: 1, title: "7 Day Streak", desc: "Maintained active study streak for a week", badge: "🔥", color: '#7c3aed', xp: '500 XP' },
-    { id: 2, title: "AI Quiz Master", desc: "Scored 90% in 5 consecutive AI quizzes", badge: "⭐", color: '#f59e0b', xp: '800 XP' },
-    { id: 3, title: "Fast Learner", desc: "Completed 2 modules within a single day", badge: "⚡", color: '#10b981', xp: '350 XP' },
-    { id: 4, title: "Class Regular", desc: "Attended 10 live lecture streams in a row", badge: "🎓", color: '#3b82f6', xp: '600 XP' }
-  ];
-
-  const handleLaunchCertificate = (courseName) => {
-    setActiveCert(courseName);
+  const handleLaunchCertificate = (course) => {
+    setActiveCert(course);
     setShowCertificate(true);
-    // Splash of congratulations confetti!
     confetti({
-      particleCount: 150,
-      spread: 90,
-      origin: { y: 0.5 }
+      particleCount: 120,
+      spread: 70,
+      origin: { y: 0.6 }
     });
   };
 
+  const handleDownloadPDF = (id) => {
+    setDownloadingId(id);
+    setTimeout(() => {
+      setDownloadingId(null);
+      alert('Certificate PDF downloaded successfully to local storage!');
+    }, 2000);
+  };
+
+  // Mock study milestones
+  const milestones = [
+    { id: 1, label: 'Orientation', desc: 'Successfully onboarded & target set', completed: true },
+    { id: 2, label: 'First Lecture', desc: 'Attended live class stream', completed: true },
+    { id: 3, label: 'Practice Milestone', desc: 'Scored 80%+ on your first assignment', completed: true },
+    { id: 4, label: 'Course Graduate', desc: 'Achieve 100% course syllabus progress', completed: completedCourses.length > 0 }
+  ];
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }} className="animate-fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h2 style={{ fontSize: '22px', fontWeight: 700 }}>My Progress & Achievements</h2>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Observe your study streaks, unlock badges, and download accredited certificates</p>
-        </div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} className="animate-fade-in">
+      
+      {/* Title Header */}
+      <div style={{ textAlign: 'left', padding: '4px 0' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#1e0926', margin: '0 0 4px 0' }}>My Learning Progress</h2>
+        <p style={{ fontSize: '12px', color: '#8c7f94', margin: 0, fontWeight: 500 }}>
+          Track your average completion, study metrics, and download earned certificates.
+        </p>
       </div>
 
-      {/* Grid of stats */}
-      <div className="stats-row-grid">
-        <div className="stat-card-item">
-          <div className="stat-card-icon-box" style={{ backgroundColor: 'rgba(124, 58, 237, 0.1)', color: '#7c3aed' }}>
-            <Flame size={20} fill="#7c3aed" />
+      {/* Progress Dashboard Card */}
+      <div className="custom-home-card" style={{ 
+        padding: '16px', 
+        background: 'linear-gradient(135deg, #311442 0%, #1e0926 100%)',
+        color: '#ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.6)', fontWeight: 700, textTransform: 'uppercase' }}>Overall Completion</span>
+            <h3 style={{ fontSize: '28px', fontWeight: 900, margin: '2px 0 0 0', color: '#ffffff' }}>{overallProgress}%</h3>
           </div>
-          <div className="stat-card-details">
-            <span className="stat-card-label">Current Streak</span>
-            <span className="stat-card-value">{streak} Days</span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Keep it up tomorrow!</span>
-          </div>
-        </div>
-
-        <div className="stat-card-item">
-          <div className="stat-card-icon-box" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}>
-            <Target size={20} />
-          </div>
-          <div className="stat-card-details">
-            <span className="stat-card-label">Courses In Progress</span>
-            <span className="stat-card-value">{courses.filter(c => c.progress > 0 && c.progress < 100).length}</span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Consistent progression</span>
-          </div>
-        </div>
-
-        <div className="stat-card-item">
-          <div className="stat-card-icon-box" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}>
-            <Award size={20} />
-          </div>
-          <div className="stat-card-details">
-            <span className="stat-card-label">Certificates Earned</span>
-            <span className="stat-card-value">{completedCourses.length}</span>
-            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Share on LinkedIn</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Achievements List and Certificates Split Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
-        {/* Badges and achievements */}
-        <div className="smart-card">
-          <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '20px', textAlign: 'left' }}>Unlocked Badges</h3>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-            {achievements.map((ach) => (
-              <div 
-                key={ach.id} 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '14px', 
-                  padding: '16px', 
-                  borderRadius: '12px', 
-                  border: '1px solid var(--border-color)', 
-                  backgroundColor: 'var(--bg-app)', 
-                  textAlign: 'left' 
-                }}
-              >
-                <div style={{ 
-                  width: '46px', 
-                  height: '46px', 
-                  borderRadius: '50%', 
-                  backgroundColor: 'var(--bg-card)', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  fontSize: '22px', 
-                  border: '1px solid var(--border-color)', 
-                  boxShadow: 'var(--shadow-sm)' 
-                }}>
-                  {ach.badge}
-                </div>
-                <div>
-                  <span style={{ fontSize: '13px', fontWeight: 700, display: 'block', color: 'var(--text-primary)' }}>{ach.title}</span>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', marginTop: '2px', lineHeight: 1.3 }}>{ach.desc}</span>
-                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary-color)', display: 'inline-block', marginTop: '4px' }}>{ach.xp}</span>
-                </div>
-              </div>
-            ))}
+          {/* Custom SVG Ring Progress */}
+          <div style={{ width: '56px', height: '56px', position: 'relative' }}>
+            <svg width="100%" height="100%" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="16" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2.5" />
+              <circle cx="18" cy="18" r="16" fill="none" stroke="#caba61" strokeWidth="2.5" 
+                strokeDasharray={`${overallProgress} ${100 - overallProgress}`} 
+                strokeDashoffset="25" 
+                strokeLinecap="round"
+                transform="rotate(-90 18 18)"
+              />
+            </svg>
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <BarChart2 size={16} style={{ color: '#caba61' }} />
+            </div>
           </div>
         </div>
 
-        {/* Certificates Download section */}
-        <div className="smart-card">
-          <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '20px', textAlign: 'left' }}>Course Certificates</h3>
+        {/* Small stats row */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(3, 1fr)', 
+          gap: '8px', 
+          borderTop: '1px dashed rgba(255,255,255,0.15)',
+          paddingTop: '12px' 
+        }}>
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.5)', fontWeight: 700, display: 'block' }}>STUDY HOURS</span>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff' }}>42.5 hrs</span>
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.5)', fontWeight: 700, display: 'block' }}>COMPLETED</span>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff' }}>{completedCourses.length} Course</span>
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '9px', color: 'rgba(255,255,255,0.5)', fontWeight: 700, display: 'block' }}>DAILY GOAL</span>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: '#caba61' }}>85% Done</span>
+          </div>
+        </div>
+      </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {/* Learning Path Milestones */}
+      <div className="custom-home-card" style={{ padding: '16px', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+        <h3 style={{ fontSize: '13.5px', fontWeight: 800, color: '#1e0926', margin: 0 }}>Syllabus Milestones</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '4px' }}>
+          {milestones.map((m, idx) => (
+            <div key={m.id} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', position: 'relative' }}>
+              {/* Connector line */}
+              {idx < milestones.length - 1 && (
+                <div style={{ 
+                  position: 'absolute', 
+                  left: '9px', 
+                  top: '20px', 
+                  bottom: '-12px', 
+                  width: '2px', 
+                  backgroundColor: m.completed ? '#caba61' : '#f0ecf4',
+                  zIndex: 1 
+                }} />
+              )}
+              
+              <div style={{ 
+                width: '20px', 
+                height: '20px', 
+                borderRadius: '50%', 
+                backgroundColor: m.completed ? '#caba61' : '#ffffff', 
+                border: m.completed ? 'none' : '2px solid #e8e2ee',
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                zIndex: 2,
+                flexShrink: 0
+              }}>
+                {m.completed && <Check size={11} strokeWidth={3} style={{ color: '#ffffff' }} />}
+              </div>
+              <div style={{ flex: 1 }}>
+                <span style={{ fontSize: '11.5px', fontWeight: 800, color: m.completed ? '#1e0926' : '#8c7f94', display: 'block' }}>{m.label}</span>
+                <span style={{ fontSize: '10px', color: '#8c7f94', display: 'block', marginTop: '1px' }}>{m.desc}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Course Certificates Section */}
+      <div className="custom-home-card" style={{ padding: '16px', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Award size={18} style={{ color: '#caba61' }} />
+          <h3 style={{ fontSize: '13.5px', fontWeight: 800, color: '#1e0926', margin: 0 }}>Course Certificates</h3>
+        </div>
+
+        {completedCourses.length === 0 ? (
+          <div style={{ padding: '16px 0', textAlign: 'center', color: '#8c7f94' }}>
+            <p style={{ fontSize: '11px', margin: 0 }}>Complete courses to unlock verified certificates.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
             {completedCourses.map((c) => (
-              <div key={c.id} className="upcoming-class-row" style={{ padding: '16px 20px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(245,158,11,0.1)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Award size={20} />
+              <div key={c.id} style={{ 
+                padding: '12px',
+                border: '1.5px solid #f0ecf4',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '10px',
+                backgroundColor: '#faf9fc'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                  <div style={{ width: '34px', height: '34px', borderRadius: '8px', backgroundColor: 'rgba(202, 186, 97, 0.12)', color: '#caba61', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Award size={16} />
                   </div>
-                  <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: 700 }}>Certificate of Completion: {c.title}</h4>
-                    <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Accredited by SURIA TECH Learning Academics • Issued May 2026</p>
+                  <div style={{ minWidth: 0, textAlign: 'left' }}>
+                    <h4 style={{ fontSize: '12px', fontWeight: 800, color: '#1e0926', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {c.title}
+                    </h4>
+                    <span style={{ fontSize: '9px', color: '#8c7f94', fontWeight: 600 }}>Verified Certificate Awarded</span>
                   </div>
                 </div>
 
-                <button 
-                  onClick={() => handleLaunchCertificate(c.title)}
-                  className="btn-primary click-press"
-                  style={{ padding: '8px 16px', fontSize: '12px' }}
+                <button
+                  onClick={() => handleLaunchCertificate(c)}
+                  className="click-press"
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '20px',
+                    backgroundColor: '#311442',
+                    color: '#ffffff',
+                    border: 'none',
+                    fontSize: '10px',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
+                  }}
                 >
-                  <Download size={14} />
-                  <span>View Certificate</span>
+                  View
                 </button>
               </div>
             ))}
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Certificate Modal popup view */}
-      {showCertificate && (
+      {/* Premium Responsive Certificate Viewer Modal */}
+      {showCertificate && activeCert && (
         <div style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)',
+          backgroundColor: 'rgba(30, 9, 38, 0.8)',
+          backdropFilter: 'blur(6px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 9999,
-          padding: '24px'
-        }}>
-          <div className="smart-card animate-fade-in" style={{
-            maxWidth: '680px',
+          zIndex: 99999,
+          padding: '16px'
+        }} className="animate-fade-in">
+          <div style={{
             width: '100%',
-            backgroundColor: '#fff',
-            color: '#1e1b4b',
-            padding: '48px',
-            position: 'relative',
+            maxWidth: '380px',
+            backgroundColor: '#ffffff',
             borderRadius: '16px',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-            border: '8px double var(--primary-color)',
-            textAlign: 'center'
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+            border: '4px double #caba61',
+            padding: '24px 16px',
+            position: 'relative',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundImage: 'radial-gradient(#caba6105 1px, transparent 1px)',
+            backgroundSize: '16px 16px'
           }}>
+            {/* Close */}
             <button 
               onClick={() => setShowCertificate(false)}
-              style={{ position: 'absolute', right: '16px', top: '16px', color: 'var(--text-secondary)' }}
+              style={{ 
+                position: 'absolute', 
+                right: '10px', 
+                top: '10px', 
+                width: '24px', 
+                height: '24px', 
+                borderRadius: '50%', 
+                border: 'none', 
+                backgroundColor: '#f0ecf4', 
+                color: '#1e0926', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                cursor: 'pointer' 
+              }}
             >
-              <X size={20} />
+              <X size={12} />
             </button>
 
             {/* Seal */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-              <div style={{ width: '70px', height: '70px', borderRadius: '50%', backgroundColor: 'rgba(124,58,237,0.1)', border: '2px dashed var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>
-                🎓
+            <div style={{ 
+              width: '46px', 
+              height: '46px', 
+              borderRadius: '50%', 
+              backgroundColor: 'rgba(202, 186, 97, 0.1)', 
+              border: '2px dashed #caba61', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              marginBottom: '12px' 
+            }}>
+              <Award size={20} style={{ color: '#caba61' }} />
+            </div>
+
+            <h3 style={{ fontFamily: 'Georgia, serif', fontSize: '18px', fontWeight: 800, color: '#311442', margin: '0 0 4px 0' }}>
+              CERTIFICATE OF COMPLETION
+            </h3>
+            <span style={{ fontSize: '8px', color: '#8c7f94', letterSpacing: '1px', fontWeight: 700 }}>
+              ACCREDITED STUDY RECORD
+            </span>
+
+            <div style={{ width: '60px', height: '1px', backgroundColor: '#caba61', margin: '12px 0' }} />
+
+            <span style={{ fontSize: '10px', color: '#8c7f94', fontWeight: 500 }}>
+              This document is proudly issued to
+            </span>
+            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '20px', fontWeight: 800, color: '#1e0926', margin: '6px 0 12px 0' }}>
+              Omar Hassan
+            </h2>
+
+            <p style={{ fontSize: '10.5px', color: '#504156', lineHeight: 1.5, margin: '0 12px 16px 12px' }}>
+              for completing the full syllabus curriculum requirements and passing all interactive assignments for:
+            </p>
+
+            <span style={{ fontSize: '13px', fontWeight: 900, color: '#311442', backgroundColor: '#f0ecf4', padding: '6px 14px', borderRadius: '6px', display: 'block', width: '90%' }}>
+              {activeCert.title}
+            </span>
+
+            {/* Seals & Signatures */}
+            <div style={{ 
+              width: '100%', 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center', 
+              marginTop: '20px',
+              borderTop: '1px solid #f0ecf4',
+              paddingTop: '12px'
+            }}>
+              <div style={{ textAlign: 'left' }}>
+                <span style={{ fontSize: '7.5px', color: '#8c7f94', fontWeight: 700, display: 'block' }}>INSTRUCTOR</span>
+                <span style={{ fontSize: '9px', fontWeight: 800, color: '#1e0926', fontFamily: 'cursive' }}>Dr. V. Sharma</span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <ShieldCheck size={16} style={{ color: '#2BA84A' }} />
+                <span style={{ fontSize: '7px', color: '#2BA84A', fontWeight: 800, marginTop: '2px' }}>VERIFIED</span>
+              </div>
+
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ fontSize: '7.5px', color: '#8c7f94', fontWeight: 700, display: 'block' }}>DIRECTOR</span>
+                <span style={{ fontSize: '9px', fontWeight: 800, color: '#1e0926', fontFamily: 'cursive' }}>A. Sharma</span>
               </div>
             </div>
 
-            <h2 style={{ fontFamily: 'Georgia, serif', fontSize: '32px', fontWeight: 600, color: 'var(--primary-color)', marginBottom: '16px' }}>
-              Certificate of Achievement
-            </h2>
-            <p style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px', color: '#64748b', marginBottom: '32px' }}>
-              This is proudly presented to
-            </p>
-            <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '36px', fontWeight: 700, borderBottom: '2px solid var(--primary-color)', display: 'inline-block', paddingBottom: '8px', marginBottom: '32px' }}>
-              Omar Hassan
-            </h1>
-            <p style={{ fontSize: '15px', color: '#64748b', lineHeight: 1.6, maxWidth: '500px', margin: '0 auto 40px' }}>
-              for successfully mastering all modules, completing interactive programming assignments, and passing the AI-generated assessment syllabus in
-            </p>
-            <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#1e1b4b', marginBottom: '48px' }}>
-              {activeCert}
-            </h3>
-
-            {/* Signatures */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #eaedf5', paddingTop: '20px' }}>
-              <div style={{ textAlign: 'left' }}>
-                <span style={{ fontFamily: '"Brush Script MT", cursive', fontSize: '22px', display: 'block', color: 'var(--primary-color)' }}>Dr. Vivek Sharma</span>
-                <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>Course Instructor</span>
-              </div>
-              <div>
-                <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--primary-color)', textTransform: 'uppercase', letterSpacing: '2px', border: '1px solid var(--primary-color)', padding: '6px 12px', borderRadius: '4px' }}>SURIA TECH Verified</span>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <span style={{ fontFamily: '"Brush Script MT", cursive', fontSize: '22px', display: 'block', color: 'var(--primary-color)' }}>Dr. Arjun Sharma</span>
-                <span style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>Director of Academics</span>
-              </div>
+            {/* Actions */}
+            <div style={{ width: '100%', marginTop: '20px', display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => handleDownloadPDF(activeCert.id)}
+                disabled={downloadingId !== null}
+                style={{
+                  flex: 1,
+                  padding: '10px 0',
+                  borderRadius: '8px',
+                  backgroundColor: '#311442',
+                  color: '#ffffff',
+                  border: 'none',
+                  fontSize: '11.5px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}
+              >
+                {downloadingId ? 'Downloading...' : (
+                  <>
+                    <Download size={12} /> Save PDF
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }

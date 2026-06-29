@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Home as HomeIcon, Compass, Cpu, CheckSquare, User, 
   Bell, LogOut, X, Sun, Moon, Sparkles, MessageSquare, Menu,
-  Users, ShoppingBag, BookOpen
+  Users, ShoppingBag, BookOpen, Calendar
 } from 'lucide-react';
 import MobileDeviceFrame from './components/MobileDeviceFrame';
 import { getMobileDB, saveMobileDB } from './data/mobileData';
@@ -264,6 +264,7 @@ export default function App() {
             theme={theme}
             setTheme={handleSetTheme}
             user={user}
+            setUser={setUser}
           />
         );
 
@@ -324,6 +325,16 @@ export default function App() {
           <Schedule 
             classes={db.classes} 
             onSelectCourse={handleSelectCourse} 
+            assignments={assignments}
+            setAssignments={setAssignments}
+            streak={db.streak}
+            overallProgress={db.overallProgress}
+            setOverallProgress={(newProgress) => {
+              setDb(prev => {
+                const nextVal = typeof newProgress === 'function' ? newProgress(prev.overallProgress) : newProgress;
+                return { ...prev, overallProgress: nextVal };
+              });
+            }}
           />
         );
       case 'assignments':
@@ -362,7 +373,10 @@ export default function App() {
         );
       case 'favorites':
         return (
-          <Favorites />
+          <Favorites 
+            courses={db.courses}
+            onSelectCourse={handleSelectCourse}
+          />
         );
       case 'become-instructor':
         return (
@@ -389,6 +403,7 @@ export default function App() {
             theme={theme}
             setTheme={handleSetTheme}
             user={user}
+            setUser={setUser}
           />
         );
 
@@ -710,32 +725,31 @@ export default function App() {
                       <div className="nav-icon-wrapper">
                         <Compass size={18} />
                       </div>
-                      <span>Discover</span>
+                      <span>Courses</span>
                     </button>
 
                     <button
                       onClick={() => {
-                        setActiveTab('ai');
+                        setActiveTab('courses');
                       }}
-                      className={`nav-item ${activeTab === 'ai' ? 'active' : ''}`}
+                      className={`nav-item ${activeTab === 'courses' ? 'active' : ''}`}
                     >
                       <div className="nav-icon-wrapper">
-                        <Cpu size={18} />
-                        <span style={{ position: 'absolute', top: '-4px', right: '-4px', backgroundColor: 'var(--secondary-color)', width: '6px', height: '6px', borderRadius: '50%' }} />
+                        <BookOpen size={18} />
                       </div>
-                      <span>AI Tutor</span>
+                      <span>My Learning</span>
                     </button>
 
                     <button
                       onClick={() => {
-                        setActiveTab('tasks');
+                        setActiveTab('schedule');
                       }}
-                      className={`nav-item ${activeTab === 'tasks' ? 'active' : ''}`}
+                      className={`nav-item ${activeTab === 'schedule' ? 'active' : ''}`}
                     >
                       <div className="nav-icon-wrapper">
-                        <CheckSquare size={18} />
+                        <Calendar size={18} />
                       </div>
-                      <span>Tasks</span>
+                      <span>Schedule</span>
                     </button>
 
                     <button

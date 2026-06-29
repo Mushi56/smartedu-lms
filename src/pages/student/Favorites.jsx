@@ -1,100 +1,168 @@
-import React from 'react';
-import { Heart, Star, Users, BookOpen, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Heart, Star, Users, BookOpen, Search, Filter, PlayCircle } from 'lucide-react';
 
-export default function Favorites({ courses, onSelectCourse }) {
-  // Show all courses as "favorited" for demo purposes
-  const favoriteCourses = courses || [];
+export default function Favorites({ courses = [], onSelectCourse }) {
+  // Use courses as bookmarked items initially. Filter out any that might be empty.
+  const [favoriteList, setFavoriteList] = useState(courses);
+  const [activeCategory, setActiveCategory] = useState('All');
 
-  const avatars = [
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
-    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
-  ];
+  const categories = ['All', 'Test Prep', 'English', 'Math', 'Writing'];
+
+  const handleRemoveFavorite = (e, id) => {
+    e.stopPropagation();
+    setFavoriteList(prev => prev.filter(c => c.id !== id));
+  };
+
+  const filteredFavorites = favoriteList.filter(c => {
+    if (activeCategory === 'All') return true;
+    return c.category?.toLowerCase() === activeCategory.toLowerCase();
+  });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }} className="animate-fade-in">
-      <div style={{ textAlign: 'left' }}>
-        <h2 style={{ fontSize: '22px', fontWeight: 700 }}>My Favorites</h2>
-        <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Courses you've bookmarked for quick access</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }} className="animate-fade-in">
+      
+      {/* Title Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ textAlign: 'left', padding: '4px 0' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#1e0926', margin: '0 0 4px 0' }}>My Favorites</h2>
+          <p style={{ fontSize: '12px', color: '#8c7f94', margin: 0, fontWeight: 500 }}>
+            Quick access to courses you bookmarked for later.
+          </p>
+        </div>
       </div>
 
-      {favoriteCourses.length === 0 ? (
-        <div className="smart-card" style={{ padding: '60px 40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-          <Heart size={48} style={{ color: 'var(--text-muted)', marginBottom: '16px' }} />
-          <h3 style={{ fontSize: '18px', fontWeight: 700 }}>No Favorites Yet</h3>
-          <p style={{ fontSize: '13px', marginTop: '8px' }}>Browse courses and click the heart icon to save them here.</p>
+      {/* Category Pills Filter */}
+      <div style={{ 
+        display: 'flex', 
+        gap: '6px', 
+        overflowX: 'auto', 
+        paddingBottom: '6px', 
+        margin: '0 -16px',
+        paddingLeft: '16px',
+        paddingRight: '16px',
+        scrollbarWidth: 'none'
+      }} className="hide-scrollbar">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className="click-press"
+            style={{
+              padding: '6px 14px',
+              borderRadius: '20px',
+              fontSize: '11px',
+              fontWeight: 700,
+              backgroundColor: activeCategory === cat ? '#311442' : '#ffffff',
+              color: activeCategory === cat ? '#ffffff' : '#8c7f94',
+              border: '1.5px solid',
+              borderColor: activeCategory === cat ? '#311442' : '#f0ecf4',
+              whiteSpace: 'nowrap',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Favorites List */}
+      {filteredFavorites.length === 0 ? (
+        <div className="custom-home-card" style={{ padding: '50px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '220px' }}>
+          <Heart size={36} style={{ color: '#ef4444', opacity: 0.4, marginBottom: '12px' }} />
+          <h4 style={{ fontSize: '14px', fontWeight: 800, color: '#1e0926', margin: '0 0 4px 0' }}>No Favorites Found</h4>
+          <p style={{ fontSize: '11px', color: '#8c7f94', margin: 0, textAlign: 'center' }}>
+            Bookmarked courses will show up here. Go to Courses and tap the heart icon on any syllabus.
+          </p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-          {favoriteCourses.map((course, idx) => (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {filteredFavorites.map((course) => (
             <div
               key={course.id}
-              className="smart-card click-press"
-              style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
-              onClick={() => onSelectCourse && onSelectCourse(course.id)}
+              onClick={() => onSelectCourse && onSelectCourse(course)}
+              className="custom-home-card click-press"
+              style={{
+                padding: '12px',
+                flexDirection: 'row',
+                gap: '12px',
+                alignItems: 'center',
+                border: '1.5px solid #f0ecf4',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
             >
-              {/* Image */}
-              <div style={{ position: 'relative', height: '140px', overflow: 'hidden', background: '#3A2048' }}>
-                <img
-                  src={avatars[idx % avatars.length]}
-                  alt={course.teacher}
+              {/* Thumbnail */}
+              <div style={{ width: '80px', height: '80px', borderRadius: '12px', overflow: 'hidden', position: 'relative', flexShrink: 0, backgroundColor: '#311442' }}>
+                <img 
+                  src={course.thumbnail} 
+                  alt={course.title} 
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
-                <button
-                  onClick={(e) => e.stopPropagation()}
-                  style={{
-                    position: 'absolute', top: '10px', right: '10px',
-                    width: '32px', height: '32px', borderRadius: '50%',
-                    backgroundColor: 'rgba(255,255,255,0.9)', border: 'none',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', color: '#ef4444'
-                  }}
-                >
-                  <Heart size={16} fill="#ef4444" />
-                </button>
-                <span style={{
-                  position: 'absolute', bottom: '8px', left: '8px', padding: '3px 10px',
-                  borderRadius: '4px', background: 'rgba(0,0,0,0.7)', color: '#ffffff',
-                  fontSize: '10px', fontWeight: 600
-                }}>
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.15)' }} />
+              </div>
+
+              {/* Course Info */}
+              <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <span style={{ fontSize: '8.5px', color: '#caba61', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   {course.category}
                 </span>
-              </div>
+                
+                <h4 style={{ 
+                  fontSize: '12.5px', 
+                  fontWeight: 800, 
+                  color: '#1e0926', 
+                  margin: 0,
+                  overflow: 'hidden', 
+                  textOverflow: 'ellipsis', 
+                  whiteSpace: 'nowrap'
+                }}>
+                  {course.title}
+                </h4>
 
-              {/* Details */}
-              <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left' }}>
-                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>{course.title}</h4>
-                <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{course.teacher}</span>
+                <span style={{ fontSize: '10px', color: '#8c7f94', fontWeight: 600 }}>
+                  By {course.teacher || 'Assigned Instructor'}
+                </span>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '4px' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--text-muted)' }}>
-                    <BookOpen size={12} /> {course.chaptersCount} Lessons
+                {/* Rating & Lessons */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '2px', fontSize: '9.5px', color: '#caba61', fontWeight: 800 }}>
+                    <Star size={10} fill="#caba61" stroke="none" /> 4.8
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: 'var(--text-muted)' }}>
-                    <Users size={12} /> {course.studentsCount?.toLocaleString()} Students
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#f59e0b' }}>
-                    <Star size={12} fill="#f59e0b" stroke="none" /> 4.8
+                  <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: '#a095a8' }} />
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '9.5px', color: '#8c7f94', fontWeight: 600 }}>
+                    <BookOpen size={10} /> 12 Modules
                   </span>
                 </div>
-
-                {/* Progress bar */}
-                <div style={{ marginTop: '8px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '4px' }}>
-                    <span>Progress</span>
-                    <span>{course.progress}%</span>
-                  </div>
-                  <div style={{ width: '100%', height: '6px', borderRadius: '3px', backgroundColor: '#e2e8f0', overflow: 'hidden' }}>
-                    <div style={{ width: `${course.progress}%`, height: '100%', backgroundColor: 'var(--secondary-color)', borderRadius: '3px' }}></div>
-                  </div>
-                </div>
               </div>
+
+              {/* Heart Toggle Button */}
+              <button
+                onClick={(e) => handleRemoveFavorite(e, course.id)}
+                className="click-press"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(239, 68, 68, 0.08)',
+                  border: 'none',
+                  color: '#ef4444',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  flexShrink: 0
+                }}
+                title="Remove from bookmarks"
+              >
+                <Heart size={14} fill="#ef4444" />
+              </button>
+
             </div>
           ))}
         </div>
       )}
+
     </div>
   );
 }

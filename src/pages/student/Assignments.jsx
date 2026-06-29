@@ -1,57 +1,41 @@
 import React, { useState } from 'react';
-import { Sparkles, Calendar, BookOpen, Clock, FileText, AlertCircle, CheckCircle, Loader } from 'lucide-react';
+import { Calendar, BookOpen, Clock, FileText, AlertCircle, CheckCircle, Upload } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function Assignments({ assignments, setAssignments, setOverallProgress }) {
   const [selectedAssignId, setSelectedAssignId] = useState(null);
   const [inputText, setInputText] = useState('');
-  const [isGrading, setIsGrading] = useState(false);
-  const [aiFeedback, setAiFeedback] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const activeAssign = assignments.find(a => a.id === selectedAssignId);
 
   const handleStartSubmit = (assign) => {
     setSelectedAssignId(assign.id);
     setInputText('');
-    setAiFeedback(null);
   };
 
-  const handleAISubmit = async () => {
+  const handleSubmit = async () => {
     if (!inputText.trim()) return;
 
-    setIsGrading(true);
+    setIsSubmitting(true);
     
-    // Simulate AI Grader processing delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Simulate API/db update delay
+    await new Promise(resolve => setTimeout(resolve, 800));
     
-    const grades = ['A (96%)', 'A- (92%)', 'B+ (88%)'];
-    const selectedGrade = grades[Math.floor(Math.random() * grades.length)];
-    
-    setIsGrading(false);
-    
-    // Dynamic feedback content
-    const feedback = {
-      grade: selectedGrade,
-      points: [
-        "Correct structure and proper complexity limits.",
-        "Excellent variable naming patterns and structural formatting.",
-        "Improvement: Try to add edge case validation for null or empty elements."
-      ],
-      revisionTip: "Great work! Review your array pointer limits and practice doubly linked lists as your next progression step."
-    };
-    
-    setAiFeedback(feedback);
+    setIsSubmitting(false);
     
     // Update assignments array
     const updated = assignments.map(a => {
       if (a.id === selectedAssignId) {
-        return { ...a, status: 'Graded', grade: selectedGrade, aiNotes: feedback.revisionTip };
+        return { ...a, status: 'Submitted', submissionText: inputText };
       }
       return a;
     });
     
     setAssignments(updated);
-    setOverallProgress(prev => Math.min(100, prev + 3)); // slightly boost progress
+    if (setOverallProgress) {
+      setOverallProgress(prev => Math.min(100, prev + 2)); // slightly boost progress
+    }
 
     // Celebrate with confetti!
     confetti({
@@ -59,148 +43,197 @@ export default function Assignments({ assignments, setAssignments, setOverallPro
       spread: 60,
       origin: { y: 0.6 }
     });
+
+    setSelectedAssignId(null);
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }} className="animate-fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h2 style={{ fontSize: '22px', fontWeight: 700 }}>AI Assignments</h2>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Solve homework problems and receive instant optimization feedback from the AI grader</p>
-        </div>
-      </div>
-
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} className="animate-fade-in">
+      
       {/* Select Assignment Screen */}
       {!selectedAssignId ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {assignments.map((assign) => (
-            <div key={assign.id} className="upcoming-class-row" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: 1, textAlign: 'left' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: '8px', backgroundColor: 'var(--primary-glow)', color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <FileText size={20} />
+            <div key={assign.id} style={{ 
+              background: '#fff', 
+              borderRadius: '16px', 
+              border: '1px solid #ede9f4', 
+              padding: '14px', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '10px',
+              textAlign: 'left'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ 
+                  width: '36px', 
+                  height: '36px', 
+                  borderRadius: '10px', 
+                  backgroundColor: 'rgba(124, 58, 237, 0.08)', 
+                  color: 'var(--primary-color)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <FileText size={16} />
                 </div>
-                <div>
-                  <h3 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '2px' }}>{assign.title}</h3>
-                  <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Course: {assign.course} • Due: {assign.dueDate}</p>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h3 style={{ fontSize: '13px', fontWeight: 800, margin: '0 0 2px 0', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {assign.title}
+                  </h3>
+                  <p style={{ fontSize: '10px', color: 'var(--text-muted)', margin: 0 }}>
+                    {assign.course}
+                  </p>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                {assign.status === 'Graded' ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                    <span className="status-pill success">Graded</span>
-                    <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--status-success)', marginTop: '4px' }}>Grade: {assign.grade}</span>
-                  </div>
-                ) : (
-                  <span className="status-pill pending">Pending Submit</span>
-                )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #ede9f4', paddingTop: '10px', marginTop: '2px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', color: 'var(--text-secondary)' }}>
+                  <Clock size={12} />
+                  <span>Due: {assign.dueDate}</span>
+                </div>
 
-                <button 
-                  onClick={() => handleStartSubmit(assign)}
-                  className="btn-primary click-press"
-                  style={{ padding: '8px 16px', fontSize: '12px' }}
-                >
-                  {assign.status === 'Graded' ? 'Review Submission' : 'Open Workspace'}
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {assign.status === 'Graded' ? (
+                    <span style={{ fontSize: '9px', fontWeight: 800, color: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', padding: '3px 8px', borderRadius: '10px' }}>
+                      Grade: {assign.grade}
+                    </span>
+                  ) : assign.status === 'Submitted' ? (
+                    <span style={{ fontSize: '9px', fontWeight: 800, color: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', padding: '3px 8px', borderRadius: '10px' }}>
+                      Submitted
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: '9px', fontWeight: 800, color: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', padding: '3px 8px', borderRadius: '10px' }}>
+                      Pending
+                    </span>
+                  )}
+
+                  <button 
+                    onClick={() => handleStartSubmit(assign)}
+                    className="click-press"
+                    style={{ 
+                      padding: '6px 12px', 
+                      fontSize: '10.5px', 
+                      fontWeight: 700, 
+                      borderRadius: '8px', 
+                      border: 'none',
+                      background: assign.status === 'Graded' || assign.status === 'Submitted' ? '#f1edf5' : 'var(--primary-color)',
+                      color: assign.status === 'Graded' || assign.status === 'Submitted' ? 'var(--text-secondary)' : '#fff',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {assign.status === 'Graded' ? 'Review' : assign.status === 'Submitted' ? 'Edit' : 'Submit'}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
         // Assignment Workspace Screen
-        <div className="smart-card">
+        <div style={{ 
+          background: '#fff', 
+          borderRadius: '16px', 
+          border: '1px solid #ede9f4', 
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px',
+          textAlign: 'left'
+        }}>
           {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px', marginBottom: '20px' }}>
-            <div style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700 }}>{activeAssign.title}</h3>
-              <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Due: {activeAssign.dueDate} • Target: O(1) auxiliary space complexity</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #ede9f4', paddingBottom: '12px' }}>
+            <div style={{ flex: 1, minWidth: 0, paddingRight: '8px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: 800, margin: '0 0 2px 0', color: 'var(--text-primary)' }}>{activeAssign.title}</h3>
+              <p style={{ fontSize: '10px', color: 'var(--text-muted)', margin: 0 }}>Due: {activeAssign.dueDate}</p>
             </div>
             <button 
               onClick={() => setSelectedAssignId(null)}
-              className="btn-secondary click-press"
-              style={{ padding: '6px 12px', fontSize: '12px' }}
+              className="click-press"
+              style={{ 
+                padding: '6px 12px', 
+                fontSize: '10.5px', 
+                fontWeight: 700, 
+                borderRadius: '8px', 
+                border: '1px solid #ede9f4', 
+                background: '#fff', 
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                flexShrink: 0
+              }}
             >
-              Back to Homeworks
+              Back
             </button>
           </div>
 
           {/* Description Section */}
-          <div style={{ textAlign: 'left', backgroundColor: 'var(--bg-app)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '20px' }}>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-              <AlertCircle size={14} style={{ color: 'var(--primary-color)' }} />
+          <div style={{ backgroundColor: '#faf9fc', padding: '12px', borderRadius: '10px', border: '1px solid #ede9f4' }}>
+            <h4 style={{ fontSize: '11px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px', margin: '0 0 6px 0', color: 'var(--text-primary)' }}>
+              <AlertCircle size={12} style={{ color: 'var(--primary-color)' }} />
               <span>Problem Description:</span>
             </h4>
-            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '12px' }}>{activeAssign.problemDescription}</p>
-            
-            <div style={{ padding: '10px', borderRadius: '6px', backgroundColor: 'var(--bg-card)', borderLeft: '3px solid var(--primary-color)', display: 'flex', gap: '6px', flexDirection: 'column' }}>
-              <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--primary-color)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <Sparkles size={10} />
-                <span>AI STUDY TUTOR TIP</span>
-              </span>
-              <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{activeAssign.aiNotes}</p>
-            </div>
+            <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+              {activeAssign.problemDescription}
+            </p>
           </div>
 
-          {/* Workspace Submission area */}
-          <div className="assignments-workspace-grid" style={{ display: 'grid', gap: '20px' }}>
-            {/* Editor panel */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
-              <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-secondary)' }}>Write your answer below (Supports Python, Javascript, or Pseudocode):</label>
-              <textarea 
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="def reverse_array(arr):&#10;    # Write your code here..."
-                disabled={activeAssign.status === 'Graded'}
-                rows={12}
-                style={{ width: '100%', fontSize: '13px', fontFamily: 'var(--mono)', lineHeight: 1.5, padding: '16px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: activeAssign.status === 'Graded' ? 'var(--bg-app)' : 'var(--bg-card)' }}
-              />
-              {activeAssign.status !== 'Graded' && (
-                <button 
-                  onClick={handleAISubmit}
-                  className="btn-primary click-press"
-                  style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: '8px' }}
-                  disabled={!inputText.trim() || isGrading}
-                >
-                  {isGrading ? <Loader size={14} className="animate-spin" /> : <Sparkles size={14} />}
-                  <span>{isGrading ? 'AI Assessing Solution...' : 'Submit to AI Grader'}</span>
-                </button>
-              )}
-            </div>
+          {/* Submission Form */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>
+              Type your solution or text response:
+            </label>
+            <textarea 
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Enter your solution here..."
+              disabled={activeAssign.status === 'Graded'}
+              rows={8}
+              style={{ 
+                width: '100%', 
+                fontSize: '12.5px', 
+                fontFamily: 'inherit',
+                lineHeight: 1.5, 
+                padding: '12px', 
+                borderRadius: '10px', 
+                border: '1px solid #ede9f4', 
+                backgroundColor: activeAssign.status === 'Graded' ? '#faf9fc' : '#fff',
+                boxSizing: 'border-box',
+                outline: 'none'
+              }}
+            />
 
-            {/* AI feedback panel */}
-            {(aiFeedback || activeAssign.status === 'Graded') && (
-              <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '16px', padding: '20px', border: '1px solid var(--border-color)', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.01)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                  <h4 style={{ fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--status-success)' }}>
-                    <CheckCircle size={16} />
-                    <span>AI Grading Report</span>
-                  </h4>
-                  <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--status-success)' }}>Grade: {aiFeedback?.grade || activeAssign.grade}</span>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)' }}>ASSESSMENT RUBRICS:</span>
-                  <ul style={{ paddingLeft: '18px', fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {(aiFeedback?.points || [
-                      "Proper logic mapping and direct solution path.",
-                      "Time complexity fits inside optimal scales.",
-                      "Ensure to check boundary constraints for extremely large arrays."
-                    ]).map((pt, index) => (
-                      <li key={index}>{pt}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div style={{ marginTop: '10px', padding: '12px', borderRadius: '6px', backgroundColor: 'var(--bg-app)', borderLeft: '3px solid var(--status-success)', display: 'flex', gap: '6px', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--status-success)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Sparkles size={10} />
-                    <span>AI REVISION GUIDANCE</span>
-                  </span>
-                  <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                    {aiFeedback?.revisionTip || activeAssign.aiNotes}
-                  </p>
-                </div>
+            {activeAssign.status === 'Graded' && (
+              <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.05)', padding: '12px', borderRadius: '10px', borderLeft: '3px solid #10b981' }}>
+                <strong style={{ fontSize: '11px', color: '#10b981', display: 'block', marginBottom: '4px' }}>Instructor Feedback</strong>
+                <p style={{ fontSize: '11px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.4 }}>
+                  {activeAssign.aiNotes || "Your submission was reviewed. Excellent logic and correct answers."}
+                </p>
               </div>
+            )}
+
+            {activeAssign.status !== 'Graded' && (
+              <button 
+                onClick={handleSubmit}
+                className="click-press"
+                style={{ 
+                  padding: '10px', 
+                  borderRadius: '10px', 
+                  border: 'none',
+                  background: 'var(--primary-color)',
+                  color: '#fff',
+                  fontSize: '11.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}
+                disabled={!inputText.trim() || isSubmitting}
+              >
+                <span>{isSubmitting ? 'Submitting...' : 'Submit Assignment'}</span>
+              </button>
             )}
           </div>
         </div>

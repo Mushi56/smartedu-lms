@@ -90,13 +90,6 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
         <div className="custom-home-purple-bg">
           {/* User Welcome Row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '6px 0 14px 0' }}>
-            <img 
-              onClick={onOpenDrawer}
-              src={user?.avatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100"} 
-              alt="Avatar" 
-              style={{ width: '46px', height: '46px', borderRadius: '50%', objectFit: 'cover', border: '2.5px solid #caba61', cursor: 'pointer', flexShrink: 0 }}
-              className="click-press"
-            />
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 500 }}>Welcome back,</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
@@ -104,9 +97,6 @@ export default function Home({ db, user, currentPortal, onSelectCourse, onSelect
                   {user?.name || 'Aisha Rahman'}
                 </h2>
                 <VerificationBadge status={user?.verificationStatus || user?.role} size={14} style={{ marginLeft: '4px' }} />
-                <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(202, 186, 97, 0.16)', border: '1px solid #caba61', borderRadius: '6px', padding: '1px 6px' }}>
-                  <span style={{ fontSize: '8px', color: '#caba61', fontWeight: 800 }}>Gold Learner</span>
-                </div>
               </div>
             </div>
           </div>
