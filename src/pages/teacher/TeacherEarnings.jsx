@@ -12,95 +12,169 @@ export default function TeacherEarnings({ db, user }) {
   ];
   const maxAmount = Math.max(...monthlyData.map(d => d.amount));
 
+  const premiumCard = {
+    background: 'var(--bg-card)',
+    borderRadius: '20px',
+    border: '1px solid var(--border-subtle)',
+    boxShadow: 'var(--shadow-premium)',
+    padding: '16px',
+    position: 'relative'
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} className="animate-fade-in">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }} className="animate-fade-in">
       <div>
-        <h2 style={{ fontSize: '18px', fontWeight: 800 }}>Earnings</h2>
-        <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Track your revenue and payouts</p>
+        <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>Earnings Center</h2>
+        <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, fontWeight: 550 }}>Track your revenue and request payouts</p>
       </div>
 
       {/* Summary Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-        <div className="smart-card" style={{ padding: '14px', textAlign: 'center' }}>
-          <DollarSign size={18} style={{ color: '#22c55e', marginBottom: '4px' }} />
-          <span style={{ fontSize: '16px', fontWeight: 800, color: '#1e0926', display: 'block' }}>${(myTeacher.revenue || 0).toLocaleString()}</span>
-          <span style={{ fontSize: '8px', fontWeight: 600, color: '#8c7f94' }}>Total Revenue</span>
-        </div>
-        <div className="smart-card" style={{ padding: '14px', textAlign: 'center' }}>
-          <TrendingUp size={18} style={{ color: '#3b82f6', marginBottom: '4px' }} />
-          <span style={{ fontSize: '16px', fontWeight: 800, color: '#1e0926', display: 'block' }}>${(myTeacher.monthlyRevenue || 0).toLocaleString()}</span>
-          <span style={{ fontSize: '8px', fontWeight: 600, color: '#8c7f94' }}>This Month</span>
-        </div>
-        <div className="smart-card" style={{ padding: '14px', textAlign: 'center' }}>
-          <Clock size={18} style={{ color: '#eab308', marginBottom: '4px' }} />
-          <span style={{ fontSize: '16px', fontWeight: 800, color: '#1e0926', display: 'block' }}>${(myTeacher.pendingPayout || 0).toLocaleString()}</span>
-          <span style={{ fontSize: '8px', fontWeight: 600, color: '#8c7f94' }}>Pending</span>
-        </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+        {[
+          { label: 'Total Revenue', value: (myTeacher.revenue || 0).toLocaleString(), color: '#10b981', bg: 'rgba(16,185,129,0.06)', icon: DollarSign },
+          { label: 'This Month', value: (myTeacher.monthlyRevenue || 0).toLocaleString(), color: '#3b82f6', bg: 'rgba(59,130,246,0.06)', icon: TrendingUp },
+          { label: 'Pending Payout', value: (myTeacher.pendingPayout || 0).toLocaleString(), color: '#f59e0b', bg: 'rgba(245,158,11,0.06)', icon: Clock }
+        ].map(s => {
+          const Icon = s.icon;
+          return (
+            <div key={s.label} style={{
+              ...premiumCard,
+              padding: '14px 10px',
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <div style={{
+                width: '32px', height: '32px', borderRadius: '50%',
+                backgroundColor: s.bg, color: s.color,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '4px'
+              }}>
+                <Icon size={16} />
+              </div>
+              <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>${s.value}</div>
+              <div style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: 700 }}>{s.label}</div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '6px' }}>
-        {['overview', 'payouts'].map(t => (
-          <button key={t} onClick={() => setActiveTab(t)} className="click-press"
-            style={{ padding: '8px 16px', borderRadius: '16px', fontSize: '11px', fontWeight: 700, border: 'none', cursor: 'pointer',
-              backgroundColor: activeTab === t ? '#37123c' : '#f0ecf4', color: activeTab === t ? '#fff' : '#1e0926'
-            }}
-          >{t === 'overview' ? 'Revenue Chart' : 'Payout History'}</button>
-        ))}
+      {/* Selector Tabs */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1fr 1fr', 
+        background: '#f1f5f9', 
+        borderRadius: '20px', 
+        padding: '4px',
+        border: '1px solid rgba(0,0,0,0.02)'
+      }}>
+        <button
+          onClick={() => setActiveTab('overview')}
+          className="click-press"
+          style={{
+            padding: '8px 0',
+            borderRadius: '16px',
+            border: 'none',
+            fontSize: '12px',
+            fontWeight: 800,
+            cursor: 'pointer',
+            backgroundColor: activeTab === 'overview' ? '#fff' : 'transparent',
+            color: activeTab === 'overview' ? 'var(--primary-color)' : 'var(--text-secondary)',
+            boxShadow: activeTab === 'overview' ? '0 4px 10px rgba(0,0,0,0.04)' : 'none',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          Revenue Chart
+        </button>
+        <button
+          onClick={() => setActiveTab('payouts')}
+          className="click-press"
+          style={{
+            padding: '8px 0',
+            borderRadius: '16px',
+            border: 'none',
+            fontSize: '12px',
+            fontWeight: 800,
+            cursor: 'pointer',
+            backgroundColor: activeTab === 'payouts' ? '#fff' : 'transparent',
+            color: activeTab === 'payouts' ? 'var(--primary-color)' : 'var(--text-secondary)',
+            boxShadow: activeTab === 'payouts' ? '0 4px 10px rgba(0,0,0,0.04)' : 'none',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          Payout History
+        </button>
       </div>
 
+      {/* Revenue Graph view */}
       {activeTab === 'overview' && (
-        <div className="smart-card" style={{ padding: '20px', textAlign: 'left' }}>
-          <h4 style={{ fontSize: '13px', fontWeight: 700, marginBottom: '16px' }}>Monthly Revenue (2026)</h4>
-          {/* Simple bar chart */}
-          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '120px' }}>
+        <div style={{ ...premiumCard, padding: '20px' }}>
+          <h4 style={{ fontSize: '13px', fontWeight: 800, marginBottom: '20px', color: 'var(--text-primary)' }}>Monthly Revenue (2026)</h4>
+          {/* Elegant bar chart */}
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', height: '140px', paddingBottom: '10px' }}>
             {monthlyData.map((d, i) => (
-              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                <span style={{ fontSize: '8px', fontWeight: 700, color: '#1e0926' }}>${(d.amount / 1000).toFixed(1)}k</span>
+              <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--text-primary)' }}>${(d.amount / 1000).toFixed(1)}k</span>
                 <div style={{
-                  width: '100%', maxWidth: '32px', borderRadius: '6px 6px 2px 2px',
-                  height: `${(d.amount / maxAmount) * 90}px`,
-                  background: i === monthlyData.length - 1 ? 'linear-gradient(180deg, #caba61, #37123c)' : 'linear-gradient(180deg, #e0d9e6, #c4bcd0)',
+                  width: '100%', 
+                  maxWidth: '36px', 
+                  borderRadius: '8px 8px 3px 3px',
+                  height: `${(d.amount / maxAmount) * 100}px`,
+                  background: i === monthlyData.length - 1 
+                    ? 'linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%)' 
+                    : 'linear-gradient(180deg, rgba(99,102,241,0.2) 0%, rgba(99,102,241,0.05) 100%)',
                   transition: 'height 0.5s ease'
                 }} />
-                <span style={{ fontSize: '9px', fontWeight: 600, color: '#8c7f94' }}>{d.month}</span>
+                <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)' }}>{d.month}</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
+      {/* Payout History view */}
       {activeTab === 'payouts' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           {/* Withdraw button */}
-          <button className="btn-primary click-press" style={{ width: '100%', fontSize: '12px', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+          <button 
+            className="click-press" 
+            style={{ 
+              width: '100%', fontSize: '12px', padding: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+              border: 'none', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#ffffff',
+              borderRadius: '16px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(16,185,129,0.2)'
+            }}
             onClick={() => alert('Withdraw request submitted!')}
           >
-            <DollarSign size={14} /> Request Withdrawal — ${(myTeacher.pendingPayout || 0).toLocaleString()}
+            <DollarSign size={14} /> Request Payout — ${(myTeacher.pendingPayout || 0).toLocaleString()}
           </button>
 
-          {/* Payout history */}
-          {(myTeacher.payouts || []).map(p => (
-            <div key={p.id} className="smart-card" style={{ padding: '14px', display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left' }}>
-              <div style={{
-                width: '36px', height: '36px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: p.status === 'completed' ? 'rgba(34,197,94,0.1)' : 'rgba(234,179,8,0.1)'
-              }}>
-                {p.status === 'completed' ? <CheckCircle size={16} style={{ color: '#22c55e' }} /> : <AlertCircle size={16} style={{ color: '#eab308' }} />}
+          {/* Payout list items */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(myTeacher.payouts || []).map(p => (
+              <div key={p.id} style={{ ...premiumCard, padding: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{
+                  width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: p.status === 'completed' ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)',
+                  color: p.status === 'completed' ? '#10b981' : '#f59e0b'
+                }}>
+                  {p.status === 'completed' ? <CheckCircle size={16} fill="none" /> : <AlertCircle size={16} fill="none" />}
+                </div>
+                <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--text-primary)', display: 'block' }}>${p.amount.toLocaleString()}</span>
+                  <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 550 }}>{p.date}</span>
+                </div>
+                <span style={{
+                  fontSize: '10px', fontWeight: 800, padding: '4px 10px', borderRadius: '10px',
+                  color: p.status === 'completed' ? '#10b981' : '#f59e0b',
+                  backgroundColor: p.status === 'completed' ? 'rgba(16,185,129,0.1)' : 'rgba(245,158,11,0.1)'
+                }}>
+                  {p.status === 'completed' ? 'Paid' : 'Pending'}
+                </span>
               </div>
-              <div style={{ flex: 1 }}>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#1e0926', display: 'block' }}>${p.amount.toLocaleString()}</span>
-                <span style={{ fontSize: '10px', color: '#8c7f94' }}>{p.date}</span>
-              </div>
-              <span style={{
-                fontSize: '9px', fontWeight: 700, padding: '3px 10px', borderRadius: '10px',
-                color: p.status === 'completed' ? '#22c55e' : '#eab308',
-                backgroundColor: p.status === 'completed' ? 'rgba(34,197,94,0.1)' : 'rgba(234,179,8,0.1)'
-              }}>
-                {p.status === 'completed' ? 'Paid' : 'Pending'}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>
