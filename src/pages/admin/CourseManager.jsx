@@ -77,20 +77,67 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
   const getCourses = () => courses || [];
 
   const handleSave = () => {
+    // Normalize modules/lessons: ensure every lesson has videoUrl, completed, attachments
+    const normalizedModules = (form.modules || []).map(mod => ({
+      ...mod,
+      lessons: (mod.lessons || []).map(les => ({
+        ...les,
+        videoUrl: les.videoUrl || les.videoPreviewUrl || '',
+        completed: les.completed || false,
+        attachments: les.attachments || [],
+        videoName: les.videoName || '',
+        attachmentName: les.attachmentName || '',
+        attachmentType: les.attachmentType || '',
+      }))
+    }));
+
+    // Calculate total lessons count
+    const totalLessons = normalizedModules.reduce((sum, m) => sum + m.lessons.length, 0);
+
+    const existingCourse = selectedCourseId ? getCourses().find(c => c.id === selectedCourseId) : null;
+
     const obj = {
       id: selectedCourseId || `course-${Date.now()}`,
-      title: form.title, teacher: form.teacher, category: form.category,
-      price: parseFloat(form.price) || 0, description: form.description,
-      level: form.level, language: form.language, thumbnail: form.thumbnail,
-      modules: form.modules, progress: 0,
+      title: form.title || 'Untitled Course',
+      teacher: form.teacher || 'Instructor',
+      category: form.category || 'Academic',
+      price: parseFloat(form.price) || 0,
+      description: form.description || '',
+      level: form.level || 'All Levels',
+      language: form.language || 'English',
+      thumbnail: form.thumbnail || '',
+      modules: normalizedModules,
+      progress: existingCourse ? existingCourse.progress : 0,
       publishStatus: form.publishImmediately ? 'published' : 'draft',
-      enrolledDate: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      chaptersCount: form.modules.length, studentsCount: 0, rating: 0,
+      enrolledDate: existingCourse?.enrolledDate || new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      chaptersCount: normalizedModules.length,
+      studentsCount: existingCourse?.studentsCount || 0,
+      rating: existingCourse?.rating || '0',
+      reviews: existingCourse?.reviews || 0,
+      lessonsCount: totalLessons,
+      duration: form.duration || '',
+      requirements: form.requirements || '',
+      learningOutcomes: form.learningOutcomes || [],
+      tags: form.tags || [],
+      priceType: form.priceType || 'Paid',
+      discountPrice: form.discountPrice || '',
+      discountEnabled: form.discountEnabled || false,
+      provideCertificate: form.provideCertificate !== undefined ? form.provideCertificate : true,
     };
     if (view === 'edit' && selectedCourseId) {
-      setCourses(prev => prev.map(c => c.id === selectedCourseId ? obj : c));
+      setCourses(prev => prev.map(c => c.id === selectedCourseId ? { ...c, ...obj } : c));
     } else {
       setCourses(prev => [obj, ...prev]);
+    }
+    // Auto-push notification for new course publish
+    if (view !== 'edit' && setDb && form.publishImmediately) {
+      setDb(prev => ({
+        ...prev,
+        notifications: [
+          { id: `not-${Date.now()}`, text: `New course published: "${form.title}" by ${form.teacher}!`, time: 'Just now', read: false },
+          ...(prev.notifications || [])
+        ]
+      }));
     }
     setView('list'); setSelectedCourseId(null);
   };
@@ -99,12 +146,20 @@ export default function CourseManager({ courses, setDb, initialView = 'list', us
     const c = getCourses().find(x => x.id === id);
     if (!c) return;
     setForm({
-      ...emptyForm, title: c.title, shortTitle: c.shortTitle || '',
+      ...emptyForm,
+      title: c.title || '', shortTitle: c.shortTitle || '',
       category: c.category || CATEGORIES[0], level: c.level || LEVELS[0],
       description: c.description || '', language: c.language || 'English',
       duration: c.duration || '', teacher: c.teacher || TEACHERS[0].name,
       thumbnail: c.thumbnail || '', priceType: c.price ? 'Paid' : 'Free',
-      price: String(c.price || ''), modules: c.modules || [],
+      price: String(c.price || ''),
+      discountPrice: c.discountPrice || '', discountEnabled: c.discountEnabled || false,
+      modules: c.modules || [],
+      learningOutcomes: c.learningOutcomes || [],
+      tags: c.tags || [],
+      requirements: c.requirements || '',
+      publishImmediately: c.publishStatus !== 'draft',
+      provideCertificate: c.provideCertificate !== undefined ? c.provideCertificate : true,
     });
     setSelectedCourseId(id); setView('edit'); setActiveStep(1);
   };

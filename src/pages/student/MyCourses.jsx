@@ -9,16 +9,19 @@ export default function MyCourses({ courses = [], onSelectCourse }) {
 
   const filtered = courses.filter(c => {
     const matchSearch =
-      c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (c.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (c.teacher || '').toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchFilter =
       activeFilter === 'All' ||
       (activeFilter === 'In Progress' && c.progress > 0 && c.progress < 100) ||
       (activeFilter === 'Completed' && c.progress === 100) ||
-      (activeFilter === 'Not Started' && c.progress === 0);
+      (activeFilter === 'Not Started' && (c.progress === 0 || c.progress === undefined));
 
-    return matchSearch && matchFilter;
+    // Hide draft courses from student view
+    const isPublished = !c.publishStatus || c.publishStatus === 'published';
+
+    return matchSearch && matchFilter && isPublished;
   });
 
   const inProgress = courses.filter(c => c.progress > 0 && c.progress < 100).length;

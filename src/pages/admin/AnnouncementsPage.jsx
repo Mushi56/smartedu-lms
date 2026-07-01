@@ -19,7 +19,7 @@ const labelStyle = {
   color: 'var(--text-secondary)', display: 'block', marginBottom: '5px'
 };
 
-const initialAnnouncements = [
+const fallbackAnnouncements = [
   { id: 'ann-1', title: 'Platform Maintenance Notice', body: 'SmartEdu will undergo scheduled maintenance on June 28, 2026 from 2:00 AM to 4:00 AM GMT. All services will be temporarily unavailable during this window.', audience: 'All Users', priority: 'High', date: 'Jun 22, 2026', pinned: true, icon: 'Bell' },
   { id: 'ann-2', title: 'New SAT Math Course Added', body: 'We are excited to announce the launch of SAT Math Advanced: Topics in Algebra and Statistics, now available for enrollment!', audience: 'Students', priority: 'Normal', date: 'Jun 20, 2026', pinned: false, icon: 'BookOpen' },
   { id: 'ann-3', title: 'Teacher Grading Deadline Reminder', body: 'All instructors must submit final grades and assessment scores for June batch students by June 30, 2026. Please ensure timely submission.', audience: 'Teachers', priority: 'High', date: 'Jun 18, 2026', pinned: false, icon: 'GraduationCap' },
@@ -29,8 +29,18 @@ const initialAnnouncements = [
 const audienceIcons = { 'All Users': Users, 'Students': GraduationCap, 'Teachers': BookOpen };
 const priorityStyle = { 'High': { bg: 'rgba(239,68,68,0.08)', color: '#ef4444' }, 'Normal': { bg: 'rgba(99,102,241,0.08)', color: '#6366f1' } };
 
-export default function AnnouncementsPage() {
-  const [announcements, setAnnouncements] = useState(initialAnnouncements);
+export default function AnnouncementsPage({ db, setDb }) {
+  // Use shared db announcements if available, fallback to local
+  const announcements = db?.announcements || fallbackAnnouncements;
+  const setAnnouncements = (updater) => {
+    if (setDb) {
+      setDb(prev => ({
+        ...prev,
+        announcements: typeof updater === 'function' ? updater(prev.announcements || fallbackAnnouncements) : updater
+      }));
+    }
+  };
+
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -49,6 +59,16 @@ export default function AnnouncementsPage() {
       pinned: false, icon: 'Bell'
     };
     setAnnouncements(prev => [newAnn, ...prev]);
+    // Also push a notification so students/teachers see it
+    if (setDb) {
+      setDb(prev => ({
+        ...prev,
+        notifications: [
+          { id: `not-${Date.now()}`, text: `📢 ${title}`, time: 'Just now', read: false },
+          ...(prev.notifications || [])
+        ]
+      }));
+    }
     resetForm();
     setSent(true);
     setTimeout(() => setSent(false), 3000);

@@ -102,6 +102,12 @@ const initialNotifications = [
   { id: 'not-2', text: 'Live session "SAT Trigonometry" starts in 2 hours.', time: '2 hours ago', read: true }
 ];
 
+const initialAnnouncements = [
+  { id: 'ann-1', title: 'Platform Maintenance Notice', body: 'SmartEdu will undergo scheduled maintenance on June 28, 2026 from 2:00 AM to 4:00 AM GMT.', audience: 'All Users', priority: 'High', date: 'Jun 22, 2026', pinned: true, icon: 'Bell' },
+  { id: 'ann-2', title: 'New SAT Math Course Added', body: 'We are excited to announce the launch of SAT Math Advanced, now available for enrollment!', audience: 'Students', priority: 'Normal', date: 'Jun 20, 2026', pinned: false, icon: 'BookOpen' },
+  { id: 'ann-3', title: 'Teacher Grading Deadline Reminder', body: 'All instructors must submit final grades for June batch students by June 30, 2026.', audience: 'Teachers', priority: 'High', date: 'Jun 18, 2026', pinned: false, icon: 'GraduationCap' },
+];
+
 // Helper functions for persistent database
 const getStorageItem = (key, defaultValue) => {
   try {
@@ -252,6 +258,7 @@ export const getMobileDB = () => {
     flashcards: getStorageItem("suriatech_mobile_flashcards", initialFlashcards),
     achievements: getStorageItem("suriatech_mobile_achievements", initialAchievements),
     notifications: getStorageItem("suriatech_mobile_notifications", initialNotifications),
+    announcements: getStorageItem("suriatech_mobile_announcements", initialAnnouncements),
     streak: getStorageItem("suriatech_mobile_streak", 14),
     overallProgress: getStorageItem("suriatech_mobile_overall_progress", 67),
     teachers: getStorageItem("suriatech_mobile_teachers", initialTeachers),
@@ -265,6 +272,7 @@ export const saveMobileDB = (db) => {
   setStorageItem("suriatech_mobile_flashcards", db.flashcards);
   setStorageItem("suriatech_mobile_achievements", db.achievements);
   setStorageItem("suriatech_mobile_notifications", db.notifications);
+  setStorageItem("suriatech_mobile_announcements", db.announcements);
   setStorageItem("suriatech_mobile_streak", db.streak);
   setStorageItem("suriatech_mobile_overall_progress", db.overallProgress);
   setStorageItem("suriatech_mobile_teachers", db.teachers);

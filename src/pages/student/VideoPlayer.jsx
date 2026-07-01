@@ -112,8 +112,8 @@ This lecture explored the regression model foundations in supervised machine lea
           {/* HTML5 video element with custom controllers */}
           <div className="custom-video-element">
             <video 
-              key={currentLesson.videoUrl}
-              src={currentLesson.videoUrl} 
+              key={currentLesson.videoUrl || currentLesson.videoPreviewUrl || currentLesson.id}
+              src={currentLesson.videoUrl || currentLesson.videoPreviewUrl || ''} 
               controls 
               controlsList="nodownload"
               onContextMenu={e => e.preventDefault()}

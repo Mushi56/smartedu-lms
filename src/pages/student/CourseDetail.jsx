@@ -57,7 +57,7 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
           {course.title}
         </h2>
         <p style={{ fontSize: '12.5px', opacity: 0.85, marginBottom: '20px', lineHeight: 1.5, maxWidth: '600px', fontWeight: 500 }}>
-          Master this topic from absolute scratch. This comprehensive curriculum takes you step-by-step through core theory, hands-on programming labs, and AI-assisted doubt solving.
+          {course.description || 'Master this topic from absolute scratch. This comprehensive curriculum takes you step-by-step through core theory, hands-on programming labs, and AI-assisted doubt solving.'}
         </p>
 
         {/* Banner Meta Rows */}
@@ -83,7 +83,9 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
           <h3 style={{ fontSize: '15px', fontWeight: 800, marginBottom: '16px', color: 'var(--text-primary)' }}>Course Syllabus</h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {course.modules.map((mod) => {
+            {(course.modules || []).length === 0 ? (
+              <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '12px' }}>No modules available yet.</div>
+            ) : course.modules.map((mod) => {
               const isExpanded = expandedModule === mod.id;
               return (
                 <div 
@@ -162,6 +164,7 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
                 </div>
               );
             })}
+            )}
           </div>
         </div>
 
@@ -183,19 +186,23 @@ export default function CourseDetail({ courseId, courses, onBack, onStartLesson 
             </div>
           </div>
           
-          <button 
-            onClick={() => onStartLesson(course.id, course.modules[0].lessons[0].id)}
-            className="click-press"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-              color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '16px',
-              fontSize: '12px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.2)'
-            }}
-          >
-            <Play size={12} fill="currentColor" />
-            <span>Resume Learning ({course.progress}%)</span>
-          </button>
+          {course.modules && course.modules.length > 0 && course.modules[0].lessons && course.modules[0].lessons.length > 0 ? (
+            <button 
+              onClick={() => onStartLesson(course.id, course.modules[0].lessons[0].id)}
+              className="click-press"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                color: '#ffffff', border: 'none', padding: '10px 20px', borderRadius: '16px',
+                fontSize: '12px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 4px 12px rgba(99,102,241,0.2)'
+              }}
+            >
+              <Play size={12} fill="currentColor" />
+              <span>Resume Learning ({course.progress || 0}%)</span>
+            </button>
+          ) : (
+            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>No lessons available</span>
+          )}
         </div>
       </div>
     </div>

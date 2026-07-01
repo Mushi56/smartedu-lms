@@ -13,11 +13,13 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
 
   // Filter Logic
   const filteredCourses = courses.filter(c => {
-    const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase()) || 
-                          c.teacher.toLowerCase().includes(search.toLowerCase());
-    const matchesLevel = selectedLevel === 'All' || c.level === selectedLevel;
+    const matchesSearch = (c.title || '').toLowerCase().includes(search.toLowerCase()) || 
+                          (c.teacher || '').toLowerCase().includes(search.toLowerCase());
+    const matchesLevel = selectedLevel === 'All' || (c.level || 'All Levels') === selectedLevel;
     const matchesCategory = selectedCategory === 'All' || c.category === selectedCategory;
-    return matchesSearch && matchesLevel && matchesCategory;
+    // Only show published courses to students (hide drafts)
+    const isPublished = !c.publishStatus || c.publishStatus === 'published';
+    return matchesSearch && matchesLevel && matchesCategory && isPublished;
   });
 
   const toggleModule = (id) => {
@@ -389,7 +391,7 @@ export default function Explore({ db, setDb, onCourseSelect, currentCourse, view
         <div style={{ ...premiumCard, padding: '0px', overflow: 'hidden', background: '#000' }}>
           <div style={{ position: 'relative', width: '100%', height: '190px' }}>
             <video
-              src={activeLesson.videoUrl}
+              src={activeLesson.videoUrl || activeLesson.videoPreviewUrl || ''}
               controls
               controlsList="nodownload"
               onContextMenu={e => e.preventDefault()}

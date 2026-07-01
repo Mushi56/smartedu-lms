@@ -472,7 +472,7 @@ export default function App() {
       case 'coupons':
         return <CouponsPage />;
       case 'announcements':
-        return <AnnouncementsPage />;
+        return <AnnouncementsPage db={db} setDb={setDb} />;
       case 'super-admin-panel':
         return <SuperAdminPanel user={user} />;
 
@@ -492,7 +492,7 @@ export default function App() {
         );
       }
       case 'teacher-live-classes':
-        return <TeacherLiveClasses db={db} user={user} />;
+        return <TeacherLiveClasses db={db} setDb={setDb} user={user} />;
       case 'teacher-students':
         return <TeacherStudents db={db} user={user} setActiveTab={setActiveTab} />;
       case 'teacher-earnings':

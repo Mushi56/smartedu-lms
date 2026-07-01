@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Video, Plus, Calendar, Clock, Users, Play, X, Edit3, Trash2, Download } from 'lucide-react';
 
-export default function TeacherLiveClasses({ db, user }) {
+const inputStyle = { width: '100%', padding: '10px 12px', fontSize: '13px', border: '1px solid var(--border-color)', borderRadius: '10px', background: 'var(--bg-input)', color: 'var(--text-primary)', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' };
+const labelStyle = { fontSize: '10px', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '5px' };
+
+export default function TeacherLiveClasses({ db, setDb, user }) {
   const [activeView, setActiveView] = useState('upcoming');
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({ title: '', time: '', duration: '60 mins' });
+
   const classes = db?.classes || [];
 
   const mockRecordings = [
@@ -16,6 +22,36 @@ export default function TeacherLiveClasses({ db, user }) {
     { id: 'attendance', label: 'Attendance' }
   ];
 
+  const handleScheduleClass = () => {
+    if (!formData.title.trim() || !formData.time.trim()) return;
+    const newClass = {
+      id: `lc-${Date.now()}`,
+      title: formData.title,
+      teacher: user?.name || 'Instructor',
+      time: formData.time,
+      duration: formData.duration || '60 mins',
+      isLive: false
+    };
+    if (setDb) {
+      setDb(prev => ({
+        ...prev,
+        classes: [newClass, ...(prev.classes || [])],
+        notifications: [
+          { id: `not-${Date.now()}`, text: `📅 New live class scheduled: "${formData.title}" at ${formData.time}`, time: 'Just now', read: false },
+          ...(prev.notifications || [])
+        ]
+      }));
+    }
+    setFormData({ title: '', time: '', duration: '60 mins' });
+    setShowForm(false);
+  };
+
+  const handleDeleteClass = (id) => {
+    if (setDb) {
+      setDb(prev => ({ ...prev, classes: (prev.classes || []).filter(c => c.id !== id) }));
+    }
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} className="animate-fade-in">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -24,11 +60,59 @@ export default function TeacherLiveClasses({ db, user }) {
           <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Schedule and manage your live sessions</p>
         </div>
         <button className="btn-primary click-press" style={{ fontSize: '11px', padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '6px' }}
-          onClick={() => alert('Schedule new class...')}
+          onClick={() => setShowForm(!showForm)}
         >
-          <Plus size={13} /> Schedule Class
+          {showForm ? <><X size={13} /> Cancel</> : <><Plus size={13} /> Schedule Class</>}
         </button>
       </div>
+
+      {/* Schedule Form */}
+      {showForm && (
+        <div className="smart-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 700, margin: 0 }}>Schedule New Class</h3>
+          <div>
+            <label style={labelStyle}>Class Title *</label>
+            <input 
+              style={inputStyle} 
+              placeholder="e.g. SAT Algebra Practice Session"
+              value={formData.title} 
+              onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))} 
+            />
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div>
+              <label style={labelStyle}>Time *</label>
+              <input 
+                style={inputStyle} 
+                placeholder="e.g. 06:00 PM"
+                value={formData.time} 
+                onChange={(e) => setFormData(p => ({ ...p, time: e.target.value }))} 
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>Duration</label>
+              <select 
+                style={inputStyle}
+                value={formData.duration} 
+                onChange={(e) => setFormData(p => ({ ...p, duration: e.target.value }))}
+              >
+                <option>30 mins</option>
+                <option>45 mins</option>
+                <option>60 mins</option>
+                <option>90 mins</option>
+                <option>120 mins</option>
+              </select>
+            </div>
+          </div>
+          <button 
+            className="btn-primary click-press" 
+            style={{ fontSize: '12px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%' }}
+            onClick={handleScheduleClass}
+          >
+            <Calendar size={14} /> Schedule Class
+          </button>
+        </div>
+      )}
 
       {/* View Tabs */}
       <div style={{ display: 'flex', gap: '6px' }}>
@@ -44,7 +128,12 @@ export default function TeacherLiveClasses({ db, user }) {
       {/* Upcoming Classes */}
       {activeView === 'upcoming' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {classes.map(cls => (
+          {classes.length === 0 ? (
+            <div className="smart-card" style={{ padding: '30px', textAlign: 'center' }}>
+              <Video size={28} style={{ color: '#d1d5db', marginBottom: '8px' }} />
+              <p style={{ fontSize: '12px', color: '#8c7f94', fontWeight: 600 }}>No upcoming classes. Schedule one above!</p>
+            </div>
+          ) : classes.map(cls => (
             <div key={cls.id} className="smart-card" style={{ padding: '16px', textAlign: 'left' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: cls.isLive ? 'rgba(239,68,68,0.1)' : 'rgba(124,58,237,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -69,8 +158,8 @@ export default function TeacherLiveClasses({ db, user }) {
                     <button className="click-press" style={{ flex: 1, fontSize: '11px', padding: '8px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                       <Edit3 size={12} /> Edit
                     </button>
-                    <button className="click-press" style={{ fontSize: '11px', padding: '8px 12px', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.06)', color: '#ef4444', cursor: 'pointer' }}>
-                      <X size={12} />
+                    <button onClick={() => handleDeleteClass(cls.id)} className="click-press" style={{ fontSize: '11px', padding: '8px 12px', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(239,68,68,0.06)', color: '#ef4444', cursor: 'pointer' }}>
+                      <Trash2 size={12} />
                     </button>
                   </>
                 )}
